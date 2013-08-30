@@ -96,45 +96,6 @@ extern vmCvar_t ui_bypassMainMenuLoad;
 //JAC: Moved from ui_main.c and ui_saber.c, also increased drastically
 #define MAX_SABER_HILTS			256 //64
 
-#define MTYPE_NULL				0
-#define MTYPE_SLIDER			1	
-#define MTYPE_ACTION			2
-#define MTYPE_SPINCONTROL		3
-#define MTYPE_FIELD				4
-#define MTYPE_RADIOBUTTON		5
-#define MTYPE_BITMAP			6	
-#define MTYPE_TEXT				7
-#define MTYPE_SCROLLLIST		8
-#define MTYPE_PTEXT				9
-#define MTYPE_BTEXT				10
-
-#define QMF_BLINK				0x00000001
-#define QMF_SMALLFONT			0x00000002
-#define QMF_LEFT_JUSTIFY		0x00000004
-#define QMF_CENTER_JUSTIFY		0x00000008
-#define QMF_RIGHT_JUSTIFY		0x00000010
-#define QMF_NUMBERSONLY			0x00000020	// edit field is only numbers
-#define QMF_HIGHLIGHT			0x00000040
-#define QMF_HIGHLIGHT_IF_FOCUS	0x00000080	// steady focus
-#define QMF_PULSEIFFOCUS		0x00000100	// pulse if focus
-#define QMF_HASMOUSEFOCUS		0x00000200
-#define QMF_NOONOFFTEXT			0x00000400
-#define QMF_MOUSEONLY			0x00000800	// only mouse input allowed
-#define QMF_HIDDEN				0x00001000	// skips drawing
-#define QMF_GRAYED				0x00002000	// grays and disables
-#define QMF_INACTIVE			0x00004000	// disables any input
-#define QMF_NODEFAULTINIT		0x00008000	// skip default initialization
-#define QMF_OWNERDRAW			0x00010000
-#define QMF_PULSE				0x00020000
-#define QMF_LOWERCASE			0x00040000	// edit field is all lower case
-#define QMF_UPPERCASE			0x00080000	// edit field is all upper case
-#define QMF_SILENT				0x00100000
-
-// callback notifications
-#define QM_GOTFOCUS				1
-#define QM_LOSTFOCUS			2
-#define QM_ACTIVATED			3
-
 typedef struct _tag_menuframework
 {
 	int	cursor;
@@ -407,9 +368,6 @@ typedef struct {
   const char *teamName;
 	const char *imageName;
 	const char *teamMembers[TEAM_MEMBERS];
-  qhandle_t teamIcon;
-  qhandle_t teamIcon_Metal;
-  qhandle_t teamIcon_Name;
 	int cinematic;
 } teamInfo;
 
@@ -430,13 +388,6 @@ typedef struct {
 	qhandle_t levelShot;
 	qboolean active;
 } mapInfo;
-
-typedef struct {
-	const char *tierName;
-	const char *maps[MAPS_PER_TIER];
-	int gameTypes[MAPS_PER_TIER];
-	qhandle_t mapHandles[MAPS_PER_TIER];
-} tierInfo;
 
 typedef struct serverFilter_s {
 	const char *description;
@@ -519,13 +470,7 @@ typedef struct {
 } playerSpeciesInfo_t;
 
 typedef struct {
-	displayContextDef_t uiDC;
-	int newHighScoreTime;
-	int newBestTime;
-	int showPostGameTime;
-	qboolean newHighScore;
 	qboolean demoAvailable;
-	qboolean soundHighScore;
 	
 	int characterCount;
 	int botIndex;
@@ -558,10 +503,6 @@ typedef struct {
 
 	int mapCount;
 	mapInfo mapList[MAX_MAPS];
-
-
-	int tierCount;
-	tierInfo tierList[MAX_TIERS];
 
 	int skillIndex;
 
@@ -600,20 +541,11 @@ typedef struct {
 	int nextFindPlayerRefresh;
 
 	int currentCrosshair;
-	int startPostGameTime;
-	sfxHandle_t newHighScoreSound;
 
 	int				q3HeadCount;
 	char			q3HeadNames[MAX_Q3PLAYERMODELS][64];
 	qhandle_t		q3HeadIcons[MAX_Q3PLAYERMODELS];
 	int				q3SelectedHead;
-
-	int				forceConfigCount;
-	int				forceConfigSelected;
-	char			forceConfigNames[MAX_FORCE_CONFIGS][128];
-	qboolean		forceConfigSide[MAX_FORCE_CONFIGS]; //true if it's a light side config, false if dark side
-	int				forceConfigDarkIndexBegin; //mark the index number dark configs start at
-	int				forceConfigLightIndexBegin; //mark the index number light configs start at
 
 	int effectsColor;
 
@@ -669,34 +601,6 @@ extern char			*UI_Argv( int arg );
 extern char			*UI_Cvar_VariableString( const char *var_name );
 extern void			UI_Refresh( int time );
 extern void			UI_KeyEvent( int key );
-extern void			UI_StartDemoLoop( void );
-extern qboolean		m_entersound;
-void UI_LoadBestScores(const char *map, int game);
-
-//
-// ui_spLevel.c
-//
-void UI_SPLevelMenu_Cache( void );
-void UI_SPLevelMenu( void );
-void UI_SPLevelMenu_f( void );
-void UI_SPLevelMenu_ReInit( void );
-
-//
-// ui_spArena.c
-//
-void UI_SPArena_Start( const char *arenaInfo );
-
-//
-// ui_spPostgame.c
-//
-void UI_SPPostgameMenu_Cache( void );
-void UI_SPPostgameMenu_f( void );
-
-//
-// ui_spSkill.c
-//
-void UI_SPSkillMenu( const char *arenaInfo );
-void UI_SPSkillMenu_Cache( void );
 
 //
 // ui_syscalls.c
@@ -793,72 +697,8 @@ void			trap_Syscall_UI( void );
 void			trap_Syscall_CG( void );
 
 //
-// ui_addbots.c
-//
-void UI_AddBots_Cache( void );
-void UI_AddBotsMenu( void );
-
-//
-// ui_removebots.c
-//
-void UI_RemoveBots_Cache( void );
-void UI_RemoveBotsMenu( void );
-
-//
-// ui_teamorders.c
-//
-extern void UI_TeamOrdersMenu( void );
-extern void UI_TeamOrdersMenu_f( void );
-extern void UI_TeamOrdersMenu_Cache( void );
-
-//
-// ui_loadconfig.c
-//
-void UI_LoadConfig_Cache( void );
-void UI_LoadConfigMenu( void );
-
-//
-// ui_saveconfig.c
-//
-void UI_SaveConfigMenu_Cache( void );
-void UI_SaveConfigMenu( void );
-
-//
-// ui_display.c
-//
-void UI_DisplayOptionsMenu_Cache( void );
-void UI_DisplayOptionsMenu( void );
-
-//
-// ui_sound.c
-//
-void UI_SoundOptionsMenu_Cache( void );
-void UI_SoundOptionsMenu( void );
-
-//
-// ui_network.c
-//
-void UI_NetworkOptionsMenu_Cache( void );
-void UI_NetworkOptionsMenu( void );
-
-//
 // ui_gameinfo.c
 //
-typedef enum {
-	AWARD_ACCURACY,
-	AWARD_IMPRESSIVE,
-	AWARD_EXCELLENT,
-	AWARD_GAUNTLET,
-	AWARD_FRAGS,
-	AWARD_PERFECT
-} awardType_t;
-
-const char *UI_GetArenaInfoByNumber( int num );
-const char *UI_GetArenaInfoByMap( const char *map );
-const char *UI_GetSpecialArenaInfo( const char *tag );
-int UI_GetNumArenas( void );
-int UI_GetNumSPArenas( void );
-int UI_GetNumSPTiers( void );
 
 char *UI_GetBotInfoByNumber( int num );
 char *UI_GetBotInfoByName( const char *name );
@@ -866,63 +706,7 @@ int UI_GetNumBots( void );
 void UI_LoadBots( void );
 char *UI_GetBotNameByNumber( int num );
 
-void UI_GetBestScore( int level, int *score, int *skill );
-void UI_SetBestScore( int level, int score );
-int UI_TierCompleted( int levelWon );
-qboolean UI_ShowTierVideo( int tier );
-qboolean UI_CanShowTierVideo( int tier );
-int  UI_GetCurrentGame( void );
-void UI_NewGame( void );
-void UI_LogAwardData( int award, int data );
-int UI_GetAwardLevel( int award );
-
-void UI_SPUnlock_f( void );
-void UI_SPUnlockMedals_f( void );
-
 void UI_InitGameinfo( void );
-
-//
-// ui_login.c
-//
-void Login_Cache( void );
-void UI_LoginMenu( void );
-
-//
-// ui_signup.c
-//
-void Signup_Cache( void );
-void UI_SignupMenu( void );
-
-//
-// ui_rankstatus.c
-//
-void RankStatus_Cache( void );
-void UI_RankStatusMenu( void );
-
-
-// new ui 
-
-#define ASSET_BACKGROUND "uiBackground"
-
-// for tracking sp game info in Team Arena
-typedef struct postGameInfo_s {
-	int score;
-	int redScore;
-	int blueScore;
-	int perfects;
-	int accuracy;
-	int impressives;
-	int excellents;
-	int defends;
-	int assists;
-	int gauntlets;
-	int	captures;
-	int time;
-	int timeBonus;
-	int shutoutBonus;
-	int skillBonus;
-	int baseScore;
-} postGameInfo_t;
 
 //
 // JKG - ui_servercmds.c

@@ -158,6 +158,9 @@
     <ClCompile Include="..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ui_devicecontext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\game\anims.h">
@@ -312,6 +315,9 @@
     </ClInclude>
     <ClInclude Include="..\libraries\libexpat\include\xmltok_impl.h">
       <Filter>Libraries\Expat\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_devicecontext.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

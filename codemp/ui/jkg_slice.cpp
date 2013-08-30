@@ -14,6 +14,8 @@
 #include <encoding/base128.h>
 #include <encoding/bitstream.h>
 
+#include "ui_devicecontext.h"
+
 #pragma warning (disable : 4090) // Different 'const' qualifiers
 
 // UI includes
@@ -24,8 +26,6 @@ void Menu_ItemDisable(menuDef_t *menu, char *name,int disableFlag);
 //
 
 int MenuFontToHandle(int iMenuFont);
-
-extern displayContextDef_t *DC;
 
 // Game state structures
 typedef struct {
@@ -519,13 +519,13 @@ void JKG_Slice_DrawGridSlot(int slot, float x, float y, float w, float h)
 					color[0] = color[1] = color[2] = 1.0f;
 					color[3] = phase;
 					w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-					DC->drawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.4f, color, text, 0, 0, 0, 0 );
+					DisplayContext::DrawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.4f, color, text, 0, 0, 0, 0 );
 				}
 			} else {
 				UI_FillRect(x, y, w, h, color2);
 				if (text) {
 					w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-					DC->drawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.4f, (vec_t *)(white), text, 0, 0, 0, 0 );
+					DisplayContext::DrawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.4f, (vec_t *)(white), text, 0, 0, 0, 0 );
 				}
 			}
 		} else {
@@ -601,18 +601,18 @@ void JKG_Slice_DrawGridSummary(int slot, float x, float y, float w, float h) {
 	if (sliceData.summariesKnown) {
 		text = va("%i", sliceData.summaries[slot].value);
 		w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-		DC->drawText(x + (w/2) - (w2/2), y-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
+		DisplayContext::DrawText(x + (w/2) - (w2/2), y-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
 
 		text = va("%i", sliceData.summaries[slot].alarms);
 		w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-		DC->drawText(x + (w/2) - (w2/2), y+(h*0.5f)-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
+		DisplayContext::DrawText(x + (w/2) - (w2/2), y+(h*0.5f)-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
 	} else {
 		text = "?";
 		w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-		DC->drawText(x + (w/2) - (w2/2), y-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
+		DisplayContext::DrawText(x + (w/2) - (w2/2), y-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
 
 		w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.4f;
-		DC->drawText(x + (w/2) - (w2/2), y+(h*0.5f)-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
+		DisplayContext::DrawText(x + (w/2) - (w2/2), y+(h*0.5f)-1, 0.4f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
 	}
 
 }
@@ -650,7 +650,7 @@ void JKG_Slice_DrawSecurityClearance(int slot, float x, float y, float w, float 
 	text = va("%i", slot + 1);
 	
 	w2 = trap_R_Font_StrLenPixels(text, MenuFontToHandle(0), 1.0f) * 0.5f;
-	DC->drawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.5f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
+	DisplayContext::DrawText(x + (w/2) - (w2/2), y+(h*0.2f), 0.5f, const_cast<vec_t *>(white), text, 0, 0, 0, 0 );
 
 }
 
@@ -658,7 +658,7 @@ void JKG_Slice_DrawWarningLevel(float x, float y, float w, float h)
 {
 	const char *text = va("Warning level: %i / %i", sliceData.warningLevel, sliceData.warningThreshold);
 
-	DC->drawText(x, y, 0.6f, const_cast<vec_t *>(redfont), text, 0, 0, sliceData.warningLevel >= sliceData.warningThreshold ? ITEM_TEXTSTYLE_BLINK : 0, 1 );
+	DisplayContext::DrawText(x, y, 0.6f, const_cast<vec_t *>(redfont), text, 0, 0, sliceData.warningLevel >= sliceData.warningThreshold ? ITEM_TEXTSTYLE_BLINK : 0, 1 );
 }
 
 void JKG_Slice_DrawIntrusion(int field, float x, float y, float w, float h)
@@ -685,7 +685,7 @@ void JKG_Slice_DrawIntrusion(int field, float x, float y, float w, float h)
 				break;
 		}
 
-		DC->drawText(x, y, 0.5f, const_cast<vec_t *>(redfont), text, 0, 0, 0, 1 );
+		DisplayContext::DrawText(x, y, 0.5f, const_cast<vec_t *>(redfont), text, 0, 0, 0, 1 );
 	} else {
 		// Time
 		int mins;
@@ -708,10 +708,10 @@ void JKG_Slice_DrawIntrusion(int field, float x, float y, float w, float h)
 		
 		if (sliceData.intrusionState == 0 || sliceData.intrusionState == 1) {
 			text = va("%02i:%02i remaining until lockdown", mins, secs);
-			DC->drawText(x, y, 0.4f, const_cast<vec_t *>(redfont), text, 0, 0, time <= 10 ? ITEM_TEXTSTYLE_BLINK : 0, 1 );
+			DisplayContext::DrawText(x, y, 0.4f, const_cast<vec_t *>(redfont), text, 0, 0, time <= 10 ? ITEM_TEXTSTYLE_BLINK : 0, 1 );
 		} else if (sliceData.intrusionState == 3) {
 			text = "Lockdown activated!";
-			DC->drawText(x, y, 0.4f, const_cast<vec_t *>(redfont), text, 0, 0, ITEM_TEXTSTYLE_BLINK, 1 );
+			DisplayContext::DrawText(x, y, 0.4f, const_cast<vec_t *>(redfont), text, 0, 0, ITEM_TEXTSTYLE_BLINK, 1 );
 		}
 	}
 }

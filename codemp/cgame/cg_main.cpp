@@ -5,8 +5,6 @@
 #include "jkg_navmesh_visualiser.h"
 
 #include "../ui/ui_shared.h"
-// display context for new ui stuff
-displayContextDef_t cgDC;
 
 #include "cg_lights.h"
 
@@ -14,6 +12,8 @@ displayContextDef_t cgDC;
 #include "cg_weapons.h"
 #include "jkg_gangwars.h"
 #include "bg_items.h"
+
+#include "ui/ui_devicecontext.h"
 
 /*
 Ghoul2 Insert Start
@@ -208,8 +208,8 @@ Q_EXPORT intptr_t vmMain( int command, int arg0, int arg1, int arg2, int arg3, i
 		CG_KeyEvent(arg0, arg1);
 		return 0;
 	case CG_MOUSE_EVENT:
-		cgDC.cursorx = cgs.cursorX;
-		cgDC.cursory = cgs.cursorY;
+		DisplayContext::cursorx = cgs.cursorX;
+		DisplayContext::cursory = cgs.cursorY;
 		CG_MouseEvent(arg0, arg1);
 		return 0;
 	case CG_EVENT_HANDLING:
@@ -2134,8 +2134,8 @@ qboolean CG_Asset_Parse(int handle) {
 				return qfalse;
 			}
 
-//			cgDC.registerFont(token.string, pointSize, &cgDC.Assets.textFont);
-			cgDC.Assets.qhMediumFont = cgDC.RegisterFont(token.string);
+//			DisplayContext::registerFont(token.string, pointSize, &DisplayContext::Assets.textFont);
+			DisplayContext::Assets.qhMediumFont = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 
@@ -2145,8 +2145,8 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-//			cgDC.registerFont(token.string, pointSize, &cgDC.Assets.smallFont);
-			cgDC.Assets.qhSmallFont = cgDC.RegisterFont(token.string);
+//			DisplayContext::registerFont(token.string, pointSize, &DisplayContext::Assets.smallFont);
+			DisplayContext::Assets.qhSmallFont = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 
@@ -2156,8 +2156,8 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-//			cgDC.registerFont(token.string, pointSize, &cgDC.Assets.smallFont);
-			cgDC.Assets.qhSmall2Font = cgDC.RegisterFont(token.string);
+//			DisplayContext::registerFont(token.string, pointSize, &DisplayContext::Assets.smallFont);
+			DisplayContext::Assets.qhSmall2Font = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 
@@ -2167,7 +2167,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-			cgDC.Assets.qhSmall3Font = cgDC.RegisterFont(token.string);
+			DisplayContext::Assets.qhSmall3Font = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 
@@ -2176,7 +2176,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-			cgDC.Assets.qhSmall4Font = cgDC.RegisterFont(token.string);
+			DisplayContext::Assets.qhSmall4Font = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 		//end JKG
@@ -2187,8 +2187,8 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-//			cgDC.registerFont(token.string, pointSize, &cgDC.Assets.bigFont);
-			cgDC.Assets.qhBigFont = cgDC.RegisterFont(token.string);
+//			DisplayContext::registerFont(token.string, pointSize, &DisplayContext::Assets.bigFont);
+			DisplayContext::Assets.qhBigFont = DisplayContext::RegisterFont(token.string);
 			continue;
 		}
 
@@ -2197,7 +2197,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			cgDC.Assets.gradientBar = trap_R_RegisterShaderNoMip(token.string);
+			DisplayContext::Assets.gradientBar = trap_R_RegisterShaderNoMip(token.string);
 			continue;
 		}
 
@@ -2206,7 +2206,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			cgDC.Assets.menuEnterSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuEnterSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -2215,7 +2215,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			cgDC.Assets.menuExitSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuExitSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -2224,7 +2224,7 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			cgDC.Assets.itemFocusSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.itemFocusSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -2233,58 +2233,58 @@ qboolean CG_Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			cgDC.Assets.menuBuzzSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuBuzzSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "cursor") == 0) {
-			if (!PC_String_Parse(handle, &cgDC.Assets.cursorStr)) {
+			if (!PC_String_Parse(handle, &DisplayContext::Assets.cursorStr)) {
 				return qfalse;
 			}
-			cgDC.Assets.cursor = trap_R_RegisterShaderNoMip( cgDC.Assets.cursorStr);
+			DisplayContext::Assets.cursor = trap_R_RegisterShaderNoMip( DisplayContext::Assets.cursorStr);
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeClamp") == 0) {
-			if (!PC_Float_Parse(handle, &cgDC.Assets.fadeClamp)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.fadeClamp)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeCycle") == 0) {
-			if (!PC_Int_Parse(handle, &cgDC.Assets.fadeCycle)) {
+			if (!PC_Int_Parse(handle, &DisplayContext::Assets.fadeCycle)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeAmount") == 0) {
-			if (!PC_Float_Parse(handle, &cgDC.Assets.fadeAmount)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.fadeAmount)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowX") == 0) {
-			if (!PC_Float_Parse(handle, &cgDC.Assets.shadowX)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.shadowX)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowY") == 0) {
-			if (!PC_Float_Parse(handle, &cgDC.Assets.shadowY)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.shadowY)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowColor") == 0) {
-			if (!PC_Color_Parse(handle, &cgDC.Assets.shadowColor)) {
+			if (!PC_Color_Parse(handle, &DisplayContext::Assets.shadowColor)) {
 				return qfalse;
 			}
-			cgDC.Assets.shadowFadeClamp = cgDC.Assets.shadowColor[3];
+			DisplayContext::Assets.shadowFadeClamp = DisplayContext::Assets.shadowColor[3];
 			continue;
 		}
 	}
@@ -2367,11 +2367,11 @@ qboolean CG_Load_Menu(const char **p)
 }
 
 
-static qboolean CG_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key, int ownerDrawID) {
+qboolean CG_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key, int ownerDrawID) {
 	return qfalse;
 }
 
-static int CG_FeederCount(float feederID) {
+int CG_FeederCount(float feederID) {
 	int i, count;
 	count = 0;
 	if (feederID == FEEDER_REDTEAM_LIST) {
@@ -2446,7 +2446,7 @@ static clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex
 	return &cgs.clientinfo[ cg.scores[index].client ];
 }
 
-static const char *CG_FeederItemText(float feederID, int index, int column,
+const char *CG_FeederItemText(float feederID, int index, int column,
 									 qhandle_t *handle1, qhandle_t *handle2, qhandle_t *handle3) {
 	gitem_t *item;
 	int scoreIndex = 0;
@@ -2533,11 +2533,11 @@ static const char *CG_FeederItemText(float feederID, int index, int column,
 	return "";
 }
 
-static qhandle_t CG_FeederItemImage(float feederID, int index) {
+qhandle_t CG_FeederItemImage(float feederID, int index) {
 	return 0;
 }
 
-static qboolean CG_FeederSelection(float feederID, int index, itemDef_t *item) 
+qboolean CG_FeederSelection(float feederID, int index, itemDef_t *item) 
 {
 
 	if ( cgs.gametype >= GT_TEAM ) {
@@ -2559,18 +2559,11 @@ static qboolean CG_FeederSelection(float feederID, int index, itemDef_t *item)
 	return qtrue;
 }
 
-static float CG_Cvar_Get(const char *cvar) {
-	char buff[128];
-	memset(buff, 0, sizeof(buff));
-	trap_Cvar_VariableStringBuffer(cvar, buff, sizeof(buff));
-	return atof(buff);
-}
-
 void CG_Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const char *text, int cursorPos, char cursor, int limit, int style, int iMenuFont) {
 	CG_Text_Paint(x, y, scale, color, text, 0, limit, style, iMenuFont);
 }
 
-static int CG_OwnerDrawWidth(int ownerDraw, float scale) {
+int CG_OwnerDrawWidth(int ownerDraw, float scale) {
 	switch (ownerDraw) {
 	  case CG_GAME_TYPE:
 			return CG_Text_Width(BG_GetGametypeString( cgs.gametype ), scale, FONT_MEDIUM);
@@ -2689,65 +2682,7 @@ void CG_LoadHudMenu()
 {
 	const char *hudSet;
 
-	cgDC.registerShaderNoMip = &trap_R_RegisterShaderNoMip;
-	cgDC.setColor = &trap_R_SetColor;
-	cgDC.drawHandlePic = &CG_DrawPic;
-	cgDC.drawStretchPic = &trap_R_DrawStretchPic;
-	cgDC.drawText = reinterpret_cast<void (__cdecl *)(float, float, float, vec_t [], const char *, float, int, int, int)>(&CG_Text_Paint);
-	cgDC.textWidth = &CG_Text_Width;
-	cgDC.textHeight = &CG_Text_Height;
-	cgDC.registerModel = &trap_R_RegisterModel;
-	cgDC.modelBounds = &trap_R_ModelBounds;
-	cgDC.fillRect = &CG_FillRect;
-	cgDC.drawRect = &CG_DrawRect;   
-	cgDC.drawSides = &CG_DrawSides;
-	cgDC.drawTopBottom = &CG_DrawTopBottom;
-	cgDC.clearScene = &trap_R_ClearScene;
-	cgDC.addRefEntityToScene = &trap_R_AddRefEntityToScene;
-	cgDC.renderScene = &trap_R_RenderScene;
-	cgDC.RegisterFont = &trap_R_RegisterFont;
-	cgDC.Font_StrLenPixels = &trap_R_Font_StrLenPixels;
-	cgDC.Font_StrLenChars = &trap_R_Font_StrLenChars;
-	cgDC.Font_HeightPixels = &trap_R_Font_HeightPixels;
-	cgDC.Font_DrawString = &trap_R_Font_DrawString;
-	cgDC.Language_IsAsian = &trap_Language_IsAsian;
-	cgDC.Language_UsesSpaces = &trap_Language_UsesSpaces;
-	cgDC.AnyLanguage_ReadCharFromString = &trap_AnyLanguage_ReadCharFromString;
-	cgDC.ownerDrawItem = ( void ( * )( itemDef_t *, float, float, float, float, float, float, int, int, int, float, float, vec4_t, qhandle_t, int, int, int )) &CG_OwnerDraw;
-	cgDC.getValue = &CG_GetValue;
-	cgDC.ownerDrawVisible = &CG_OwnerDrawVisible;
-	cgDC.runScript = &CG_RunMenuScript;
-	cgDC.deferScript = &CG_DeferMenuScript;
-	cgDC.getTeamColor = &CG_GetTeamColor;
-	cgDC.setCVar = trap_Cvar_Set;
-	cgDC.getCVarString = trap_Cvar_VariableStringBuffer;
-	cgDC.getCVarValue = CG_Cvar_Get;
-	cgDC.drawTextWithCursor = &CG_Text_PaintWithCursor;
-	//cgDC.setOverstrikeMode = &trap_Key_SetOverstrikeMode;
-	//cgDC.getOverstrikeMode = &trap_Key_GetOverstrikeMode;
-	cgDC.startLocalSound = &trap_S_StartLocalSound;
-	cgDC.ownerDrawHandleKey = &CG_OwnerDrawHandleKey;
-	cgDC.feederCount = &CG_FeederCount;
-	cgDC.feederItemImage = &CG_FeederItemImage;
-	cgDC.feederItemText = &CG_FeederItemText;
-	cgDC.feederSelection = &CG_FeederSelection;
-	//cgDC.setBinding = &trap_Key_SetBinding;
-	//cgDC.getBindingBuf = &trap_Key_GetBindingBuf;
-	//cgDC.keynumToStringBuf = &trap_Key_KeynumToStringBuf;
-	//cgDC.executeText = &trap_Cmd_ExecuteText;
-	cgDC.Error = &Com_Error; 
-	cgDC.Print = &Com_Printf; 
-	cgDC.ownerDrawWidth = &CG_OwnerDrawWidth;
-	//cgDC.Pause = &CG_Pause;
-	cgDC.registerSound = &trap_S_RegisterSound;
-	cgDC.startBackgroundTrack = &trap_S_StartBackgroundTrack;
-	cgDC.stopBackgroundTrack = &trap_S_StopBackgroundTrack;
-	cgDC.playCinematic = &CG_PlayCinematic;
-	cgDC.stopCinematic = &CG_StopCinematic;
-	cgDC.drawCinematic = &CG_DrawCinematic;
-	cgDC.runCinematicFrame = &CG_RunCinematicFrame;
-	
-	Init_Display(&cgDC);
+	DisplayContext::RegisterCallbacks();
 
 	Menu_Reset();
 
@@ -2768,23 +2703,23 @@ void CG_AssetCache() {
 	//}
 	//Assets.background = trap_R_RegisterShaderNoMip( ASSET_BACKGROUND );
 	//Com_Printf("Menu Size: %i bytes\n", sizeof(Menus));
-	cgDC.Assets.gradientBar = trap_R_RegisterShaderNoMip( ASSET_GRADIENTBAR );
-	cgDC.Assets.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
-	cgDC.Assets.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );
-	cgDC.Assets.fxPic[1] = trap_R_RegisterShaderNoMip( ART_FX_YELLOW );
-	cgDC.Assets.fxPic[2] = trap_R_RegisterShaderNoMip( ART_FX_GREEN );
-	cgDC.Assets.fxPic[3] = trap_R_RegisterShaderNoMip( ART_FX_TEAL );
-	cgDC.Assets.fxPic[4] = trap_R_RegisterShaderNoMip( ART_FX_BLUE );
-	cgDC.Assets.fxPic[5] = trap_R_RegisterShaderNoMip( ART_FX_CYAN );
-	cgDC.Assets.fxPic[6] = trap_R_RegisterShaderNoMip( ART_FX_WHITE );
-	cgDC.Assets.scrollBar = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR );
-	cgDC.Assets.scrollBarArrowDown = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWDOWN );
-	cgDC.Assets.scrollBarArrowUp = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWUP );
-	cgDC.Assets.scrollBarArrowLeft = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWLEFT );
-	cgDC.Assets.scrollBarArrowRight = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWRIGHT );
-	cgDC.Assets.scrollBarThumb = trap_R_RegisterShaderNoMip( ASSET_SCROLL_THUMB );
-	cgDC.Assets.sliderBar = trap_R_RegisterShaderNoMip( ASSET_SLIDER_BAR );
-	cgDC.Assets.sliderThumb = trap_R_RegisterShaderNoMip( ASSET_SLIDER_THUMB );
+	DisplayContext::Assets.gradientBar = trap_R_RegisterShaderNoMip( ASSET_GRADIENTBAR );
+	DisplayContext::Assets.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
+	DisplayContext::Assets.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );
+	DisplayContext::Assets.fxPic[1] = trap_R_RegisterShaderNoMip( ART_FX_YELLOW );
+	DisplayContext::Assets.fxPic[2] = trap_R_RegisterShaderNoMip( ART_FX_GREEN );
+	DisplayContext::Assets.fxPic[3] = trap_R_RegisterShaderNoMip( ART_FX_TEAL );
+	DisplayContext::Assets.fxPic[4] = trap_R_RegisterShaderNoMip( ART_FX_BLUE );
+	DisplayContext::Assets.fxPic[5] = trap_R_RegisterShaderNoMip( ART_FX_CYAN );
+	DisplayContext::Assets.fxPic[6] = trap_R_RegisterShaderNoMip( ART_FX_WHITE );
+	DisplayContext::Assets.scrollBar = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR );
+	DisplayContext::Assets.scrollBarArrowDown = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWDOWN );
+	DisplayContext::Assets.scrollBarArrowUp = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWUP );
+	DisplayContext::Assets.scrollBarArrowLeft = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWLEFT );
+	DisplayContext::Assets.scrollBarArrowRight = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWRIGHT );
+	DisplayContext::Assets.scrollBarThumb = trap_R_RegisterShaderNoMip( ASSET_SCROLL_THUMB );
+	DisplayContext::Assets.sliderBar = trap_R_RegisterShaderNoMip( ASSET_SLIDER_BAR );
+	DisplayContext::Assets.sliderThumb = trap_R_RegisterShaderNoMip( ASSET_SLIDER_THUMB );
 }
 
 /*
@@ -2950,11 +2885,11 @@ Ghoul2 Insert End
 	//	if desired during parse.  Dunno how legal it is to store in these cgDC things, but it causes no harm
 	//	and even if/when they get overwritten they'll be legalised by the menu asset parser :-)
 //	CG_LoadFonts();
-	cgDC.Assets.qhSmallFont  = trap_R_RegisterFont("ocr_a");
-	cgDC.Assets.qhMediumFont = trap_R_RegisterFont("ergoec");
-	cgDC.Assets.qhSmall3Font = trap_R_RegisterFont("bankgothic");
-	cgDC.Assets.qhSmall4Font = trap_R_RegisterFont("segoeui");
-	cgDC.Assets.qhBigFont = cgDC.Assets.qhMediumFont;
+	DisplayContext::Assets.qhSmallFont  = trap_R_RegisterFont("ocr_a");
+	DisplayContext::Assets.qhMediumFont = trap_R_RegisterFont("ergoec");
+	DisplayContext::Assets.qhSmall3Font = trap_R_RegisterFont("bankgothic");
+	DisplayContext::Assets.qhSmall4Font = trap_R_RegisterFont("segoeui");
+	DisplayContext::Assets.qhBigFont = DisplayContext::Assets.qhMediumFont;
 
 	memset( &cgs, 0, sizeof( cgs ) );
 	CG_InitWeapons();

@@ -270,6 +270,7 @@
     <ClCompile Include="..\libraries\encoding\base128.cpp" />
     <ClCompile Include="..\qcommon\q_math.c" />
     <ClCompile Include="..\qcommon\q_shared.c" />
+    <ClCompile Include="..\ui\ui_devicecontext.cpp" />
     <ClCompile Include="cg_cinematics.cpp" />
     <ClCompile Include="cg_consolecmds.cpp" />
     <ClCompile Include="cg_crossover.cpp" />
@@ -351,6 +352,7 @@
     <ClInclude Include="..\libraries\Detour\Include\DetourNode.h" />
     <ClInclude Include="..\libraries\Detour\Include\DetourStatus.h" />
     <ClInclude Include="..\renderer\tr_types.h" />
+    <ClInclude Include="..\ui\ui_devicecontext.h" />
     <ClInclude Include="animtable.h" />
     <ClInclude Include="..\game\bg_ammo.h" />
     <ClInclude Include="..\game\bg_items.h" />

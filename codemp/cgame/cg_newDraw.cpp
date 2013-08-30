@@ -1,8 +1,6 @@
 #include "cg_local.h"
 #include "../ui/ui_shared.h"
 
-extern displayContextDef_t cgDC;
-
 
 int CG_GetSelectedPlayer() {
 	if (cg_currentSelectedPlayer.integer < 0 || cg_currentSelectedPlayer.integer >= numSortedTeamPlayers) {

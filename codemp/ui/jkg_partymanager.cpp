@@ -14,7 +14,6 @@
 void Menu_ShowItemByName(menuDef_t *menu, const char *p, qboolean bShow);
 itemDef_t *Menu_ClearFocus(menuDef_t *menu);
 //
-extern displayContextDef_t *DC;
 int MenuFontToHandle(int iMenuFont);
 
 // Team Management Datastruct

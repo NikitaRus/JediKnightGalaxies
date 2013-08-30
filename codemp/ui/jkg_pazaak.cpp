@@ -11,12 +11,12 @@
 #include "ui_shared.h"
 #include "ui_local.h"
 
+#include "ui/ui_devicecontext.h"
+
 // UI includes
 void Menu_ShowItemByName(menuDef_t *menu, const char *p, qboolean bShow);
 itemDef_t *Menu_ClearFocus(menuDef_t *menu);
 //
-
-extern displayContextDef_t *DC;
 
 static vec4_t cardColor = {1.0f, 1.0f, 1.0f, 0.8f};
 static vec4_t cardColorStand = {0.6f, 0.6f, 0.6f, 0.8f};
@@ -177,26 +177,24 @@ static struct {
 static void Pazaak_CacheShaders() {
 	// Will cache the card shaders, based on resolution
 	memset(&PzkShaders, 0, sizeof(PzkShaders));
-	if (DC) {
-		if (DC->glconfig.vidWidth > 800) { // Bigger than 800x600? (assuming normal resolutions)
-			// Use med-res
-			PzkShaders.backSide = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/back_m.png");
-			PzkShaders.deckCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/green_m.png");
-			PzkShaders.flipMinusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_neg_m.png");
-			PzkShaders.flipPlusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_pos_m.png");
-			PzkShaders.minusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/red_m.png");
-			PzkShaders.plusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/blue_m.png");
-			PzkShaders.specialCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/yellow_m.png");
-		} else {
-			// Use low-res
-			PzkShaders.backSide = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/back_l.png");
-			PzkShaders.deckCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/green_l.png");
-			PzkShaders.flipMinusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_neg_l.png");
-			PzkShaders.flipPlusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_pos_l.png");
-			PzkShaders.minusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/red_l.png");
-			PzkShaders.plusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/blue_l.png");
-			PzkShaders.specialCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/yellow_l.png");
-		}
+	if (DisplayContext::glconfig.vidWidth > 800) { // Bigger than 800x600? (assuming normal resolutions)
+		// Use med-res
+		PzkShaders.backSide = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/back_m.png");
+		PzkShaders.deckCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/green_m.png");
+		PzkShaders.flipMinusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_neg_m.png");
+		PzkShaders.flipPlusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_pos_m.png");
+		PzkShaders.minusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/red_m.png");
+		PzkShaders.plusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/blue_m.png");
+		PzkShaders.specialCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/yellow_m.png");
+	} else {
+		// Use low-res
+		PzkShaders.backSide = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/back_l.png");
+		PzkShaders.deckCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/green_l.png");
+		PzkShaders.flipMinusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_neg_l.png");
+		PzkShaders.flipPlusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/multi_pos_l.png");
+		PzkShaders.minusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/red_l.png");
+		PzkShaders.plusCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/blue_l.png");
+		PzkShaders.specialCard = trap_R_RegisterShaderNoMip("gfx/minigames/pazaak/cards/yellow_l.png");
 	}
 }
 
@@ -1618,7 +1616,7 @@ void JKG_ProcessPazaak_f() {
 			}
 			// Reset the focus so we can properly handle buttons that just got reactivated
 			Menu_ClearFocus(menu);
-			Menu_HandleMouseMove (menu, DC->cursorx, DC->cursory);
+			Menu_HandleMouseMove (menu, DisplayContext::cursorx, DisplayContext::cursory);
 			continue;
 		}
 

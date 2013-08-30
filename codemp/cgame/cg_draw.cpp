@@ -13,12 +13,13 @@
 // Jedi Knight Galaxies
 #include "jkg_hud.h"
 
+#include "ui/ui_devicecontext.h"
+
 extern float CG_RadiusForCent( centity_t *cent );
 qboolean CG_WorldCoordToScreenCoordFloat(vec3_t worldCoord, float *x, float *y);
 qboolean CG_CalcMuzzlePoint( int entityNum, vec3_t muzzle );
 
 // used for scoreboard
-extern displayContextDef_t cgDC;
 menuDef_t *menuScoreboard = NULL;
 vec4_t	bluehudtint = {0.5f, 0.5f, 1.0f, 1.0f};
 vec4_t	redhudtint = {1.0f, 0.5f, 0.5f, 1.0f};
@@ -113,16 +114,16 @@ int MenuFontToHandle(int iMenuFont)
 {
 	switch (iMenuFont)
 	{
-		case FONT_SMALL:	return cgDC.Assets.qhSmallFont;
-		case FONT_SMALL2:	return cgDC.Assets.qhSmall2Font;
-		case FONT_MEDIUM:	return cgDC.Assets.qhMediumFont;
-		case FONT_LARGE:	return cgDC.Assets.qhMediumFont;//cgDC.Assets.qhBigFont;
-		case FONT_SMALL3:	return cgDC.Assets.qhSmall3Font;
-		case FONT_SMALL4:	return cgDC.Assets.qhSmall4Font;
+		case FONT_SMALL:	return DisplayContext::Assets.qhSmallFont;
+		case FONT_SMALL2:	return DisplayContext::Assets.qhSmall2Font;
+		case FONT_MEDIUM:	return DisplayContext::Assets.qhMediumFont;
+		case FONT_LARGE:	return DisplayContext::Assets.qhMediumFont;//DisplayContext::Assets.qhBigFont;
+		case FONT_SMALL3:	return DisplayContext::Assets.qhSmall3Font;
+		case FONT_SMALL4:	return DisplayContext::Assets.qhSmall4Font;
 			//fixme? Big fonr isn't registered...?
 	}
 
-	return cgDC.Assets.qhMediumFont;
+	return DisplayContext::Assets.qhMediumFont;
 }
 
 int CG_Text_Width(const char *text, float scale, int iMenuFont) 
@@ -6700,7 +6701,7 @@ void CG_ChatBox_AddString(char *chatStr, int fadeLevel)
 
 	// Trick: instead of usin the right scale, get the length at scale 1
 	// then scale down with a float, so we dont get rounding errors
-	//chatLen = trap_R_Font_StrLenPixels(chat->string, cgDC.Assets.qhSmall4Font, 1); //CG_Text_Width(chat->string, 1.0f, FONT_SMALL);
+	//chatLen = trap_R_Font_StrLenPixels(chat->string, DisplayContext::Assets.qhSmall4Font, 1); //CG_Text_Width(chat->string, 1.0f, FONT_SMALL);
 	//chatLen *= 0.5f;
 	chatLen = strlen(chat->string)*4;
 
@@ -6726,8 +6727,8 @@ void CG_ChatBox_AddString(char *chatStr, int fadeLevel)
 				}
 			}
 			*writeptr = chat->string[i];
-			//chatLen = ((float)trap_R_Font_StrLenPixels(buffer, cgDC.Assets.qhSmall4Font, 1) * 0.5f); //CG_Text_Width(s, 0.65f, FONT_SMALL);
-			//chatLen += trap_R_Font_StrLenPixels(s, cgDC.Assets.qhSmallFont, 0.4f); //CG_Text_Width(s, 0.65f, FONT_SMALL);
+			//chatLen = ((float)trap_R_Font_StrLenPixels(buffer, DisplayContext::Assets.qhSmall4Font, 1) * 0.5f); //CG_Text_Width(s, 0.65f, FONT_SMALL);
+			//chatLen += trap_R_Font_StrLenPixels(s, DisplayContext::Assets.qhSmallFont, 0.4f); //CG_Text_Width(s, 0.65f, FONT_SMALL);
 			//The above is pretty derpy...
 			chatLen = strlen(buffer)*4;
             writeptr++;

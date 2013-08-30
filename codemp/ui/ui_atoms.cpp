@@ -7,7 +7,7 @@
 **********************************************************************/
 #include "ui_local.h"
 
-qboolean		m_entersound;		// after a frame, so caching won't disrupt the sound
+#include "ui/ui_devicecontext.h"
 
 void QDECL UI_Printf( const char *msg, ... ) {
 	va_list		argptr;
@@ -72,17 +72,9 @@ float UI_ClampCvar( float min, float max, float value )
 	return value;
 }
 
-/*
-=================
-UI_StartDemoLoop
-=================
-*/
-void UI_StartDemoLoop( void ) {
-	trap_Cmd_ExecuteText( EXEC_APPEND, "d1\n" );
-}
 
-
-char *UI_Argv( int arg ) {
+char *UI_Argv( int arg ) 
+{
 	static char	buffer[MAX_STRING_CHARS];
 
 	trap_Argv( arg, buffer, sizeof( buffer ) );
@@ -91,7 +83,8 @@ char *UI_Argv( int arg ) {
 }
 
 
-char *UI_Cvar_VariableString( const char *var_name ) {
+char *UI_Cvar_VariableString( const char *var_name ) 
+{
 	static char	buffer[MAX_STRING_CHARS];
 
 	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
@@ -99,22 +92,17 @@ char *UI_Cvar_VariableString( const char *var_name ) {
 	return buffer;
 }
 
-static void	UI_Cache_f() {
-	int i;
+static void	UI_Cache_f() 
+{
 	Display_CacheAll();
-	if (trap_Argc() == 2) {
-		for (i = 0; i < uiInfo.q3HeadCount; i++)
-		{
-			trap_Print( va("model %s\n", uiInfo.q3HeadNames[i]) );
-		}
-	}
 }
 
 #include "json/cJSON.h"
 #include "jkg_ui_auxlib.h"
 
 // TEST
-int testMasterFinalFunc (asyncTask_t *task) {
+int testMasterFinalFunc (asyncTask_t *task) 
+{
 	cJSON *data = (cJSON *)task->finalData;
 	
 	if (task->errorCode == 0) {
@@ -125,7 +113,8 @@ int testMasterFinalFunc (asyncTask_t *task) {
 	return 0;
 }
 
-int termsMasterFinalFunc (asyncTask_t *task) {
+int termsMasterFinalFunc (asyncTask_t *task) 
+{
 	cJSON *data = (cJSON *)task->finalData;
 	
 	if (task->errorCode == 0) {
@@ -136,7 +125,8 @@ int termsMasterFinalFunc (asyncTask_t *task) {
 	return 0;
 }
 
-int registerFinalFunc (asyncTask_t *task) {
+int registerFinalFunc (asyncTask_t *task) 
+{
 	cJSON *data = (cJSON *)task->finalData;
 	
 	if (task->errorCode == 0) {
@@ -151,7 +141,8 @@ int registerFinalFunc (asyncTask_t *task) {
 	return 0;
 }
 
-int loginFinalFunc (asyncTask_t *task) {
+int loginFinalFunc (asyncTask_t *task) 
+{
 	int errorcode;
 	cJSON *data = (cJSON *)task->finalData;
 	
@@ -180,11 +171,11 @@ int loginFinalFunc (asyncTask_t *task) {
 UI_ConsoleCommand
 =================
 */
-qboolean UI_ConsoleCommand( int realTime ) {
+qboolean UI_ConsoleCommand( int realTime ) 
+{
 	char	*cmd;
 
-	uiInfo.uiDC.frameTime = realTime - uiInfo.uiDC.realTime;
-	uiInfo.uiDC.realTime = realTime;
+	DisplayContext::SetTime( realTime );
 
 	cmd = UI_Argv( 0 );
 
@@ -236,12 +227,14 @@ qboolean UI_ConsoleCommand( int realTime ) {
 	
 	
 
-	if ( Q_stricmp (cmd, "ui_report") == 0 ) {
+	if ( Q_stricmp (cmd, "ui_report") == 0 ) 
+	{
 		UI_Report();
 		return qtrue;
 	}
 	
-	if ( Q_stricmp (cmd, "ui_load") == 0 ) {
+	if ( Q_stricmp (cmd, "ui_load") == 0 ) 
+	{
 		UI_Load();
 		return qtrue;
 	}
@@ -259,12 +252,14 @@ qboolean UI_ConsoleCommand( int realTime ) {
 		}
 	}
 
-	if ( Q_stricmp (cmd, "ui_cache") == 0 ) {
+	if ( Q_stricmp (cmd, "ui_cache") == 0 ) 
+	{
 		UI_Cache_f();
 		return qtrue;
 	}
 
-	if ( Q_stricmp (cmd, "ui_teamOrders") == 0 ) {
+	if ( Q_stricmp (cmd, "ui_teamOrders") == 0 ) 
+	{
 		//UI_TeamOrdersMenu_f();
 		return qtrue;
 	}
@@ -280,18 +275,21 @@ qboolean UI_ConsoleCommand( int realTime ) {
 UI_Shutdown
 =================
 */
-void UI_Shutdown( void ) {
+void UI_Shutdown( void ) 
+{
 }
 
 
-void UI_DrawNamedPic( float x, float y, float width, float height, const char *picname ) {
+void UI_DrawNamedPic( float x, float y, float width, float height, const char *picname ) 
+{
 	qhandle_t	hShader;
 
 	hShader = trap_R_RegisterShaderNoMip( picname );
 	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
 
-void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
+void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) 
+{
 	float	s0;
 	float	s1;
 	float	t0;
@@ -327,24 +325,21 @@ UI_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void UI_FillRect( float x, float y, float width, float height, const float *color ) {
-	trap_R_SetColor( color );
-
-	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-
-	trap_R_SetColor( NULL );
+void UI_FillRect( float x, float y, float width, float height, const float *color ) 
+{
+	DisplayContext::FillRect( x, y, width, height, color );
 }
 
-void UI_DrawSides(float x, float y, float w, float h) {
-	float size = 1 / uiInfo.uiDC.xscale;
-	trap_R_DrawStretchPic( x, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-	trap_R_DrawStretchPic( x + w - size, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
+void UI_DrawSides(float x, float y, float w, float h) 
+{
+	float size = 1 / DisplayContext::xscale;
+	DisplayContext::DrawSides( x, y, w, h, size );
 }
 
-void UI_DrawTopBottom(float x, float y, float w, float h) {
-	float size = 1 / uiInfo.uiDC.yscale;
-	trap_R_DrawStretchPic( x, y, w, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-	trap_R_DrawStretchPic( x, y + h - size, w, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
+void UI_DrawTopBottom(float x, float y, float w, float h) 
+{
+	float size = 1 / DisplayContext::yscale;
+	DisplayContext::DrawTopBottom( x, y, w, h, size );
 }
 /*
 ================
@@ -353,7 +348,8 @@ UI_DrawRect
 Coordinates are 640*480 virtual values
 =================
 */
-void UI_DrawRect( float x, float y, float width, float height, const float *color ) {
+void UI_DrawRect( float x, float y, float width, float height, const float *color ) 
+{
 	trap_R_SetColor( color );
 
   UI_DrawTopBottom(x, y, width, height);
@@ -362,11 +358,13 @@ void UI_DrawRect( float x, float y, float width, float height, const float *colo
 	trap_R_SetColor( NULL );
 }
 
-void UI_SetColor( const float *rgba ) {
+void UI_SetColor( const float *rgba ) 
+{
 	trap_R_SetColor( rgba );
 }
 
-void UI_UpdateScreen( void ) {
+void UI_UpdateScreen( void ) 
+{
 	trap_UpdateScreen();
 }
 
@@ -379,10 +377,10 @@ void UI_DrawTextBox (int x, int y, int width, int lines)
 
 qboolean UI_CursorInRect (int x, int y, int width, int height)
 {
-	if (uiInfo.uiDC.cursorx < x ||
-		uiInfo.uiDC.cursory < y ||
-		uiInfo.uiDC.cursorx > x+width ||
-		uiInfo.uiDC.cursory > y+height)
+	if (DisplayContext::cursorx < x ||
+		DisplayContext::cursory < y ||
+		DisplayContext::cursorx > x+width ||
+		DisplayContext::cursory > y+height)
 		return qfalse;
 
 	return qtrue;

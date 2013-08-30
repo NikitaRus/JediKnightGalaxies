@@ -2,7 +2,8 @@
 #include "../ui/ui_shared.h"
 #include "qcommon/q_shared.h"
 
-extern displayContextDef_t cgDC;
+#include "ui/ui_devicecontext.h"
+
 extern float *hudTintColor;
 extern vec4_t bluehudtint;
 extern vec4_t redhudtint;
@@ -138,12 +139,12 @@ static void CG_DrawSaberStyle( centity_t *cent, menuDef_t *menuHUD)
 
 	// Now then, lets render this text ^_^
 
-	width = (float)trap_R_Font_StrLenPixels(text, cgDC.Assets.qhSmall3Font, 1) * 0.6f;
+	width = (float)trap_R_Font_StrLenPixels(text, DisplayContext::Assets.qhSmall3Font, 1) * 0.6f;
 				
 	focusItem = Menu_FindItemByName(menuHUD, "infobar");
 	if (focusItem)
 	{
-		trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, colorWhite, cgDC.Assets.qhSmall3Font, -1, 0.6f);
+		trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, colorWhite, DisplayContext::Assets.qhSmall3Font, -1, 0.6f);
 	}
 
 	focusItem = Menu_FindItemByName(menuHUD, "weapicon");
@@ -245,12 +246,12 @@ static void CG_DrawAmmo( centity_t	*cent,menuDef_t *menuHUD)
 
 	// Now then, lets render this text ^_^
 
-	width = (float)trap_R_Font_StrLenPixels(text, cgDC.Assets.qhSmallFont, 1) * 0.6f;
+	width = (float)trap_R_Font_StrLenPixels(text, DisplayContext::Assets.qhSmallFont, 1) * 0.6f;
 				
 	focusItem = Menu_FindItemByName(menuHUD, "infobar");
 	if (focusItem)
 	{
-		trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, opacity, cgDC.Assets.qhSmall3Font, -1, 0.5f);
+		trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, opacity, DisplayContext::Assets.qhSmall3Font, -1, 0.5f);
 	}
 
 	focusItem = Menu_FindItemByName(menuHUD, "weapicon");
@@ -329,9 +330,9 @@ static void JKG_DrawFiringMode( menuDef_t *menuHUD )
 		return;
 	}
 
-	textWidth = trap_R_Font_StrLenPixels(text, cgDC.Assets.qhSmall3Font, 0.4f);
-	//trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, opacity, cgDC.Assets.qhSmall3Font, -1, 0.5f);
-	trap_R_Font_DrawString(x + ((w/2) - (textWidth/2)), y, text, opacity, cgDC.Assets.qhSmall3Font, -1, 0.4f);
+	textWidth = trap_R_Font_StrLenPixels(text, DisplayContext::Assets.qhSmall3Font, 0.4f);
+	//trap_R_Font_DrawString(focusItem->window.rect.x + ((focusItem->window.rect.w/2) - (width/2)), focusItem->window.rect.y, text, opacity, DisplayContext::Assets.qhSmall3Font, -1, 0.5f);
+	trap_R_Font_DrawString(x + ((w/2) - (textWidth/2)), y, text, opacity, DisplayContext::Assets.qhSmall3Font, -1, 0.4f);
 }
 
 /*
@@ -981,7 +982,7 @@ static void CG_DrawMiniMap ( menuDef_t *menuHUD, vec4_t opacity )
 	if (focusItem)
 	{
 		trap_R_SetColor(opacity);
-		trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, va("Credits: %i", cg.predictedPlayerState.persistant[PERS_CREDITS]), opacity, cgDC.Assets.qhSmall3Font, -1, focusItem->textscale);
+		trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, va("Credits: %i", cg.predictedPlayerState.persistant[PERS_CREDITS]), opacity, DisplayContext::Assets.qhSmall3Font, -1, focusItem->textscale);
 	}
 
 	focusItem = Menu_FindItemByName(menuHUD, "smalltext");
@@ -1027,7 +1028,7 @@ static void CG_DrawMiniMap ( menuDef_t *menuHUD, vec4_t opacity )
 
 		//strcat(buffer, '\0');
 
-		trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, buffer, opacity, cgDC.Assets.qhSmall3Font, -1, focusItem->textscale);
+		trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, buffer, opacity, DisplayContext::Assets.qhSmall3Font, -1, focusItem->textscale);
 	}
 
 	if(cg_drawFPS.integer > 0)
@@ -1113,7 +1114,7 @@ static void CG_DrawHotkeyBar ( menuDef_t *menuHUD, vec4_t opacity )
 		focusItem = Menu_FindItemByName(menuHUD, va("slotl%i", i));
 		if (focusItem)
 		{
-			trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, va("%i", i), opacity, cgDC.Assets.qhSmallFont, -1, 0.4f);
+			trap_R_Font_DrawString(focusItem->window.rect.x, focusItem->window.rect.y, va("%i", i), opacity, DisplayContext::Assets.qhSmallFont, -1, 0.4f);
 		}
 	}
 

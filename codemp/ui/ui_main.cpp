@@ -35,6 +35,8 @@ USER INTERFACE MAIN
 
 #include "..\cgame\holocronicons.h"
 
+#include "ui_devicecontext.h"
+
 #define strnicmp Q_stricmpn
 
 extern void UI_SaberAttachToChar( itemDef_t *item );
@@ -706,66 +708,36 @@ void AssetCache() {
 	//}
 	//Assets.background = trap_R_RegisterShaderNoMip( ASSET_BACKGROUND );
 	//Com_Printf("Menu Size: %i bytes\n", sizeof(Menus));
-	uiInfo.uiDC.Assets.gradientBar = trap_R_RegisterShaderNoMip( ASSET_GRADIENTBAR );
-	uiInfo.uiDC.Assets.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
-	uiInfo.uiDC.Assets.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );
-	uiInfo.uiDC.Assets.fxPic[1] = trap_R_RegisterShaderNoMip( ART_FX_ORANGE );//trap_R_RegisterShaderNoMip( ART_FX_YELLOW );
-	uiInfo.uiDC.Assets.fxPic[2] = trap_R_RegisterShaderNoMip( ART_FX_YELLOW );//trap_R_RegisterShaderNoMip( ART_FX_GREEN );
-	uiInfo.uiDC.Assets.fxPic[3] = trap_R_RegisterShaderNoMip( ART_FX_GREEN );//trap_R_RegisterShaderNoMip( ART_FX_TEAL );
-	uiInfo.uiDC.Assets.fxPic[4] = trap_R_RegisterShaderNoMip( ART_FX_BLUE );
-	uiInfo.uiDC.Assets.fxPic[5] = trap_R_RegisterShaderNoMip( ART_FX_PURPLE );//trap_R_RegisterShaderNoMip( ART_FX_CYAN );
-	uiInfo.uiDC.Assets.fxPic[6] = trap_R_RegisterShaderNoMip( ART_FX_WHITE );
-	uiInfo.uiDC.Assets.scrollBar = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR );
-	uiInfo.uiDC.Assets.scrollBarArrowDown = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWDOWN );
-	uiInfo.uiDC.Assets.scrollBarArrowUp = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWUP );
-	uiInfo.uiDC.Assets.scrollBarArrowLeft = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWLEFT );
-	uiInfo.uiDC.Assets.scrollBarArrowRight = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWRIGHT );
-	uiInfo.uiDC.Assets.scrollBarThumb = trap_R_RegisterShaderNoMip( ASSET_SCROLL_THUMB );
-	uiInfo.uiDC.Assets.sliderBar = trap_R_RegisterShaderNoMip( ASSET_SLIDER_BAR );
-	uiInfo.uiDC.Assets.sliderThumb = trap_R_RegisterShaderNoMip( ASSET_SLIDER_THUMB );
+	DisplayContext::Assets.gradientBar = trap_R_RegisterShaderNoMip( ASSET_GRADIENTBAR );
+	DisplayContext::Assets.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
+	DisplayContext::Assets.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );
+	DisplayContext::Assets.fxPic[1] = trap_R_RegisterShaderNoMip( ART_FX_ORANGE );//trap_R_RegisterShaderNoMip( ART_FX_YELLOW );
+	DisplayContext::Assets.fxPic[2] = trap_R_RegisterShaderNoMip( ART_FX_YELLOW );//trap_R_RegisterShaderNoMip( ART_FX_GREEN );
+	DisplayContext::Assets.fxPic[3] = trap_R_RegisterShaderNoMip( ART_FX_GREEN );//trap_R_RegisterShaderNoMip( ART_FX_TEAL );
+	DisplayContext::Assets.fxPic[4] = trap_R_RegisterShaderNoMip( ART_FX_BLUE );
+	DisplayContext::Assets.fxPic[5] = trap_R_RegisterShaderNoMip( ART_FX_PURPLE );//trap_R_RegisterShaderNoMip( ART_FX_CYAN );
+	DisplayContext::Assets.fxPic[6] = trap_R_RegisterShaderNoMip( ART_FX_WHITE );
+	DisplayContext::Assets.scrollBar = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR );
+	DisplayContext::Assets.scrollBarArrowDown = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWDOWN );
+	DisplayContext::Assets.scrollBarArrowUp = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWUP );
+	DisplayContext::Assets.scrollBarArrowLeft = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWLEFT );
+	DisplayContext::Assets.scrollBarArrowRight = trap_R_RegisterShaderNoMip( ASSET_SCROLLBAR_ARROWRIGHT );
+	DisplayContext::Assets.scrollBarThumb = trap_R_RegisterShaderNoMip( ASSET_SCROLL_THUMB );
+	DisplayContext::Assets.sliderBar = trap_R_RegisterShaderNoMip( ASSET_SLIDER_BAR );
+	DisplayContext::Assets.sliderThumb = trap_R_RegisterShaderNoMip( ASSET_SLIDER_THUMB );
 
-	uiInfo.uiDC.Assets.arrow = trap_R_RegisterShaderNoMip( "gfx/2d/convo/arrow" );
+	DisplayContext::Assets.arrow = trap_R_RegisterShaderNoMip( "gfx/2d/convo/arrow" );
 
 	// Icons for various server settings.
-	uiInfo.uiDC.Assets.needPass = trap_R_RegisterShaderNoMip( "gfx/menus/needpass" );
-	uiInfo.uiDC.Assets.noForce = trap_R_RegisterShaderNoMip( "gfx/menus/noforce" );
-	uiInfo.uiDC.Assets.forceRestrict = trap_R_RegisterShaderNoMip( "gfx/menus/forcerestrict" );
-	uiInfo.uiDC.Assets.saberOnly = trap_R_RegisterShaderNoMip( "gfx/menus/saberonly" );
-	uiInfo.uiDC.Assets.trueJedi = trap_R_RegisterShaderNoMip( "gfx/menus/truejedi" );
+	DisplayContext::Assets.needPass = trap_R_RegisterShaderNoMip( "gfx/menus/needpass" );
+	DisplayContext::Assets.noForce = trap_R_RegisterShaderNoMip( "gfx/menus/noforce" );
+	DisplayContext::Assets.forceRestrict = trap_R_RegisterShaderNoMip( "gfx/menus/forcerestrict" );
+	DisplayContext::Assets.saberOnly = trap_R_RegisterShaderNoMip( "gfx/menus/saberonly" );
+	DisplayContext::Assets.trueJedi = trap_R_RegisterShaderNoMip( "gfx/menus/truejedi" );
 
 	for( n = 0; n < NUM_CROSSHAIRS; n++ ) {
-		uiInfo.uiDC.Assets.crosshairShader[n] = trap_R_RegisterShaderNoMip( va("gfx/2d/crosshair%c", 'a' + n ) );
+		DisplayContext::Assets.crosshairShader[n] = trap_R_RegisterShaderNoMip( va("gfx/2d/crosshair%c", 'a' + n ) );
 	}
-
-	uiInfo.newHighScoreSound = 0;//trap_S_RegisterSound("sound/feedback/voc_newhighscore.wav");
-}
-
-void _UI_DrawSides(float x, float y, float w, float h, float size) {
-	size /= uiInfo.uiDC.xscale;
-	trap_R_DrawStretchPic( x, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-	trap_R_DrawStretchPic( x + w - size, y, size, h, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-}
-
-void _UI_DrawTopBottom(float x, float y, float w, float h, float size) {
-	size /= uiInfo.uiDC.yscale;
-	// JKG - Fix: Avoid double-rendering the corners
-	trap_R_DrawStretchPic( x+size, y, w-size*2, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-	trap_R_DrawStretchPic( x+size, y + h - size, w-size*2, size, 0, 0, 0, 0, uiInfo.uiDC.whiteShader );
-}
-/*
-================
-UI_DrawRect
-
-Coordinates are 640*480 virtual values
-=================
-*/
-void _UI_DrawRect( float x, float y, float width, float height, float size, const float *color ) {
-	trap_R_SetColor( color );
-
-	_UI_DrawTopBottom(x, y, width, height, size);
-	_UI_DrawSides(x, y, width, height, size);
-
-	trap_R_SetColor( NULL );
 }
 
 int MenuFontToHandle(int iMenuFont)
@@ -773,15 +745,15 @@ int MenuFontToHandle(int iMenuFont)
 	switch (iMenuFont)
 	{
 		//Jedi Knight Galaxies note: this switch was replaced with enum values
-	case FONT_SMALL: return uiInfo.uiDC.Assets.qhSmallFont;
-	case FONT_MEDIUM: return uiInfo.uiDC.Assets.qhMediumFont;
-	case FONT_LARGE: return uiInfo.uiDC.Assets.qhBigFont;
-	case FONT_SMALL2: return uiInfo.uiDC.Assets.qhSmall2Font;
-	case FONT_SMALL3: return uiInfo.uiDC.Assets.qhSmall3Font;
-	case FONT_SMALL4: return uiInfo.uiDC.Assets.qhSmall4Font;
+	case FONT_SMALL: return DisplayContext::Assets.qhSmallFont;
+	case FONT_MEDIUM: return DisplayContext::Assets.qhMediumFont;
+	case FONT_LARGE: return DisplayContext::Assets.qhBigFont;
+	case FONT_SMALL2: return DisplayContext::Assets.qhSmall2Font;
+	case FONT_SMALL3: return DisplayContext::Assets.qhSmall3Font;
+	case FONT_SMALL4: return DisplayContext::Assets.qhSmall4Font;
 	}
 
-	return uiInfo.uiDC.Assets.qhMediumFont;	// 0;
+	return DisplayContext::Assets.qhMediumFont;	// 0;
 }
 
 int Text_Width(const char *text, float scale, int iMenuFont) 
@@ -969,10 +941,9 @@ void _UI_Refresh( int realtime )
 	trap_G2API_SetTime(realtime, 1);
 	//ghoul2 timer must be explicitly updated during ui rendering.
 
-	uiInfo.uiDC.frameTime = realtime - uiInfo.uiDC.realTime;
-	uiInfo.uiDC.realTime = realtime;
+	DisplayContext::SetTime( realtime );
 
-	previousTimes[index % UI_FPS_FRAMES] = uiInfo.uiDC.frameTime;
+	previousTimes[index % UI_FPS_FRAMES] = DisplayContext::frameTime;
 	index++;
 	if ( index > UI_FPS_FRAMES ) {
 		int i, total;
@@ -984,7 +955,7 @@ void _UI_Refresh( int realtime )
 		if ( !total ) {
 			total = 1;
 		}
-		uiInfo.uiDC.FPS = 1000 * UI_FPS_FRAMES / total;
+		DisplayContext::FPS = 1000 * UI_FPS_FRAMES / total;
 	}
 
 
@@ -1008,18 +979,9 @@ void _UI_Refresh( int realtime )
 		uiClientState_t	cstate;
 		trap_GetClientState( &cstate );
 		if( cstate.connState <= CA_DISCONNECTED || cstate.connState >= CA_ACTIVE ) {
-			UI_DrawHandlePic( uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory, 48, 48, uiInfo.uiDC.Assets.cursor);
+			UI_DrawHandlePic( DisplayContext::cursorx, DisplayContext::cursory, 48, 48, DisplayContext::Assets.cursor);
 		}
 	}
-
-#ifndef NDEBUG
-	if (uiInfo.uiDC.debug)
-	{
-		// cursor coordinates
-		//FIXME
-		//UI_DrawString( 0, 0, va("(%d,%d)",uis.cursorx,uis.cursory), UI_LEFT|UI_SMALLFONT, colorRed );
-	}
-#endif
 
 	if (ui_freeSaber.integer)
 	{
@@ -1126,9 +1088,9 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle,&pointSize)) {
 				return qfalse;
 			}			
-			//trap_R_RegisterFont(tempStr, pointSize, &uiInfo.uiDC.Assets.textFont);
-			uiInfo.uiDC.Assets.qhMediumFont = trap_R_RegisterFont(token.string);
-			uiInfo.uiDC.Assets.fontRegistered = qtrue;
+			//trap_R_RegisterFont(tempStr, pointSize, &DisplayContext::Assets.textFont);
+			DisplayContext::Assets.qhMediumFont = trap_R_RegisterFont(token.string);
+			DisplayContext::Assets.fontRegistered = qtrue;
 			continue;
 		}
 
@@ -1137,8 +1099,8 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle,&pointSize)) {
 				return qfalse;
 			}
-			//trap_R_RegisterFont(token, pointSize, &uiInfo.uiDC.Assets.smallFont);
-			uiInfo.uiDC.Assets.qhSmallFont = trap_R_RegisterFont(token.string);
+			//trap_R_RegisterFont(token, pointSize, &DisplayContext::Assets.smallFont);
+			DisplayContext::Assets.qhSmallFont = trap_R_RegisterFont(token.string);
 			continue;
 		}
 
@@ -1147,8 +1109,8 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle,&pointSize)) {
 				return qfalse;
 			}
-			//trap_R_RegisterFont(token, pointSize, &uiInfo.uiDC.Assets.smallFont);
-			uiInfo.uiDC.Assets.qhSmall2Font = trap_R_RegisterFont(token.string);
+			//trap_R_RegisterFont(token, pointSize, &DisplayContext::Assets.smallFont);
+			DisplayContext::Assets.qhSmall2Font = trap_R_RegisterFont(token.string);
 			continue;
 		}
 
@@ -1158,7 +1120,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.qhSmall3Font = trap_R_RegisterFont(token.string);
+			DisplayContext::Assets.qhSmall3Font = trap_R_RegisterFont(token.string);
 			continue;
 		}
 		if (!Q_stricmp(token.string, "small4Font")) {
@@ -1166,7 +1128,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle, &pointSize)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.qhSmall4Font = trap_R_RegisterFont(token.string);
+			DisplayContext::Assets.qhSmall4Font = trap_R_RegisterFont(token.string);
 			continue;
 		}
 
@@ -1175,19 +1137,19 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token) || !PC_Int_Parse(handle,&pointSize)) {
 				return qfalse;
 			}
-			//trap_R_RegisterFont(token, pointSize, &uiInfo.uiDC.Assets.bigFont);
-			uiInfo.uiDC.Assets.qhBigFont = trap_R_RegisterFont(token.string);
+			//trap_R_RegisterFont(token, pointSize, &DisplayContext::Assets.bigFont);
+			DisplayContext::Assets.qhBigFont = trap_R_RegisterFont(token.string);
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "cursor") == 0) 
 		{
-			if (!PC_String_Parse(handle, &uiInfo.uiDC.Assets.cursorStr))
+			if (!PC_String_Parse(handle, &DisplayContext::Assets.cursorStr))
 			{
 				Com_Printf(S_COLOR_YELLOW,"Bad 1st parameter for keyword 'cursor'");
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.cursor = trap_R_RegisterShaderNoMip( uiInfo.uiDC.Assets.cursorStr);
+			DisplayContext::Assets.cursor = trap_R_RegisterShaderNoMip( DisplayContext::Assets.cursorStr);
 			continue;
 		}
 
@@ -1196,7 +1158,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.gradientBar = trap_R_RegisterShaderNoMip(token.string);
+			DisplayContext::Assets.gradientBar = trap_R_RegisterShaderNoMip(token.string);
 			continue;
 		}
 
@@ -1205,7 +1167,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.menuEnterSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuEnterSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -1214,7 +1176,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.menuExitSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuExitSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -1223,7 +1185,7 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.itemFocusSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.itemFocusSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
@@ -1232,50 +1194,50 @@ qboolean Asset_Parse(int handle) {
 			if (!trap_PC_ReadToken(handle, &token)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.menuBuzzSound = trap_S_RegisterSound( token.string );
+			DisplayContext::Assets.menuBuzzSound = trap_S_RegisterSound( token.string );
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeClamp") == 0) {
-			if (!PC_Float_Parse(handle, &uiInfo.uiDC.Assets.fadeClamp)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.fadeClamp)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeCycle") == 0) {
-			if (!PC_Int_Parse(handle, &uiInfo.uiDC.Assets.fadeCycle)) {
+			if (!PC_Int_Parse(handle, &DisplayContext::Assets.fadeCycle)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "fadeAmount") == 0) {
-			if (!PC_Float_Parse(handle, &uiInfo.uiDC.Assets.fadeAmount)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.fadeAmount)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowX") == 0) {
-			if (!PC_Float_Parse(handle, &uiInfo.uiDC.Assets.shadowX)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.shadowX)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowY") == 0) {
-			if (!PC_Float_Parse(handle, &uiInfo.uiDC.Assets.shadowY)) {
+			if (!PC_Float_Parse(handle, &DisplayContext::Assets.shadowY)) {
 				return qfalse;
 			}
 			continue;
 		}
 
 		if (Q_stricmp(token.string, "shadowColor") == 0) {
-			if (!PC_Color_Parse(handle, &uiInfo.uiDC.Assets.shadowColor)) {
+			if (!PC_Color_Parse(handle, &DisplayContext::Assets.shadowColor)) {
 				return qfalse;
 			}
-			uiInfo.uiDC.Assets.shadowFadeClamp = uiInfo.uiDC.Assets.shadowColor[3];
+			DisplayContext::Assets.shadowFadeClamp = DisplayContext::Assets.shadowColor[3];
 			continue;
 		}
 
@@ -1283,7 +1245,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.moveRollSound = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.moveRollSound = trap_S_RegisterSound( token.string );
 			}
 			continue;
 		}
@@ -1292,7 +1254,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.moveJumpSound = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.moveJumpSound = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1301,7 +1263,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound1 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound1 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1311,7 +1273,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound2 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound2 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1321,7 +1283,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound3 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound3 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1331,7 +1293,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound4 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound4 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1341,7 +1303,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound5 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound5 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1351,7 +1313,7 @@ qboolean Asset_Parse(int handle) {
 		{
 			if (trap_PC_ReadToken(handle,&token))
 			{
-				uiInfo.uiDC.Assets.datapadmoveSaberSound6 = trap_S_RegisterSound( token.string );
+				DisplayContext::Assets.datapadmoveSaberSound6 = trap_S_RegisterSound( token.string );
 			}
 
 			continue;
@@ -1681,65 +1643,6 @@ static int UI_TeamIndexFromName(const char *name) {
 	} 
 
 	return 0;
-
-}
-
-static void UI_DrawClanLogo(rectDef_t *rect, float scale, vec4_t color) {
-	int i;
-	i = UI_TeamIndexFromName(UI_Cvar_VariableString("ui_teamName"));
-	if (i >= 0 && i < uiInfo.teamCount) {
-		trap_R_SetColor( color );
-
-		if (uiInfo.teamList[i].teamIcon == -1) {
-			uiInfo.teamList[i].teamIcon = trap_R_RegisterShaderNoMip(uiInfo.teamList[i].imageName);
-			uiInfo.teamList[i].teamIcon_Metal = trap_R_RegisterShaderNoMip(va("%s_metal",uiInfo.teamList[i].imageName));
-			uiInfo.teamList[i].teamIcon_Name = trap_R_RegisterShaderNoMip(va("%s_name", uiInfo.teamList[i].imageName));
-		}
-
-		UI_DrawHandlePic( rect->x, rect->y, rect->w, rect->h, uiInfo.teamList[i].teamIcon);
-		trap_R_SetColor(NULL);
-	}
-}
-
-static void UI_DrawClanCinematic(rectDef_t *rect, float scale, vec4_t color) {
-	int i;
-	i = UI_TeamIndexFromName(UI_Cvar_VariableString("ui_teamName"));
-	if (i >= 0 && i < uiInfo.teamCount) {
-
-		if (uiInfo.teamList[i].cinematic >= -2) {
-			if (uiInfo.teamList[i].cinematic == -1) {
-				uiInfo.teamList[i].cinematic = trap_CIN_PlayCinematic(va("%s.roq", uiInfo.teamList[i].imageName), 0, 0, 0, 0, (CIN_loop | CIN_silent) );
-			}
-			if (uiInfo.teamList[i].cinematic >= 0) {
-				trap_CIN_RunCinematic(uiInfo.teamList[i].cinematic);
-				trap_CIN_SetExtents(uiInfo.teamList[i].cinematic, rect->x, rect->y, rect->w, rect->h);
-				trap_CIN_DrawCinematic(uiInfo.teamList[i].cinematic);
-			} else {
-				trap_R_SetColor( color );
-				UI_DrawHandlePic( rect->x, rect->y, rect->w, rect->h, uiInfo.teamList[i].teamIcon_Metal);
-				trap_R_SetColor(NULL);
-				uiInfo.teamList[i].cinematic = -2;
-			}
-		} else {
-			trap_R_SetColor( color );
-			UI_DrawHandlePic( rect->x, rect->y, rect->w, rect->h, uiInfo.teamList[i].teamIcon);
-			trap_R_SetColor(NULL);
-		}
-	}
-
-}
-
-static void UI_DrawPreviewCinematic(rectDef_t *rect, float scale, vec4_t color) {
-	if (uiInfo.previewMovie > -2) {
-		uiInfo.previewMovie = trap_CIN_PlayCinematic(va("%s.roq", uiInfo.movieList[uiInfo.movieIndex]), 0, 0, 0, 0, (CIN_loop | CIN_silent) );
-		if (uiInfo.previewMovie >= 0) {
-			trap_CIN_RunCinematic(uiInfo.previewMovie);
-			trap_CIN_SetExtents(uiInfo.previewMovie, rect->x, rect->y, rect->w, rect->h);
-			trap_CIN_DrawCinematic(uiInfo.previewMovie);
-		} else {
-			uiInfo.previewMovie = -2;
-		}
-	} 
 
 }
 
@@ -2099,7 +2002,7 @@ static void UI_DrawOpponentName(rectDef_t *rect, float scale, vec4_t color, int 
 	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("ui_opponentName"), 0, 0, textStyle, iMenuFont);
 }
 
-static int UI_OwnerDrawWidth(int ownerDraw, float scale) {
+int UI_OwnerDrawWidth(int ownerDraw, float scale) {
 	int i, h, value, iUse = 0;
 	const char *text;
 	const char *s = NULL;
@@ -2285,7 +2188,7 @@ static void UI_DrawCrosshair(rectDef_t *rect, float scale, vec4_t color) {
 
 	//Raz: Don't stretch crosshairs
 	size = min( rect->w, rect->h );
-	UI_DrawHandlePic( rect->x, rect->y, size, size, uiInfo.uiDC.Assets.crosshairShader[uiInfo.currentCrosshair]);
+	UI_DrawHandlePic( rect->x, rect->y, size, size, DisplayContext::Assets.crosshairShader[uiInfo.currentCrosshair]);
 	trap_R_SetColor( NULL );
 }
 
@@ -2358,8 +2261,8 @@ static void UI_BuildPlayerList() {
 
 
 static void UI_DrawSelectedPlayer(rectDef_t *rect, float scale, vec4_t color, int textStyle, int iMenuFont) {
-	if (uiInfo.uiDC.realTime > uiInfo.playerRefresh) {
-		uiInfo.playerRefresh = uiInfo.uiDC.realTime + 3000;
+	if (DisplayContext::realTime > uiInfo.playerRefresh) {
+		uiInfo.playerRefresh = DisplayContext::realTime + 3000;
 		UI_BuildPlayerList();
 	}
 	Text_Paint(rect->x, rect->y, scale, color, UI_Cvar_VariableString("cg_selectedPlayerName"), 0, 0, textStyle, iMenuFont);
@@ -2374,7 +2277,7 @@ static void UI_DrawServerRefreshDate(rectDef_t *rect, float scale, vec4_t color,
 		lowLight[1] = 0.8 * color[1]; 
 		lowLight[2] = 0.8 * color[2]; 
 		lowLight[3] = 0.8 * color[3]; 
-		LerpColor(color,lowLight,newColor,0.5+0.5*sin((float)(uiInfo.uiDC.realTime / PULSE_DIVISOR)));
+		LerpColor(color,lowLight,newColor,0.5+0.5*sin((float)(DisplayContext::realTime / PULSE_DIVISOR)));
 
 		trap_SP_GetStringTextString("MP_INGAME_GETTINGINFOFORSERVERS", holdSPString, sizeof(holdSPString));
 		//[MasterServer]
@@ -2407,8 +2310,8 @@ static void UI_DrawServerMOTD(rectDef_t *rect, float scale, vec4_t color, int iM
 			uiInfo.serverStatus.motdPaintX2 = -1;
 		}
 
-		if (uiInfo.uiDC.realTime > uiInfo.serverStatus.motdTime) {
-			uiInfo.serverStatus.motdTime = uiInfo.uiDC.realTime + 10;
+		if (DisplayContext::realTime > uiInfo.serverStatus.motdTime) {
+			uiInfo.serverStatus.motdTime = DisplayContext::realTime + 10;
 			if (uiInfo.serverStatus.motdPaintX <= rect->x + 2) {
 				if (uiInfo.serverStatus.motdOffset < uiInfo.serverStatus.motdLen) {
 					uiInfo.serverStatus.motdPaintX += Text_Width(&uiInfo.serverStatus.motd[uiInfo.serverStatus.motdOffset], scale, 1) - 1;
@@ -2467,12 +2370,12 @@ static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textSt
 	const char *lines[128];
 	int y, numLines, i;
 
-	Text_Paint(rect->x + 2, rect->y, scale, color, va("GL_VENDOR: %s", uiInfo.uiDC.glconfig.vendor_string), 0, rect->w, textStyle,iMenuFont);
-	Text_Paint(rect->x + 2, rect->y + 15, scale, color, va("GL_VERSION: %s: %s", uiInfo.uiDC.glconfig.version_string,uiInfo.uiDC.glconfig.renderer_string), 0, rect->w, textStyle,iMenuFont);
-	Text_Paint(rect->x + 2, rect->y + 30, scale, color, va ("GL_PIXELFORMAT: color(%d-bits) Z(%d-bits) stencil(%d-bits)", uiInfo.uiDC.glconfig.colorBits, uiInfo.uiDC.glconfig.depthBits, uiInfo.uiDC.glconfig.stencilBits), 0, rect->w, textStyle,iMenuFont);
+	Text_Paint(rect->x + 2, rect->y, scale, color, va("GL_VENDOR: %s", DisplayContext::glconfig.vendor_string), 0, rect->w, textStyle,iMenuFont);
+	Text_Paint(rect->x + 2, rect->y + 15, scale, color, va("GL_VERSION: %s: %s", DisplayContext::glconfig.version_string,DisplayContext::glconfig.renderer_string), 0, rect->w, textStyle,iMenuFont);
+	Text_Paint(rect->x + 2, rect->y + 30, scale, color, va ("GL_PIXELFORMAT: color(%d-bits) Z(%d-bits) stencil(%d-bits)", DisplayContext::glconfig.colorBits, DisplayContext::glconfig.depthBits, DisplayContext::glconfig.stencilBits), 0, rect->w, textStyle,iMenuFont);
 
 	// build null terminated extension strings
-	Q_strncpyz(buff, uiInfo.uiDC.glconfig.extensions_string, 4096);
+	Q_strncpyz(buff, DisplayContext::glconfig.extensions_string, 4096);
 	eptr = buff;
 	y = rect->y + 45;
 	numLines = 0;
@@ -2518,9 +2421,9 @@ static void UI_Version(rectDef_t *rect, float scale, vec4_t color, int iMenuFont
 {
 	int width;
 
-	width = uiInfo.uiDC.textWidth(JK_VERSION, scale, iMenuFont);
+	width = DisplayContext::TextWidth(JK_VERSION, scale, iMenuFont);
 
-	uiInfo.uiDC.drawText(rect->x - width, rect->y, scale, color, JK_VERSION, 0, 0, 0, iMenuFont);
+	DisplayContext::DrawText(rect->x - width, rect->y, scale, color, JK_VERSION, 0, 0, 0, iMenuFont);
 }
 
 /*
@@ -2534,7 +2437,7 @@ UI_OwnerDraw
 extern void JKG_GangWars_TeamREDText( rectDef_t *rect, float scale, vec4_t color, int iMenuFont );
 extern void JKG_GangWars_TeamBLUEText( rectDef_t *rect, float scale, vec4_t color, int iMenuFont );
 
-static void UI_OwnerDraw(itemDef_t *item, float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle,int iMenuFont, int ownerDrawID) 
+void UI_OwnerDraw(itemDef_t *item, float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle,int iMenuFont, int ownerDrawID) 
 {
 	rectDef_t rect;
 	int drawRank = 0, iUse = 0;
@@ -2843,26 +2746,6 @@ static qboolean UI_OwnerDrawVisible(int flags) {
 				vis = qfalse;
 			}
 			flags &= ~UI_SHOW_NETANYNONTEAMGAME;
-		} 
-		if (flags & UI_SHOW_NEWHIGHSCORE) {
-			if (uiInfo.newHighScoreTime < uiInfo.uiDC.realTime) {
-				vis = qfalse;
-			} else {
-				if (uiInfo.soundHighScore) {
-					if (trap_Cvar_VariableValue("sv_killserver") == 0) {
-						// wait on server to go down before playing sound
-						//trap_S_StartLocalSound(uiInfo.newHighScoreSound, CHAN_ANNOUNCER);
-						uiInfo.soundHighScore = qfalse;
-					}
-				}
-			}
-			flags &= ~UI_SHOW_NEWHIGHSCORE;
-		} 
-		if (flags & UI_SHOW_NEWBESTTIME) {
-			if (uiInfo.newBestTime < uiInfo.uiDC.realTime) {
-				vis = qfalse;
-			}
-			flags &= ~UI_SHOW_NEWBESTTIME;
 		} 
 		if (flags & UI_SHOW_DEMOAVAILABLE) {
 			if (!uiInfo.demoAvailable) {
@@ -3695,7 +3578,7 @@ static qboolean UI_VoiceChat_HandleKey(int flags, float *special, int key)
 */
 
 
-static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key, int ownerDrawID) {
+qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key, int ownerDrawID) {
 	int iUse = 0;
 
 	switch (ownerDraw) {
@@ -3934,37 +3817,6 @@ static void UI_LoadMods() {
 		uiInfo.modCount++;
 		if (uiInfo.modCount >= MAX_MODS) {
 			break;
-		}
-	}
-
-}
-
-
-/*
-===============
-UI_LoadMovies
-===============
-*/
-static void UI_LoadMovies() {
-	char	movielist[4096];
-	char	*moviename;
-	int		i, len;
-
-	uiInfo.movieCount = trap_FS_GetFileList( "video", "roq", movielist, 4096 );
-
-	if (uiInfo.movieCount) {
-		if (uiInfo.movieCount > MAX_MOVIES) {
-			uiInfo.movieCount = MAX_MOVIES;
-		}
-		moviename = movielist;
-		for ( i = 0; i < uiInfo.movieCount; i++ ) {
-			len = strlen( moviename );
-			if (!Q_stricmp(moviename +  len - 4,".roq")) {
-				moviename[len-4] = '\0';
-			}
-			Q_strupr(moviename);
-			uiInfo.movieList[i] = String_Alloc(moviename);
-			moviename += len + 1;
 		}
 	}
 
@@ -4381,7 +4233,7 @@ UI_DeferMenuScript
 Return true if the menu script should be deferred for later
 ===============
 */
-static qboolean UI_DeferMenuScript ( char **args )
+bool UI_DeferMenuScript ( char **args )
 {
 	const char* name;
 
@@ -5151,7 +5003,7 @@ static void UI_UpdateCharacter( qboolean changedModel )
 	UI_UpdateCharacterSkin();
 }
 
-static void UI_RunMenuScript(char **args) 
+void UI_RunMenuScript(char **args) 
 {
 	const char *name, *name2;
 	char buff[1024];
@@ -5290,15 +5142,8 @@ static void UI_RunMenuScript(char **args)
 			}
 		} else if (Q_stricmp(name, "LoadDemos") == 0) {
 			UI_LoadDemos();
-		} else if (Q_stricmp(name, "LoadMovies") == 0) {
-			UI_LoadMovies();
 		} else if (Q_stricmp(name, "LoadMods") == 0) {
 			UI_LoadMods();
-		} else if (Q_stricmp(name, "playMovie") == 0) {
-			if (uiInfo.previewMovie >= 0) {
-				trap_CIN_StopCinematic(uiInfo.previewMovie);
-			}
-			trap_Cmd_ExecuteText( EXEC_APPEND, va("cinematic %s.roq 2\n", uiInfo.movieList[uiInfo.movieIndex]));
 		} else if (Q_stricmp(name, "RunMod") == 0) {
 			trap_Cvar_Set( "fs_game", uiInfo.modList[uiInfo.modIndex].modName);
 			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
@@ -5468,7 +5313,7 @@ static void UI_RunMenuScript(char **args)
 						Com_Printf("Added favorite server %s\n", addr);
 
 
-//						trap_SP_GetStringTextString((char *)va("%s_GETTINGINFOFORSERVERS",uiInfo.uiDC.Assets.stringedFile), holdSPString, sizeof(holdSPString));
+//						trap_SP_GetStringTextString((char *)va("%s_GETTINGINFOFORSERVERS",DisplayContext::Assets.stringedFile), holdSPString, sizeof(holdSPString));
 //						Text_Paint(rect->x, rect->y, scale, newColor, va((char *) holdSPString, trap_LAN_GetServerCount(ui_netSource.integer)), 0, 0, textStyle);
 
 					}
@@ -5960,7 +5805,7 @@ static void UI_RunMenuScript(char **args)
 				item = (itemDef_t *) Menu_FindItemByName((menuDef_t *) menu, "maplist");
 				if (item)
 				{
-					uiInfo.uiDC.feederSelection(item->special, item->cursorPos, item);
+					DisplayContext::FeederSelection(item->special, item->cursorPos, item);
 				}
 			}
 		}
@@ -6252,7 +6097,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 //	qboolean startRefresh = qtrue; TTimo: unused
 	static int numinvisible;
 
-	if (!(force || uiInfo.uiDC.realTime > uiInfo.serverStatus.nextDisplayRefresh)) {
+	if (!(force || DisplayContext::realTime > uiInfo.serverStatus.nextDisplayRefresh)) {
 		return;
 	}
 	// if we shouldn't reset
@@ -6289,7 +6134,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 		// still waiting on a response from the master
 		uiInfo.serverStatus.numDisplayServers = 0;
 		uiInfo.serverStatus.numPlayersOnServers = 0;
-		uiInfo.serverStatus.nextDisplayRefresh = uiInfo.uiDC.realTime + 500;
+		uiInfo.serverStatus.nextDisplayRefresh = DisplayContext::realTime + 500;
 		return;
 	}
 
@@ -6353,7 +6198,7 @@ static void UI_BuildServerDisplayList(qboolean force) {
 		}
 	}
 
-	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime;
+	uiInfo.serverStatus.refreshtime = DisplayContext::realTime;
 
 	// if there were no servers visible for ping updates
 //	if (!visible) {
@@ -6645,7 +6490,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 	char infoString[MAX_STRING_CHARS];
 
 	if (!force) {
-		if (!uiInfo.nextFindPlayerRefresh || uiInfo.nextFindPlayerRefresh > uiInfo.uiDC.realTime) {
+		if (!uiInfo.nextFindPlayerRefresh || uiInfo.nextFindPlayerRefresh > DisplayContext::realTime) {
 			return;
 		}
 	}
@@ -6726,7 +6571,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 		}
 		// if empty pending slot or timed out
 		if (!uiInfo.pendingServerStatus.server[i].valid ||
-			uiInfo.pendingServerStatus.server[i].startTime < uiInfo.uiDC.realTime - ui_serverStatusTimeOut.integer) {
+			uiInfo.pendingServerStatus.server[i].startTime < DisplayContext::realTime - ui_serverStatusTimeOut.integer) {
 			if (uiInfo.pendingServerStatus.server[i].valid) {
 				numTimeOuts++;
 			}
@@ -6736,7 +6581,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 			uiInfo.pendingServerStatus.server[i].valid = qfalse;
 			// if we didn't try to get the status of all servers in the main browser yet
 			if (uiInfo.pendingServerStatus.num < uiInfo.serverStatus.numDisplayServers) {
-				uiInfo.pendingServerStatus.server[i].startTime = uiInfo.uiDC.realTime;
+				uiInfo.pendingServerStatus.server[i].startTime = DisplayContext::realTime;
 					trap_LAN_GetServerAddressString(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[uiInfo.pendingServerStatus.num],
 						uiInfo.pendingServerStatus.server[i].adrstr, sizeof(uiInfo.pendingServerStatus.server[i].adrstr));
 					trap_LAN_GetServerInfo(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[uiInfo.pendingServerStatus.num], infoString, sizeof(infoString));
@@ -6760,7 +6605,7 @@ static void UI_BuildFindPlayerList(qboolean force) {
 	}
 	// if still trying to retrieve server status info
 	if (i < MAX_SERVERSTATUSREQUESTS) {
-		uiInfo.nextFindPlayerRefresh = uiInfo.uiDC.realTime + 25;
+		uiInfo.nextFindPlayerRefresh = DisplayContext::realTime + 25;
 	}
 	else {
 		// add a line that shows the number of servers found
@@ -6793,7 +6638,7 @@ static void UI_BuildServerStatus(qboolean force) {
 		return;
 	}
 	if (!force) {
-		if (!uiInfo.nextServerStatusRefresh || uiInfo.nextServerStatusRefresh > uiInfo.uiDC.realTime) {
+		if (!uiInfo.nextServerStatusRefresh || uiInfo.nextServerStatusRefresh > DisplayContext::realTime) {
 			return;
 		}
 	}
@@ -6811,7 +6656,7 @@ static void UI_BuildServerStatus(qboolean force) {
 		UI_GetServerStatusInfo( uiInfo.serverStatusAddress, NULL );
 	}
 	else {
-		uiInfo.nextServerStatusRefresh = uiInfo.uiDC.realTime + 500;
+		uiInfo.nextServerStatusRefresh = DisplayContext::realTime + 500;
 	}
 }
 
@@ -6820,7 +6665,7 @@ static void UI_BuildServerStatus(qboolean force) {
 UI_FeederCount
 ==================
 */
-static int UI_FeederCount(float feederID) 
+int UI_FeederCount(float feederID) 
 {
 	int count=0,i; 
 	static char info[MAX_STRING_CHARS];
@@ -6885,17 +6730,17 @@ static int UI_FeederCount(float feederID)
 		return uiInfo.numFoundPlayerServers;
 
 	case FEEDER_PLAYER_LIST:
-		if (uiInfo.uiDC.realTime > uiInfo.playerRefresh) 
+		if (DisplayContext::realTime > uiInfo.playerRefresh) 
 		{
-			uiInfo.playerRefresh = uiInfo.uiDC.realTime + 3000;
+			uiInfo.playerRefresh = DisplayContext::realTime + 3000;
 			UI_BuildPlayerList();
 		}
 		return uiInfo.playerCount;
 
 	case FEEDER_TEAM_LIST:
-		if (uiInfo.uiDC.realTime > uiInfo.playerRefresh) 
+		if (DisplayContext::realTime > uiInfo.playerRefresh) 
 		{
-			uiInfo.playerRefresh = uiInfo.uiDC.realTime + 3000;
+			uiInfo.playerRefresh = DisplayContext::realTime + 3000;
 			UI_BuildPlayerList();
 		}
 		return uiInfo.myTeamCount;
@@ -7026,7 +6871,7 @@ static int UI_GetIndexFromSelection(int actual) {
 static void UI_UpdatePendingPings() { 
 	trap_LAN_ResetPings(UI_SourceForLAN());
 	uiInfo.serverStatus.refreshActive = qtrue;
-	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 1000;
+	uiInfo.serverStatus.refreshtime = DisplayContext::realTime + 1000;
 
 
 
@@ -7074,10 +6919,10 @@ static const char *UI_FeederItemText(float feederID, int index, int column,
 		} else if (feederID == FEEDER_SERVERS) {
 			if (index >= 0 && index < uiInfo.serverStatus.numDisplayServers) {
 				int ping, game;
-				if (lastColumn != column || lastTime > uiInfo.uiDC.realTime + 5000) {
+				if (lastColumn != column || lastTime > DisplayContext::realTime + 5000) {
 					trap_LAN_GetServerInfo(UI_SourceForLAN(), uiInfo.serverStatus.displayServers[index], info, MAX_STRING_CHARS);
 					lastColumn = column;
-					lastTime = uiInfo.uiDC.realTime;
+					lastTime = DisplayContext::realTime;
 				}
 				ping = atoi(Info_ValueForKey(info, "ping"));
 				if (ping == -1) {
@@ -7093,58 +6938,10 @@ static const char *UI_FeederItemText(float feederID, int index, int column,
 						//check for password
 						if ( atoi(Info_ValueForKey(info, "needpass")) )
 						{
-							*handle3 = uiInfo.uiDC.Assets.needPass;
+							*handle3 = DisplayContext::Assets.needPass;
 						}
 						//check for saberonly and restricted force powers
 						gametype = atoi(Info_ValueForKey(info, "gametype"));
-#if 0
-						if ( gametype != GT_JEDIMASTER )
-						{
-							qboolean saberOnly = qtrue;
-							qboolean restrictedForce = qfalse;
-							qboolean allForceDisabled = qfalse;
-							int wDisable, i = 0;
-
-							//check force
-							restrictedForce = atoi(Info_ValueForKey(info, "fdisable"));
-							if ( UI_AllForceDisabled( restrictedForce ) )
-							{//all force powers are disabled
-								allForceDisabled = qtrue;
-								*handle2 = uiInfo.uiDC.Assets.noForce;
-							}
-							else if ( restrictedForce )
-							{//at least one force power is disabled
-								*handle2 = uiInfo.uiDC.Assets.forceRestrict;
-							}
-
-							//check weaps
-							wDisable = atoi(Info_ValueForKey(info, "wdisable"));
-
-							while ( i < WP_NUM_WEAPONS )
-							{
-								if ( !(wDisable & (1 << i)) && i != WP_SABER && i != WP_NONE )
-								{
-									saberOnly = qfalse;
-								}
-
-								i++;
-							}
-							if ( saberOnly )
-							{
-								*handle1 = uiInfo.uiDC.Assets.saberOnly;
-							}
-							else if ( atoi(Info_ValueForKey(info, "truejedi")) != 0 )
-							{
-								if ( gametype != GT_HOLOCRON 
-									&& gametype != GT_JEDIMASTER 
-									&& !saberOnly 
-									&& !allForceDisabled )
-								{//truejedi is on and allowed in this mode
-									*handle1 = uiInfo.uiDC.Assets.trueJedi;
-								}
-							}
-						}
-#endif
 						if ( ui_netSource.integer == AS_LOCAL ) {
 							Com_sprintf( hostname, sizeof(hostname), "%s [%s]",
 								Info_ValueForKey(info, "hostname"),
@@ -7214,10 +7011,6 @@ static const char *UI_FeederItemText(float feederID, int index, int column,
 				} else {
 					return uiInfo.modList[index].modName;
 				}
-			}
-		} else if (feederID == FEEDER_CINEMATICS) {
-			if (index >= 0 && index < uiInfo.movieCount) {
-				return uiInfo.movieList[index];
 			}
 		} else if (feederID == FEEDER_DEMOS) {
 			if (index >= 0 && index < uiInfo.demoCount) {
@@ -7474,7 +7267,7 @@ qboolean UI_FeederSelection(float feederFloat, int index, itemDef_t *item)
 					ItemParse_asset_model_go( item, modelPath, &animRunLength );
 					UI_UpdateCharacterSkin();
 
-					uiInfo.moveAnimTime = uiInfo.uiDC.realTime + animRunLength;
+					uiInfo.moveAnimTime = DisplayContext::realTime + animRunLength;
 
 					if (datapadMoveData[uiInfo.movesTitleIndex][index].anim)
 					{
@@ -7482,37 +7275,37 @@ qboolean UI_FeederSelection(float feederFloat, int index, itemDef_t *item)
 						// Play sound for anim
 						if (datapadMoveData[uiInfo.movesTitleIndex][index].sound == MDS_FORCE_JUMP)
 						{
-							trap_S_StartLocalSound( uiInfo.uiDC.Assets.moveJumpSound, CHAN_LOCAL );
+							trap_S_StartLocalSound( DisplayContext::Assets.moveJumpSound, CHAN_LOCAL );
 						}
 						else if (datapadMoveData[uiInfo.movesTitleIndex][index].sound == MDS_ROLL)
 						{
-							trap_S_StartLocalSound( uiInfo.uiDC.Assets.moveRollSound, CHAN_LOCAL );
+							trap_S_StartLocalSound( DisplayContext::Assets.moveRollSound, CHAN_LOCAL );
 						}
 						else if (datapadMoveData[uiInfo.movesTitleIndex][index].sound == MDS_SABER)
 						{
 							// Randomly choose one sound
 							int soundI = Q_irand( 1, 6 );
 							sfxHandle_t *soundPtr;
-							soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound1;
+							soundPtr = &DisplayContext::Assets.datapadmoveSaberSound1;
 							if (soundI == 2)
 							{
-								soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound2;
+								soundPtr = &DisplayContext::Assets.datapadmoveSaberSound2;
 							}
 							else if (soundI == 3)
 							{
-								soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound3;
+								soundPtr = &DisplayContext::Assets.datapadmoveSaberSound3;
 							}
 							else if (soundI == 4)
 							{
-								soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound4;
+								soundPtr = &DisplayContext::Assets.datapadmoveSaberSound4;
 							}
 							else if (soundI == 5)
 							{
-								soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound5;
+								soundPtr = &DisplayContext::Assets.datapadmoveSaberSound5;
 							}
 							else if (soundI == 6)
 							{
-								soundPtr = &uiInfo.uiDC.Assets.datapadmoveSaberSound6;
+								soundPtr = &DisplayContext::Assets.datapadmoveSaberSound6;
 							}
 
 							trap_S_StartLocalSound( *soundPtr, CHAN_LOCAL );
@@ -8288,90 +8081,14 @@ void _UI_Init( qboolean inGameLoad ) {
 	UI_RegisterCvars();
 	UI_InitMemory();
 
-	// cache redundant calulations
-	trap_GetGlconfig( &uiInfo.uiDC.glconfig );
-
-	// for 640x480 virtualized screen
-	uiInfo.uiDC.yscale = uiInfo.uiDC.glconfig.vidHeight * (1.0/480.0);
-	uiInfo.uiDC.xscale = uiInfo.uiDC.glconfig.vidWidth * (1.0/640.0);
-	if ( uiInfo.uiDC.glconfig.vidWidth * 480 > uiInfo.uiDC.glconfig.vidHeight * 640 ) {
-		// wide screen
-		uiInfo.uiDC.bias = 0.5 * ( uiInfo.uiDC.glconfig.vidWidth - ( uiInfo.uiDC.glconfig.vidHeight * (640.0/480.0) ) );
-	}
-	else {
-		// no wide screen
-		uiInfo.uiDC.bias = 0;
-	}
-
-
-	//UI_Load();
-	uiInfo.uiDC.registerShaderNoMip = &trap_R_RegisterShaderNoMip;
-	uiInfo.uiDC.setColor = &UI_SetColor;
-	uiInfo.uiDC.drawHandlePic = &UI_DrawHandlePic;
-	uiInfo.uiDC.drawStretchPic = &trap_R_DrawStretchPic;
-	uiInfo.uiDC.drawText = &Text_Paint;
-	uiInfo.uiDC.textWidth = &Text_Width;
-	uiInfo.uiDC.textHeight = &Text_Height;
-	uiInfo.uiDC.registerModel = &trap_R_RegisterModel;
-	uiInfo.uiDC.modelBounds = &trap_R_ModelBounds;
-	uiInfo.uiDC.fillRect = &UI_FillRect;
-	uiInfo.uiDC.drawRect = &_UI_DrawRect;
-	uiInfo.uiDC.drawSides = &_UI_DrawSides;
-	uiInfo.uiDC.drawTopBottom = &_UI_DrawTopBottom;
-	uiInfo.uiDC.clearScene = &trap_R_ClearScene;
-	uiInfo.uiDC.drawSides = &_UI_DrawSides;
-	uiInfo.uiDC.addRefEntityToScene = &trap_R_AddRefEntityToScene;
-	uiInfo.uiDC.renderScene = &trap_R_RenderScene;
-	uiInfo.uiDC.RegisterFont = &trap_R_RegisterFont;
-	uiInfo.uiDC.Font_StrLenPixels = trap_R_Font_StrLenPixels;
-	uiInfo.uiDC.Font_StrLenChars = trap_R_Font_StrLenChars;
-	uiInfo.uiDC.Font_HeightPixels = trap_R_Font_HeightPixels;
-	uiInfo.uiDC.Font_DrawString = trap_R_Font_DrawString;
-	uiInfo.uiDC.Language_IsAsian = trap_Language_IsAsian;
-	uiInfo.uiDC.Language_UsesSpaces = trap_Language_UsesSpaces;
-	uiInfo.uiDC.AnyLanguage_ReadCharFromString = trap_AnyLanguage_ReadCharFromString;
-	uiInfo.uiDC.ownerDrawItem = &UI_OwnerDraw;
-	uiInfo.uiDC.getValue = &UI_GetValue;
-	uiInfo.uiDC.ownerDrawVisible = &UI_OwnerDrawVisible;
-	uiInfo.uiDC.runScript = &UI_RunMenuScript;
-	uiInfo.uiDC.deferScript = &UI_DeferMenuScript;
-	uiInfo.uiDC.getTeamColor = &UI_GetTeamColor;
-	uiInfo.uiDC.setCVar = trap_Cvar_Set;
-	uiInfo.uiDC.getCVarString = trap_Cvar_VariableStringBuffer;
-	uiInfo.uiDC.getCVarValue = trap_Cvar_VariableValue;
-	uiInfo.uiDC.drawTextWithCursor = &Text_PaintWithCursor;
-	uiInfo.uiDC.setOverstrikeMode = &trap_Key_SetOverstrikeMode;
-	uiInfo.uiDC.getOverstrikeMode = &trap_Key_GetOverstrikeMode;
-	uiInfo.uiDC.startLocalSound = &trap_S_StartLocalSound;
-	uiInfo.uiDC.ownerDrawHandleKey = &UI_OwnerDrawHandleKey;
-	uiInfo.uiDC.feederCount = &UI_FeederCount;
-	uiInfo.uiDC.feederItemImage = &UI_FeederItemImage;
-	uiInfo.uiDC.feederItemText = &UI_FeederItemText;
-	uiInfo.uiDC.feederSelection = &UI_FeederSelection;
-	uiInfo.uiDC.setBinding = &trap_Key_SetBinding;
-	uiInfo.uiDC.getBindingBuf = &trap_Key_GetBindingBuf;
-	uiInfo.uiDC.keynumToStringBuf = &trap_Key_KeynumToStringBuf;
-	uiInfo.uiDC.executeText = &trap_Cmd_ExecuteText;
-	uiInfo.uiDC.Error = &Com_Error; 
-	uiInfo.uiDC.Print = &Com_Printf; 
-	uiInfo.uiDC.Pause = &UI_Pause;
-	uiInfo.uiDC.ownerDrawWidth = &UI_OwnerDrawWidth;
-	uiInfo.uiDC.registerSound = &trap_S_RegisterSound;
-	uiInfo.uiDC.startBackgroundTrack = &trap_S_StartBackgroundTrack;
-	uiInfo.uiDC.stopBackgroundTrack = &trap_S_StopBackgroundTrack;
-	uiInfo.uiDC.playCinematic = &UI_PlayCinematic;
-	uiInfo.uiDC.stopCinematic = &UI_StopCinematic;
-	uiInfo.uiDC.drawCinematic = &UI_DrawCinematic;
-	uiInfo.uiDC.runCinematicFrame = &UI_RunCinematicFrame;
-
-	Init_Display(&uiInfo.uiDC);
+	DisplayContext::RegisterCallbacks();
 
 	UI_BuildPlayerModel_List(inGameLoad);
 
 	String_Init();
 
-	uiInfo.uiDC.cursor	= trap_R_RegisterShaderNoMip ( "menu/art/3_cursor2" );
-	uiInfo.uiDC.whiteShader = trap_R_RegisterShaderNoMip( "white" );
+	DisplayContext::cursor	= trap_R_RegisterShaderNoMip ( "menu/art/3_cursor2" );
+	DisplayContext::whiteShader = trap_R_RegisterShaderNoMip( "white" );
 
 	AssetCache();
 
@@ -8480,22 +8197,22 @@ UI_MouseEvent
 void _UI_MouseEvent( int dx, int dy )
 {
 	// update mouse screen position
-	uiInfo.uiDC.cursorx += dx;
-	if (uiInfo.uiDC.cursorx < 0)
-		uiInfo.uiDC.cursorx = 0;
-	else if (uiInfo.uiDC.cursorx > SCREEN_WIDTH)
-		uiInfo.uiDC.cursorx = SCREEN_WIDTH;
+	DisplayContext::cursorx += dx;
+	if (DisplayContext::cursorx < 0)
+		DisplayContext::cursorx = 0;
+	else if (DisplayContext::cursorx > SCREEN_WIDTH)
+		DisplayContext::cursorx = SCREEN_WIDTH;
 
-	uiInfo.uiDC.cursory += dy;
-	if (uiInfo.uiDC.cursory < 0)
-		uiInfo.uiDC.cursory = 0;
-	else if (uiInfo.uiDC.cursory > SCREEN_HEIGHT)
-		uiInfo.uiDC.cursory = SCREEN_HEIGHT;
+	DisplayContext::cursory += dy;
+	if (DisplayContext::cursory < 0)
+		DisplayContext::cursory = 0;
+	else if (DisplayContext::cursory > SCREEN_HEIGHT)
+		DisplayContext::cursory = SCREEN_HEIGHT;
 
 	if (Menu_Count() > 0) {
 		//menuDef_t *menu = Menu_GetFocused();
-		//Menu_HandleMouseMove(menu, uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory);
-		Display_MouseMove(NULL, uiInfo.uiDC.cursorx, uiInfo.uiDC.cursory);
+		//Menu_HandleMouseMove(menu, DisplayContext::cursorx, DisplayContext::cursory);
+		Display_MouseMove(NULL, DisplayContext::cursorx, DisplayContext::cursory);
 	}
 
 }
@@ -8714,8 +8431,8 @@ static void UI_DisplayDownloadInfo( const char *downloadName, float centerPoint,
 		Text_PaintCenter(leftWidth, yStart+216, scale, colorWhite, "estimating", 0, iMenuFont);
 		Text_PaintCenter(leftWidth, yStart+160, scale, colorWhite, va("(%s %s %s %s)", dlSizeBuf, sOf, totalSizeBuf, sCopied), 0, iMenuFont);
 	} else {
-		if ((uiInfo.uiDC.realTime - downloadTime) / 1000) {
-			xferRate = downloadCount / ((uiInfo.uiDC.realTime - downloadTime) / 1000);
+		if ((DisplayContext::realTime - downloadTime) / 1000) {
+			xferRate = downloadCount / ((DisplayContext::realTime - downloadTime) / 1000);
 		} else {
 			xferRate = 0;
 		}
@@ -9242,7 +8959,7 @@ static void UI_DoServerRefresh( void )
 		}
 	}
 
-	if (uiInfo.uiDC.realTime < uiInfo.serverStatus.refreshtime) {
+	if (DisplayContext::realTime < uiInfo.serverStatus.refreshtime) {
 		if (wait) {
 			return;
 		}
@@ -9250,7 +8967,7 @@ static void UI_DoServerRefresh( void )
 
 	// if still trying to retrieve pings
 	if (trap_LAN_UpdateVisiblePings(UI_SourceForLAN())) {
-		uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 1000;
+		uiInfo.serverStatus.refreshtime = DisplayContext::realTime + 1000;
 	} else if (!wait) {
 		// get the last servers in the list
 		UI_BuildServerDisplayList(2);
@@ -9281,7 +8998,7 @@ static void UI_StartServerRefresh(qboolean full)
 	}
 
 	uiInfo.serverStatus.refreshActive = qtrue;
-	uiInfo.serverStatus.nextDisplayRefresh = uiInfo.uiDC.realTime + 1000;
+	uiInfo.serverStatus.nextDisplayRefresh = DisplayContext::realTime + 1000;
 	// clear number of displayed servers
 	uiInfo.serverStatus.numDisplayServers = 0;
 	uiInfo.serverStatus.numPlayersOnServers = 0;
@@ -9292,11 +9009,11 @@ static void UI_StartServerRefresh(qboolean full)
 	//
 	if( ui_netSource.integer == AS_LOCAL ) {
 		trap_Cmd_ExecuteText( EXEC_NOW, "localservers\n" );
-		uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 1000;
+		uiInfo.serverStatus.refreshtime = DisplayContext::realTime + 1000;
 		return;
 	}
 
-	uiInfo.serverStatus.refreshtime = uiInfo.uiDC.realTime + 5000;
+	uiInfo.serverStatus.refreshtime = DisplayContext::realTime + 5000;
 
 	if( UI_SourceForLAN() != AS_LOCAL && UI_SourceForLAN() != AS_FAVORITES) {
 		if( ui_netSource.integer == AS_GLOBAL ) {

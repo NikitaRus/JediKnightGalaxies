@@ -12,6 +12,8 @@ USER INTERFACE SABER LOADING & DISPLAY CODE
 #include "ui_local.h"
 #include "ui_shared.h"
 
+#include "ui_devicecontext.h"
+
 //#define MAX_SABER_DATA_SIZE 0x8000
 #define MAX_SABER_DATA_SIZE 0x80000
 
@@ -662,7 +664,7 @@ void UI_SaberDrawBlade( itemDef_t *item, char *saberName, int saberModel, saberT
 //	angles[PITCH] = curYaw;
 //	angles[ROLL] = 0;
 
-	trap_G2API_GetBoltMatrix( item->ghoul2, saberModel, bolt, &boltMatrix, angles, origin, uiInfo.uiDC.realTime, NULL, vec3_origin );//NULL was cgs.model_draw
+	trap_G2API_GetBoltMatrix( item->ghoul2, saberModel, bolt, &boltMatrix, angles, origin, DisplayContext::realTime, NULL, vec3_origin );//NULL was cgs.model_draw
 
 	// work the matrix axis stuff into the original axis and origins used.
 	BG_GiveMeVectorFromMatrix(&boltMatrix, ORIGIN, bladeOrigin);
@@ -672,7 +674,7 @@ void UI_SaberDrawBlade( itemDef_t *item, char *saberName, int saberModel, saberT
 	BG_GiveMeVectorFromMatrix(&boltMatrix, POSITIVE_Z, axis[2]);//up
 
 	// Where do I get scale from?
-//	scale = DC->xscale;
+//	scale = DisplayContext::xscale;
 	scale = 1.0f;
 
 	if ( tagHack )

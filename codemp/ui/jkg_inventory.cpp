@@ -1,6 +1,8 @@
 #include "ui_local.h"
 #include "jkg_inventory.h"
 #include <expat.h>
+
+#include "ui/ui_devicecontext.h"
 //Just for this file since it has a lot of strcpy to const types ~eezstreet
 #pragma warning (disable:4090)
 
@@ -408,7 +410,6 @@ void JKG_Inventory_CloseDialog ( char **args )
 }
 
 extern int Item_ListBox_MaxScroll ( itemDef_t *item );
-extern displayContextDef_t *DC;
 void JKG_Inventory_Arrow ( char **args )
 {
 	const char *name;
@@ -460,13 +461,13 @@ void JKG_Inventory_Arrow ( char **args )
 		if (listPtr->cursorPos >= listPtr->startPos + viewmax) {
 			listPtr->startPos = listPtr->cursorPos - viewmax + 1;
 		}
-		if (listPtr->startPos >= DC->feederCount(item->special))
+		if (listPtr->startPos >= DisplayContext::GetFeederCount(item->special))
 		{
-			listPtr->startPos = DC->feederCount(item->special)-1;
+			listPtr->startPos = DisplayContext::GetFeederCount(item->special)-1;
 		}
-		if (listPtr->cursorPos > DC->feederCount(item->special))
+		if (listPtr->cursorPos > DisplayContext::GetFeederCount(item->special))
 		{
-			listPtr->cursorPos = DC->feederCount(item->special);
+			listPtr->cursorPos = DisplayContext::GetFeederCount(item->special);
 		}
 		item->cursorPos = listPtr->cursorPos;
 	}
@@ -515,13 +516,13 @@ void JKG_Inventory_Arrow_New ( itemDef_t *item, int amount )
 		if (listPtr->cursorPos >= listPtr->startPos + viewmax) {
 			listPtr->startPos = listPtr->cursorPos - viewmax + 1;
 		}
-		if (listPtr->startPos >= DC->feederCount(item->special))
+		if (listPtr->startPos >= DisplayContext::GetFeederCount(item->special))
 		{
-			listPtr->startPos = DC->feederCount(item->special)-1;
+			listPtr->startPos = DisplayContext::GetFeederCount(item->special)-1;
 		}
-		if (listPtr->cursorPos > DC->feederCount(item->special))
+		if (listPtr->cursorPos > DisplayContext::GetFeederCount(item->special))
 		{
-			listPtr->cursorPos = DC->feederCount(item->special);
+			listPtr->cursorPos = DisplayContext::GetFeederCount(item->special);
 		}
 		item->cursorPos = listPtr->cursorPos;
 	}
@@ -1982,10 +1983,10 @@ void JKG_Inventory_ConstructToolTip ( int itemNumber, float cX, float cY )
 	else
 	{
 		/*if(actualTextCheck[0] != 0)
-			lineWidth = (DC->textWidth(toolTextLines[biggestLine], 1, toolTipItem->iMenuFont) * toolTipItem->textscale);
+			lineWidth = (DisplayContext::TextWidth(toolTextLines[biggestLine], 1, toolTipItem->iMenuFont) * toolTipItem->textscale);
 		else
-			lineWidth = (DC->textWidth(inventory[itemNumber].id->displayName, 1, toolTipItem->iMenuFont) * toolTipItem->textscale);*/
-		lineWidth = (DC->textWidth(toolTextLines[biggestLine], 1, toolTipItem->iMenuFont) * toolTipItem->textscale);
+			lineWidth = (DisplayContext::TextWidth(inventory[itemNumber].id->displayName, 1, toolTipItem->iMenuFont) * toolTipItem->textscale);*/
+		lineWidth = (DisplayContext::TextWidth(toolTextLines[biggestLine], 1, toolTipItem->iMenuFont) * toolTipItem->textscale);
 		toolTipItem->window.rect.w = lineWidth+70; //35px padding on each side, 18pt font //this is a really absurd measurement but ok
 	}
 	if(toolLines <= 0)
@@ -1995,7 +1996,7 @@ void JKG_Inventory_ConstructToolTip ( int itemNumber, float cX, float cY )
 
 	//Grab the height of the combined lines
 	{
-		lineHeight = DC->textHeight(toolTextLines[biggestLine], toolTipItem->textscale, toolTipItem->iMenuFont);
+		lineHeight = DisplayContext::TextHeight(toolTextLines[biggestLine], toolTipItem->textscale, toolTipItem->iMenuFont);
 		toolTipItem->window.rect.h = (lineHeight*toolLines)+40; //20px padding on each side
 	}
 
@@ -2025,7 +2026,7 @@ void JKG_Inventory_CheckTooltip ( char **args )
 	qboolean showToolTip = qfalse;
 	for(i=0; i < (numWidth*numHeight); i++)
 	{
-		if(JKG_CursorInItem(DC->cursorx, DC->cursory, i, item))
+		if(JKG_CursorInItem(DisplayContext::cursorx, DisplayContext::cursory, i, item))
 		{
 			//Do fun stuff here
 			showToolTip = qtrue;
@@ -2038,7 +2039,7 @@ void JKG_Inventory_CheckTooltip ( char **args )
 		inventory = (cgItemInstance_t *)cgImports->InventoryDataRequest( 1 );
 		//Show the tooltip
 		Menu_ShowItemByName(inventoryState.menu, "inventory_tooltest", qtrue);
-		JKG_Inventory_ConstructToolTip((listPtr->startPos > 0) ? (listPtr->startPos+i) : i, DC->cursorx, DC->cursory);
+		JKG_Inventory_ConstructToolTip((listPtr->startPos > 0) ? (listPtr->startPos+i) : i, DisplayContext::cursorx, DisplayContext::cursory);
 	}
 	else
 	{
@@ -2048,19 +2049,19 @@ void JKG_Inventory_CheckTooltip ( char **args )
 
 qboolean IsWithinCursor(float x, float y, float w, float h)
 {
-	if(DC->cursorx > x+w)
+	if(DisplayContext::cursorx > x+w)
 	{
 		return qfalse;
 	}
-	else if(DC->cursorx < x)
+	else if(DisplayContext::cursorx < x)
 	{
 		return qfalse;
 	}
-	else if(DC->cursory > y+h)
+	else if(DisplayContext::cursory > y+h)
 	{
 		return qfalse;
 	}
-	else if(DC->cursory < y)
+	else if(DisplayContext::cursory < y)
 	{
 		return qfalse;
 	}
@@ -2083,7 +2084,7 @@ void JKG_Inventory_DrawTooltip()
 	for(i = 0; i < toolLines; i++)
 	{
 		//FIXMEFIXED: Show the correct text (display name)
-		DC->drawText(item->textRect.x + toolAlignment[i], item->textRect.y+(i*txtHeight)-item->textaligny, item->textscale, item->window.foreColor, toolTextLines[i], 0, -1, ITEM_TEXTSTYLE_NORMAL, item->iMenuFont);
+		DisplayContext::DrawText(item->textRect.x + toolAlignment[i], item->textRect.y+(i*txtHeight)-item->textaligny, item->textscale, item->window.foreColor, toolTextLines[i], 0, -1, ITEM_TEXTSTYLE_NORMAL, item->iMenuFont);
 		//trap_R_Font_DrawString(item->textRect.x, item->textRect.y+(i*txtHeight), toolTextLines[i], colorWhite, 1, -1, item->textscale);
 	}
 }

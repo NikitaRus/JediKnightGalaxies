@@ -7,6 +7,8 @@
 #include "ui_shared.h"
 #include "ui_local.h"
 
+#include "ui_devicecontext.h"
+
 
 // Text entry bits
 #define TE_ALLOWCANCEL 1	/* Enable the cancel button */
@@ -472,14 +474,14 @@ void Conv_OwnerDraw_ScrollButtons(int dir, rectDef_t *rect, vec4_t color) {
 		} else {
 			trap_R_SetColor(color);
 		}
-		trap_R_DrawStretchPic(rect->x, rect->y, rect->w, rect->h, 0, 0, 1, 1, uiInfo.uiDC.Assets.arrow);
+		trap_R_DrawStretchPic(rect->x, rect->y, rect->w, rect->h, 0, 0, 1, 1, DisplayContext::Assets.arrow);
 	} else {
 		if (ConvoData.choiceScroll >= ConvoData.choicecount - 4) {
 			trap_R_SetColor(disabled);
 		} else {
 			trap_R_SetColor(color);
 		}
-		trap_R_DrawStretchPic(rect->x, rect->y, rect->w, rect->h, 0, 1, 1, 0, uiInfo.uiDC.Assets.arrow);
+		trap_R_DrawStretchPic(rect->x, rect->y, rect->w, rect->h, 0, 1, 1, 0, DisplayContext::Assets.arrow);
 	}
 	trap_R_SetColor(NULL);
 }

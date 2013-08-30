@@ -317,6 +317,9 @@
     <ClCompile Include="cg_spawn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ui\ui_devicecontext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\game\anims.h">
@@ -485,6 +488,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cg_xcvar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_devicecontext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

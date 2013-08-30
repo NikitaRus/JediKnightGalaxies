@@ -8,7 +8,7 @@
 #include "../ui/ui_shared.h"
 #include "jkg_chatcmds.h"
 
-extern displayContextDef_t cgDC;
+#include "ui/ui_devicecontext.h"
 
 // Chat modes (CHM)
 enum {
@@ -295,7 +295,7 @@ void ChatBox_NewChatMode() {
 	cb_data.cursor = 0;
 	cb_data.scroll = 0;
 	cb_data.len = 0;
-	cb_data.offset = Text_GetWidth(chatModeText[cb_chatmode], cgDC.Assets.qhSmall4Font, 0.6f);
+	cb_data.offset = Text_GetWidth(chatModeText[cb_chatmode], DisplayContext::Assets.qhSmall4Font, 0.6f);
 	cb_data.maxwidth = 205 - cb_data.offset;
 }
 
@@ -356,13 +356,13 @@ void ChatBox_UpdateScroll() {
 		// Odd condition
 		for (i = cb_data.cursor; i> cb_data.scroll; i--) {
 			s[0] = cb_data.buff[i];
-			w += Text_GetWidth(s, cgDC.Assets.qhSmall4Font, 0.6f);
+			w += Text_GetWidth(s, DisplayContext::Assets.qhSmall4Font, 0.6f);
 		}
 		w *= -1; // Invert, since we gotta go back a lot :P
 	} else {
 		for (i = cb_data.scroll; i < cb_data.cursor; i++) {
 			s[0] = cb_data.buff[i];
-			w += Text_GetWidth(s, cgDC.Assets.qhSmall4Font, 0.6f);
+			w += Text_GetWidth(s, DisplayContext::Assets.qhSmall4Font, 0.6f);
 		}
 	}
 
@@ -378,12 +378,12 @@ void ChatBox_UpdateScroll() {
 			// Go back 1 character
 			cb_data.scroll--;
 			s[0] = cb_data.buff[cb_data.scroll];
-			w += Text_GetWidth(s, cgDC.Assets.qhSmall4Font, 0.6f);
+			w += Text_GetWidth(s, DisplayContext::Assets.qhSmall4Font, 0.6f);
 			wf = w / cb_data.maxwidth;
 		}
 	} else if (wf > 0.75f) {
 		// Above 75%, try scrolling forward
-		wx = Text_GetWidth(&cb_data.buff[cb_data.scroll], cgDC.Assets.qhSmall4Font, 0.6f);
+		wx = Text_GetWidth(&cb_data.buff[cb_data.scroll], DisplayContext::Assets.qhSmall4Font, 0.6f);
 		wxf	= wx / cb_data.maxwidth;
 		while (1) {
 			float wid;
@@ -394,7 +394,7 @@ void ChatBox_UpdateScroll() {
 			// Go forward 1 character
 			cb_data.scroll++;
 			s[0] = cb_data.buff[cb_data.scroll-1];
-			wid = Text_GetWidth(s, cgDC.Assets.qhSmall4Font, 0.6f);
+			wid = Text_GetWidth(s, DisplayContext::Assets.qhSmall4Font, 0.6f);
 			w -= wid;
 			wf = w / cb_data.maxwidth;
 
@@ -831,7 +831,7 @@ void ChatBox_DrawChat(menuDef_t *menu) {
 				item->window.rect.y,
 				chatModeText[cb_chatmode],
 				newColor,
-				cgDC.Assets.qhSmall4Font,
+				DisplayContext::Assets.qhSmall4Font,
 				-1,
 				0.6f);*/
 		CG_DrawStringExt(
@@ -843,7 +843,7 @@ void ChatBox_DrawChat(menuDef_t *menu) {
 			5, 8,
 			strlen(chatModeText[cb_chatmode]),
 			cgs.media.charset_Arial);
-		text = ChatBox_PrintableText(cgDC.Assets.qhSmall4Font, 0.6f);
+		text = ChatBox_PrintableText(DisplayContext::Assets.qhSmall4Font, 0.6f);
 		offset = cb_data.cursor - cb_data.scroll;
 
 		MAKERGBA(newColor, colorWhite[0], colorWhite[1], colorWhite[2], colorWhite[3]*cg.jkg_HUDOpacity);
@@ -854,7 +854,7 @@ void ChatBox_DrawChat(menuDef_t *menu) {
 				item->window.rect.y,
 				text,
 				newColor,
-				cgDC.Assets.qhSmall4Font,
+				DisplayContext::Assets.qhSmall4Font,
 				-1,
 				0.6f);*/
 		CG_DrawStringExt(
@@ -871,11 +871,11 @@ void ChatBox_DrawChat(menuDef_t *menu) {
 			// Draw the cursor
 			if (offset > strlen(text)) {
 				// Shouldn't happen.. but still, just in case
-				//cursorpos = Text_GetWidth(text, cgDC.Assets.qhSmall4Font, 0.6f);
+				//cursorpos = Text_GetWidth(text, DisplayContext::Assets.qhSmall4Font, 0.6f);
 				cursorpos = 0;
 			} else {
 				((char *)text)[offset] = 0;
-				//cursorpos = Text_GetWidth(text, cgDC.Assets.qhSmall4Font, 0.6f);
+				//cursorpos = Text_GetWidth(text, DisplayContext::Assets.qhSmall4Font, 0.6f);
 				cursorpos = (int)strlen(text) * 3;
 			}
 			/*Text_DrawText(
@@ -883,7 +883,7 @@ void ChatBox_DrawChat(menuDef_t *menu) {
 					item->window.rect.y,
 					cb_data.overwrite ? "_" : "|" ,
 					newColor,
-					cgDC.Assets.qhSmall4Font,
+					DisplayContext::Assets.qhSmall4Font,
 					-1,
 					0.6f);*/
 			CG_DrawStringExt(

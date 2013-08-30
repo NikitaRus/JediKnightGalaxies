@@ -268,6 +268,7 @@
     <ClCompile Include="..\qcommon\q_shared.c" />
     <ClCompile Include="ui_atoms.cpp" />
     <ClCompile Include="ui_crossover.cpp" />
+    <ClCompile Include="ui_devicecontext.cpp" />
     <ClCompile Include="ui_force.cpp" />
     <ClCompile Include="ui_gameinfo.cpp" />
     <ClCompile Include="ui_jkgscript.cpp" />
@@ -308,6 +309,7 @@
     <ClInclude Include="..\game\surfaceflags.h" />
     <ClInclude Include="..\shared\qcommon\tags.h" />
     <ClInclude Include="..\cgame\tr_types.h" />
+    <ClInclude Include="ui_devicecontext.h" />
     <ClInclude Include="ui_force.h" />
     <ClInclude Include="ui_jkgscript.h" />
     <ClInclude Include="ui_local.h" />

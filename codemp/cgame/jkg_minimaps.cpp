@@ -36,8 +36,6 @@ static struct {
 	qhandle_t	overlayshader;
 } minimap_data;
 
-extern displayContextDef_t cgDC;
-
 
 static void MiniMap_ParseArea(cJSON *area) {
 	mm_area_t *entry;
