@@ -1,10 +1,10 @@
 #ifndef UI_DEVICECONTEXT_H
 #define UI_DEVICECONTEXT_H
 
-#include "ui_shared.h"
 #ifdef CGAME
 #include "cgame/cg_local.h"
 #else
+#include "ui_shared.h"
 #include "ui_local.h"
 #endif
 

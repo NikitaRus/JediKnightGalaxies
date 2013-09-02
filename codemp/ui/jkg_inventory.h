@@ -37,6 +37,8 @@ weaponDataGrab_t BG_GetWeaponDataFromStr(int weapon, int variation, char *text);
 #pragma endregion
 
 /* Structure Definitions */
+#ifndef CGUI_WE_DEFINED_ITEMDATA
+#define CGUI_WE_DEFINED_ITEMDATA
 typedef struct
 {
 
@@ -84,6 +86,8 @@ typedef struct
 	//ACI stuff
 	qboolean equipped;
 } cgItemInstance_t;
+
+#endif
 
 void JKG_Inventory_OpenDialog ( char **args );
 void JKG_Inventory_CloseDialog ( char **args );

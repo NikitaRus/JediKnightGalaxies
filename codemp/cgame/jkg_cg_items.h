@@ -32,6 +32,8 @@ extern int shopItems[128];
 extern int numShopItems;
 
 /* Structure Definitions */
+#ifndef CGUI_WE_DEFINED_ITEMDATA
+#define CGUI_WE_DEFINED_ITEMDATA
 typedef struct
 {
 
@@ -78,6 +80,7 @@ typedef struct
 	//ACI stuff
 	qboolean equipped;
 } cgItemInstance_t;
+#endif
 
 typedef struct
 {
