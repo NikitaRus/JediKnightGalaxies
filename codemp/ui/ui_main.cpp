@@ -2667,7 +2667,7 @@ void UI_OwnerDraw(itemDef_t *item, float x, float y, float w, float h, float tex
 
 }
 
-static qboolean UI_OwnerDrawVisible(int flags) {
+qboolean UI_OwnerDrawVisible(int flags) {
 	qboolean vis = qtrue;
 
 	while (flags) {
@@ -3718,7 +3718,7 @@ qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key
 }
 
 
-static float UI_GetValue(int ownerDraw) {
+float UI_GetValue(int ownerDraw) {
 	return 0;
 }
 
@@ -6877,7 +6877,7 @@ static void UI_UpdatePendingPings() {
 
 }
 
-static const char *UI_FeederItemText(float feederID, int index, int column, 
+const char *UI_FeederItemText(float feederID, int index, int column, 
 	qhandle_t *handle1, qhandle_t *handle2, qhandle_t *handle3) {
 		static char info[MAX_STRING_CHARS]; // don't change this size without changing the sizes inside the SaberProperName calls
 	static char hostname[MAX_HOSTNAMELENGTH] = {0};
@@ -7077,7 +7077,7 @@ static const char *UI_FeederItemText(float feederID, int index, int column,
 }
 
 
-static qhandle_t UI_FeederItemImage(float feederID, int index) {
+qhandle_t UI_FeederItemImage(float feederID, int index) {
 	static char info[MAX_STRING_CHARS];
 
 	if (feederID == FEEDER_SABER_SINGLE_INFO) 
