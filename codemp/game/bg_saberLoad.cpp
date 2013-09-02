@@ -586,6 +586,10 @@ void WP_SaberSetDefaults( saberInfo_t *saber )
 	saber->splashDamage2 = 0;				//0 - amount of splashDamage, 100% at a distance of 0, 0% at a distance = splashRadius
 	saber->splashKnockback2 = 0.0f;			//0 - amount of splashKnockback, 100% at a distance of 0, 0% at a distance = splashRadius
 //=========================================================================================================================================
+	saber->extraDisarmChance = 11;
+	saber->extraDamage = 1.0f;
+	saber->BPregenRate = 300;
+
 }
 
 qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber ) 
@@ -2532,6 +2536,51 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 		}
 //===END BLADE-SPECIFIC FIELDS=============================================================================
 
+		//disarmBonus
+		if ( !Q_stricmp( token, "extraDisarmChance" ) ) 
+		{
+			if ( COM_ParseInt( &p, &n ) ) 
+			{
+				SkipRestOfLine( &p );
+				continue;
+			}
+			saber->extraDisarmChance = n;
+			continue;
+		}
+
+		if ( !Q_stricmp( token, "extraDamage" ) ) 
+		{
+			if ( COM_ParseFloat( &p, &f ) ) 
+			{
+				SkipRestOfLine( &p );
+				continue;
+			}
+			saber->extraDamage = f;
+			continue;
+		}
+
+		if ( !Q_stricmp( token, "bpRegenRate" ) ) 
+		{
+			if ( COM_ParseInt( &p, &n ) ) 
+			{
+				SkipRestOfLine( &p );
+				continue;
+			}
+			saber->BPregenRate = n;
+			continue;
+		}
+
+		if ( !Q_stricmp( token, "fpRegenRate" ) ) 
+		{
+			if ( COM_ParseInt( &p, &n ) ) 
+			{
+				SkipRestOfLine( &p );
+				continue;
+			}
+			saber->FPregenRate = n;
+			continue;
+		}
+
 		//FIXME: saber sounds (on, off, loop)
 
 #ifdef _DEBUG
@@ -3181,9 +3230,10 @@ static qboolean JKG_LoadSaberCrystals( void )
         return qfalse;
     }
     
-    if ( fileLength > MAX_CRYSTAL_FILE_SIZE )
+    if ( fileLength >= MAX_CRYSTAL_FILE_SIZE )
     {
-        Com_Printf (S_COLOR_RED "Error: crystals.json file is too large (max file size is %d bytes)\n", MAX_CRYSTAL_FILE_SIZE);
+		Com_Error(ERR_FATAL, "Crystals file is too big.");
+        //Com_Printf (S_COLOR_RED "Error: crystals.json file is too large (max file size is %d bytes)\n", MAX_CRYSTAL_FILE_SIZE);
         strap_FS_FCloseFile (f);
         return qfalse;
     }

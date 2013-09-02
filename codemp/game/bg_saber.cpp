@@ -2934,6 +2934,13 @@ void PM_WeaponLightsaber(void)
 
 	qboolean checkOnlyWeap = qfalse;
 
+#ifdef QAGAME
+	if( !(g_entities[pm->ps->clientNum].r.svFlags & SVF_BOT ) )
+	{
+		JKG_NetworkSaberCrystals( pm->ps, pm->cmd.invensel, pm->cmd.weapon );
+	}
+#endif
+
 	if ( PM_InKnockDown( pm->ps ) || BG_InRoll( pm->ps, pm->ps->legsAnim ))
 	{//in knockdown
 		// make weapon function

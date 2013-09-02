@@ -559,7 +559,6 @@ typedef struct {
 	int			tracemask;			// collide against these types of surfaces
 	int			debugLevel;			// if set, diagnostic output will be printed
 	qboolean	noFootsteps;		// if the game is setup for no footsteps by the server
-	qboolean	gauntletHit;		// true if a gauntlet attack would actually hit something
 
 	int			framecount;
 	int			gender;
@@ -567,8 +566,6 @@ typedef struct {
 	// results (out)
 	int			numtouch;
 	int			touchents[MAXTOUCH];
-
-	int			useEvent;
 
 	vec3_t		mins, maxs;			// bounding box size
 
@@ -921,6 +918,7 @@ typedef enum {
 	EV_SABER_BLOCK,
 	EV_SABER_CLASHFLARE,
 	EV_SABER_UNHOLSTER,
+	EV_SABER_HOLSTER,
 	EV_BECOME_JEDIMASTER,
 	EV_DISRUPTOR_MAIN_SHOT,
 	//EV_DISRUPTOR_SNIPER_SHOT,

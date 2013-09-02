@@ -1519,20 +1519,6 @@ qboolean WP_SabersCheckLock( gentity_t *ent1, gentity_t *ent2 )
 		return qfalse;
 	}
 
-	if (ent1->s.eType != ET_NPC && ent2->s.eType != ET_NPC)
-	{ //can always get into locks with NPCs
-		if (!ent1->client->ps.duelInProgress ||
-			!ent2->client->ps.duelInProgress ||
-			ent1->client->ps.duelIndex != ent2->s.number ||
-			ent2->client->ps.duelIndex != ent1->s.number)
-		{ //only allow saber locking if two players are dueling with each other directly
-			if (level.gametype != GT_DUEL && level.gametype != GT_POWERDUEL)
-			{
-				return qfalse;
-			}
-		}
-	}
-
 	if ( fabs( ent1->r.currentOrigin[2]-ent2->r.currentOrigin[2] ) > 16 )
 	{
 		return qfalse;
@@ -2434,6 +2420,9 @@ static GAME_INLINE qboolean G_G2TraceCollide(trace_t *tr, vec3_t lastValidStart,
 			{
 				g2Hit->client->g2LastSurfaceHit = G2Trace[0].mSurfaceIndex;
 				g2Hit->client->g2LastSurfaceTime = level.time;
+				//[BugFix12]
+				g2Hit->client->g2LastSurfaceModel = G2Trace[0].mModelIndex;
+				//[/BugFix12]
 
 			}
 			return qtrue;
@@ -3551,8 +3540,8 @@ void WP_SaberClearDamage( void )
 	numVictims = 0;
 }
 
-void WP_SaberDamageAdd( int trVictimEntityNum, vec3_t trDmgDir, vec3_t trDmgSpot, 
-					   int trDmg, qboolean doDismemberment, int knockBackFlags )
+void WP_SaberDamageAdd( gentity_t *inflictor, int trVictimEntityNum, vec3_t trDmgDir, vec3_t trDmgSpot, 
+					   int trDmg, qboolean doDismemberment, int knockBackFlags, int saberNum )
 {
 	if ( trVictimEntityNum < 0 || trVictimEntityNum >= ENTITYNUM_WORLD )
 	{
@@ -3583,6 +3572,7 @@ void WP_SaberDamageAdd( int trVictimEntityNum, vec3_t trDmgDir, vec3_t trDmgSpot
 			victimEntityNum[numVictims++] = trVictimEntityNum;
 		}
 
+		trDmg *= inflictor->client->saber[saberNum].extraDamage;
 		totalDmg[curVictim] += trDmg;
 		if ( VectorCompare( dmgDir[curVictim], vec3_origin ) )
 		{
@@ -4442,12 +4432,10 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			{
 				VectorCopy( saberEnd, saberEndExtrapolated );
 			}
-
 			trap_Trace(&tr, saberStart, saberTrMins, saberTrMaxs, saberEndExtrapolated, self->s.number, trMask);
 
 			VectorCopy(saberStart, lastValidStart);
 			VectorCopy(saberEndExtrapolated, lastValidEnd);
-
 			/*
 			if ( tr.allsolid || tr.startsolid )
 			{
@@ -5109,7 +5097,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 				}
 			}
 
-			WP_SaberDamageAdd( tr.entityNum, dir, tr.endpos, dmg, doDismemberment, knockbackFlags );
+			WP_SaberDamageAdd( self, tr.entityNum, dir, tr.endpos, dmg, doDismemberment, knockbackFlags, rSaberNum );
 
 			if (g_entities[tr.entityNum].client)
 			{
@@ -5175,12 +5163,12 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 			return qfalse;
 		}
 
-		/*if ((self->s.eType == ET_NPC || otherOwner->s.eType == ET_NPC) && //just make sure one of us is an npc
+		if ((self->s.eType == ET_NPC || otherOwner->s.eType == ET_NPC) && //just make sure one of us is an npc
 			self->client->playerTeam == otherOwner->client->playerTeam &&
 			level.gametype != GT_SIEGE)
 		{ //don't hit your teammate's sabers if you are an NPC. It can be rather annoying.
 			return qfalse;
-		}*/ // WRONG.
+		}
 
 		if (otherOwner->client->ps.duelInProgress &&
 			otherOwner->client->ps.duelIndex != self->s.number)
@@ -5748,7 +5736,7 @@ void G_SPSaberDamageTraceLerped( gentity_t *self, int saberNum, int bladeNum, ve
 	saberHitFraction = 1.0f;
 	if ( VectorCompare2( baseOld, baseNew ) && VectorCompare2( endOld, endNew ) )
 	{//no diff
-		CheckSaberDamage( self, saberNum, bladeNum, baseNew, endNew, qfalse, clipmask, qfalse );
+		CheckSaberDamage( self, saberNum, bladeNum, baseNew, endNew, qtrue, clipmask, qfalse );
 	}
 	else
 	{//saber moved, lerp
@@ -7374,7 +7362,10 @@ qboolean saberCheckKnockdown_DuelLoss(gentity_t *saberent, gentity_t *saberOwner
 			other->client->saber[1].disarmBonus;
 		}
 	}
-	if ( Q_irand( 0, disarmChance ) )
+
+	disarmChance += saberOwner->client->saber[0].extraDisarmChance;
+
+	if ( Q_irand( 0, disarmChance ) >= 10)
 	{
 		return saberKnockOutOfHand(saberent, saberOwner, dif);
 	}
@@ -7417,7 +7408,12 @@ qboolean saberCheckKnockdown_BrokenParry(gentity_t *saberent, gentity_t *saberOw
 	{ //Strong vs. medium, medium vs. light
 		doKnock = qtrue;
 	}*/
-	doKnock = qtrue;
+	disarmChance += saberOwner->client->saber[0].extraDisarmChance;
+
+	if( Q_irand(0, disarmChance) >= 10 )
+	{
+		doKnock = qtrue;
+	}
 
 	if (doKnock)
 	{
@@ -9372,9 +9368,9 @@ nextStep:
 				rBladeNum = 0;
 				while (rBladeNum < self->client->saber[rSaberNum].numBlades)
 				{ //Don't bother updating the bolt for each blade for this, it's just a very rough fallback method for during saberlocks
-					VectorCopy(boltOrigin, self->client->saber[rSaberNum].blade[rBladeNum].trail.base);
-					VectorCopy(end, self->client->saber[rSaberNum].blade[rBladeNum].trail.tip);
-					self->client->saber[rSaberNum].blade[rBladeNum].trail.lastTime = level.time;
+					VectorCopy(boltOrigin, self->client->saber[saberNum].blade[rBladeNum].trail.base);
+					VectorCopy(end, self->client->saber[saberNum].blade[rBladeNum].trail.tip);
+					self->client->saber[saberNum].blade[rBladeNum].trail.lastTime = level.time;
 
 					rBladeNum++;
 				}
@@ -10404,3 +10400,102 @@ void thrownSaberBallistics(gentity_t *saberEnt, gentity_t *saberOwn, qboolean st
 }
 //[/SaberThrowSys]
 
+void JKG_NetworkSaberCrystals( playerState_t *ps, int invId, int weaponId )
+{
+	// I'm being extra cautious with these checks for a reason...we originally networked stuff
+	// going by the weaponId because the stuff sent from the ACI was very inaccurate at times.
+
+	// Network what saber crystals we have
+	if( !ps )
+		return;
+
+	if( ps->weaponstate == WEAPON_DROPPING )
+	{
+		// Semi-hack, we want to play the sound when we're turning off the saber.
+		if( ps->clientNum < 0 || ps->clientNum >= MAX_CLIENTS )
+		{
+			return;
+		}
+
+		gentity_t *ent2 = &g_entities[ps->clientNum];
+
+		if( ent2->client->didSaberOffSound )
+			return;
+		else if( ent2->client->saber[0].soundOff && !ps->saberHolstered )
+		{
+			// If we're switching to another saber, we use the quick sound. If we're switching to a gun, use the slow sound.
+			int weapon, variation;
+			gentity_t *te = G_TempEntity( ent2->r.currentOrigin, EV_SABER_HOLSTER );
+			te->s.eventParm = ps->clientNum;
+			if( BG_GetWeaponByIndex( weaponId, &weapon, &variation ) )
+			{
+				if( weapon == WP_SABER )
+				{
+					te->s.eFlags = 1;
+				}
+			}
+			ent2->client->didSaberOffSound = true;
+			return;
+		}
+	}
+	else if( ps->weaponstate != WEAPON_RAISING )
+		return;
+
+	int entNum = ps->clientNum;
+
+	if( entNum < 0 || entNum >= MAX_CLIENTS || invId < 0 )
+	{
+		// GTFO maron
+		return;
+	}
+
+	gentity_t *ent = &g_entities[entNum];
+	ent->client->didSaberOffSound = false;
+	if( invId >= ent->inventory->size )
+	{
+		// Not quite valid since it's bigger.
+		return;
+	}
+
+	itemInstance_t *itm = &ent->inventory->items[invId];
+	if( !itm->id )
+	{
+		// NOPE.avi
+		return;
+	}
+
+	if( itm->id->itemType != ITEM_WEAPON )
+	{
+		// NOPE_2.0_.avi
+		return;
+	}
+
+	if( itm->id->weapon != WP_SABER )
+	{
+		// still-NOPE.avi
+		return;
+	}
+
+	if( itm->id->varID != weaponId )
+	{
+		// ultimate way of checking to be ABSOLUTELY SURE --eez
+		return;
+	}
+
+	// ok go
+	ps->saberCrystal[0] = itm->calc1;	// FIXME: need stuff for akimbo...
+}
+
+void JKG_DoubleCheckWeaponChange( usercmd_t *cmd, playerState_t *ps )
+{
+	int invSel = cmd->invensel;
+
+	gentity_t *ent = &g_entities[ps->clientNum];
+
+	if( ent->inventory->elements <= invSel || invSel < 0 )
+	{
+		cmd->weapon = 0;
+	}
+
+	cmd->weapon = ent->inventory->items[invSel].id->varID;
+}
