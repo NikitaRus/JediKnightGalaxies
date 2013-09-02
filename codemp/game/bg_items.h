@@ -27,16 +27,6 @@
 #define MAX_PSPELLS				(10)
 #define MAX_ACI_SLOTS			(10)
 
-typedef enum jkgItemType_e
-{
-    ITEM_UNKNOWN,
-    ITEM_WEAPON,
-    ITEM_ARMOR,
-    ITEM_CLOTHING,
-    ITEM_BUFF,
-	ITEM_CONSUMABLE
-} jkgItemType_t;
-
 typedef enum
 {
     PSPELL_NONE,
@@ -67,5 +57,134 @@ typedef enum
 
 void BG_LoadDefaultWeaponItems ( void );
 qboolean BG_HasWeaponItem ( int clientNum, int weaponId );
+
+// Inventory management
+
+#ifdef QAGAME
+
+// Gameside version
+
+class GInventoryItem : public InventoryItem
+{
+public:
+};
+
+class GItemInstance : public InventoryItemInstance
+{
+public:
+};
+
+#define BG_BUILD_ITEM		GInventoryItem
+#define BG_BUILD_INSTANCE	GItemInstance
+
+#else
+
+class CGInventoryItem : public InventoryItem
+{
+public:
+};
+
+class CGItemInstance : public InventoryItemInstance
+{
+public:
+};
+
+#define BG_BUILD_ITEM		CGInventoryItem
+#define BG_BUILD_INSTANCE	CGItemInstance
+
+#endif
+
+// Definitions for each of the basic types
+
+/* Weapons */
+
+class IWeaponItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+};
+
+class IWeaponItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	IWeaponItem *FillBaseData();
+	IWeaponItemInstance();
+};
+
+/* Armor */
+
+class IArmorItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+private:
+};
+
+class IArmorItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	IArmorItem *FillBaseData();
+	IArmorItemInstance();
+};
+
+/* Clothing */
+
+class IClothingItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+};
+
+class IClothingItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	IClothingItem *FillBaseData();
+	IClothingItemInstance();
+};
+
+/* Lightsaber Crystals */
+
+class ICrystalItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+};
+
+class ICrystalItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	ICrystalItem *FillBaseData();
+	ICrystalItemInstance();
+};
+
+/* Consumable Items */
+
+class IConsumableItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+};
+
+class IConsumableItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	IConsumableItem *FillBaseData();
+	IConsumableItemInstance();
+};
+
+/* Ammo */
+
+class IAmmoItem : public BG_BUILD_ITEM
+{
+public:
+	void ParseInventoryItem( void *cJSONNode );
+};
+
+class IAmmoItemInstance : public BG_BUILD_INSTANCE
+{
+public:
+	IAmmoItem *FillBaseData();
+	IAmmoItemInstance();
+};
 
 #endif

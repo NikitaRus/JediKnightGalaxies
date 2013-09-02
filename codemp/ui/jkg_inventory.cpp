@@ -1568,7 +1568,6 @@ void JKG_Inventory_Examine_Button ( int forceOff )
 					strcpy(item->text, actualTextCheck);
 				}
 				break;
-			case ITEM_BUFF:
 			case ITEM_UNKNOWN:
 			case ITEM_CONSUMABLE:
 				{
@@ -1961,7 +1960,6 @@ void JKG_Inventory_ConstructToolTip ( int itemNumber, float cX, float cY )
 		case ITEM_CLOTHING:
 			JKG_Inventory_Tooltip_AddLine(toolTipItem,  va("Clothing"));
 			break;
-		case ITEM_BUFF:
 		case ITEM_CONSUMABLE:
 			JKG_Inventory_Tooltip_AddLine(toolTipItem,  va("Consumable"));
 			break;

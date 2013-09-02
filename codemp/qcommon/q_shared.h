@@ -2222,6 +2222,120 @@ typedef struct forcedata_s {
 	int			privateDuelTime;
 } forcedata_t;
 
+// Inventory refactoring
+
+typedef enum
+{
+	ITEM_NONE,
+	ITEM_UNKNOWN=0, // FIXME: remove
+	ITEM_WEAPON,
+	ITEM_ARMOR,
+	ITEM_CLOTHING,
+	ITEM_CRYSTAL,
+	ITEM_CONSUMABLE,
+	ITEM_BUFF=5,	// FIXME: remove
+	ITEM_AMMO,
+} inventoryItemType_e;
+
+#ifdef __cplusplus
+#include <string>
+#include <vector>
+
+// This looks slightly nasty, and I apologize, but let me explain the thinking on this.
+// Inventory (which is a template class) has a bunch of InventoryItemInstances, which
+// use InventoryItems for the base data for stuff that doesn't change (such as what
+// weapon variation a weapon item might use etc). We store everything else (the things
+// that will vary based on the actual item instance, such as, say, durability on a piece
+// of armor) in the InventoryItemInstance, which is polymorphic based on the type of item
+// that we're dealing with.
+// When we go to actually network this, we essentially serialize the Inventory class into
+// a delta-string. The delta-string functions on the same level as playerState_t fields,
+// however the string itself is NOT constant in any way. Like the playerState_t though,
+// we use huffman encoding.
+
+// The basic format of the string is as follows:
+// <m> <im> <it>: <ik> <iv>, <ik> <iv>, ...; <im> <it>: <ik> <iv, ...
+// where <m> = initial inventory marker (states number of items) [short]
+// where <im> = item marker. This is either -1 (no change at all in this item) or a positive integer (number of changed fields) [byte]
+// where <it> = item type [byte]
+// where <ik> = field key, this is a numeric value that follows some sort of enumeration. if -1 then we skip to the next field [byte]
+// where <iv> = value to coresponding key [short]
+
+// So for no change at all in this inventory:
+// 2 -1 -1
+
+// Suppose we're changing a field on item 3 (so the fourth item), which is a ITEM_WEAPON (3 in the enum). 
+// We have 5 items total. We're changing field 2 to be 4. 
+// The syntax would be:
+// 5 -1 -1 -1 2 3: 2, 4; -1
+
+class Inventory;
+typedef std::vector<unsigned char> SerializeString_v;
+
+class InventoryItem
+{
+public:
+	// The parsing is done via the BG crap
+	virtual void ParseInventoryItem( void *cJSONNode ) = 0;
+protected:
+	std::string displayName;
+	std::string internalName;
+	unsigned int itemID;
+};
+
+class InventoryItemInstance
+{
+	// The T is what constitutes our base data. The base data is NOT networked, this is filled in by the client/server.
+	// In the engine we simply typedef T to be void* and make a stub for FillBaseData.
+public:
+	virtual InventoryItem *FillBaseData( ) = 0;
+	ID_INLINE bool IsValid() { if(id) return true; else return false; };
+	InventoryItem *GetBaseData() { if(IsValid()) return id; else { id = FillBaseData(); return id; } };
+protected:
+	InventoryItem *id;
+
+	unsigned int itemID;	// Whenever we get the base data, we supply it with the itemID.
+
+	inventoryItemType_e iType;	// Technically, this does not change, but we need to access this when we're networking stuff
+	unsigned int uID;	// We assign a uID to each item that enters our inventory. It's unique for each item, that way we know
+						// when there's new stuff in there
+
+	// FIXME: I'd rather not use func pointers, but C++ doesn't allow for virtual static members :/
+	SerializeString_v (*GenerateDelta)( InventoryItemInstance *from, InventoryItemInstance *to );
+	InventoryItemInstance *(*ReadDelta)( SerializeString_v deltaString );
+#ifdef ENGINE
+friend class InventoryNetworker;
+#endif
+};
+
+#ifdef ENGINE
+class InventoryNetworker
+{
+public:
+	static SerializeString_v GenerateDeltaData( Inventory *oldInv, Inventory *newInv );		// generate data
+	static void PushDeltaData( SerializeString_v deltaData );								// network write
+	static SerializeString_v PopDeltaData( void );											// network read
+	static Inventory *ParseDeltaData( SerializeString_v deltaData );						// parse data
+};
+#endif // ENGINE
+
+class Inventory
+{
+protected:
+	InventoryItemInstance *items;
+	unsigned int numElements;
+	size_t size;
+
+	unsigned int last_uID;
+#ifdef ENGINE
+friend class InventoryNetworker;
+#endif
+};
+
+#else	
+typedef void *Inventory;
+#endif // __cplusplus
+
 
 typedef enum {
 	SENTRY_NOROOM = 1,
@@ -2345,8 +2459,6 @@ typedef struct playerState_s {
 	int			persistant[MAX_PERSISTANT];	// stats that aren't cleared on death
 	int			powerups[MAX_POWERUPS];	// level.time that the powerup runs out
 	int			ammo;					// Total ammo available for reloading (like an ammo pool)	//FIXME: remove?
-
-	int		unused[18];				// Unused fields	(see what I did here?)		
 
 	int			generic1;
 	int			loopSound;
@@ -2552,6 +2664,8 @@ typedef struct playerState_s {
 	signed short	blockPoints;
 
 	qboolean		sightsTransition;	// Are we in a sights transition? (Used for player animation)
+
+	Inventory		inventory;
 } playerState_t;
 // For ironsights
 #define IRONSIGHTS_MSB (1 << 31)
@@ -2968,6 +3082,7 @@ typedef struct entityState_s {
 	unsigned short	saberCrystal[2];
 
 	qboolean		sightsTransition;	// Are we in a sights transition? (Used for player animation)
+	Inventory		inventory;			// Inventory (used for trading)
 } entityState_t;
 
 typedef enum {

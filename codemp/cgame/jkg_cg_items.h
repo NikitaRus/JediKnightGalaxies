@@ -48,7 +48,7 @@ typedef struct
 	char itemIcon [MAX_QPATH];
 	char xml[MAX_QPATH];
 	unsigned int itemID;
-	jkgItemType_t itemType;
+	inventoryItemType_e itemType;
 	unsigned int weight;
 	unsigned int cost;
 

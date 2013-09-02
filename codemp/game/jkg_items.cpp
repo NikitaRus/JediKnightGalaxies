@@ -13,6 +13,8 @@ itemData_t itemLookupTable[MAX_ITEM_TABLE_SIZE];
 lootTable_t lootLookupTable[MAX_LOOT_TABLE_SIZE];
 vendorStruct_t *vendorLookupTable[32];
 
+//Inventory itemLookupTable[MAX_ITEM_TABLE_SIZE];
+
 static int lastUsedVendorID;
 
 extern void NPC_ConversationAnimation(gentity_t *NPC);

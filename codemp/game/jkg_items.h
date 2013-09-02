@@ -32,7 +32,7 @@ typedef struct
 	char displayName[MAX_ITEM_NAME];
 	char internalName[MAX_ITEM_NAME];
 	unsigned int itemID;
-	jkgItemType_t itemType;
+	inventoryItemType_e itemType;
 	unsigned int weight;
 
 	//pSpell data
