@@ -100,21 +100,28 @@ public:
 
 class IWeaponItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 };
 
 class IWeaponItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	IWeaponItem *FillBaseData();
 	IWeaponItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 /* Armor */
 
 class IArmorItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 private:
@@ -122,69 +129,98 @@ private:
 
 class IArmorItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	IArmorItem *FillBaseData();
 	IArmorItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 /* Clothing */
 
 class IClothingItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 };
 
 class IClothingItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	IClothingItem *FillBaseData();
 	IClothingItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 /* Lightsaber Crystals */
 
 class ICrystalItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 };
 
 class ICrystalItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	ICrystalItem *FillBaseData();
 	ICrystalItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 /* Consumable Items */
 
 class IConsumableItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 };
 
 class IConsumableItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	IConsumableItem *FillBaseData();
 	IConsumableItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 /* Ammo */
 
 class IAmmoItem : public BG_BUILD_ITEM
 {
+	/* Stuff needed from the framework */
 public:
 	void ParseInventoryItem( void *cJSONNode );
 };
 
 class IAmmoItemInstance : public BG_BUILD_INSTANCE
 {
+	/* Stuff needed from the framework */
 public:
 	IAmmoItem *FillBaseData();
 	IAmmoItemInstance();
+	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m FullRawString( );
+	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
+	void SetField( unsigned int fieldID, unsigned int value );
 };
 
 #endif

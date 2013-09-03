@@ -1285,7 +1285,7 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to,
 		Com_Printf( " (%i bits)\n", endBit - startBit  );
 	}
 
-	to->inventory = *InventoryNetworker::ParseDeltaData( InventoryNetworker::PopDeltaData() );
+	InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
 }
 
 /*
@@ -2313,7 +2313,7 @@ void MSG_ReadDeltaPlayerstate (msg_t *msg, playerState_t *from, playerState_t *t
 		Com_Printf( " (%i bits)\n", endBit - startBit  );
 	}
 
-	to->inventory = *InventoryNetworker::ParseDeltaData( InventoryNetworker::PopDeltaData() );
+	InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
 }
 
 // Q3 TA freq. table.

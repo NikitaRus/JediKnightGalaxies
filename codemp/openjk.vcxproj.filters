@@ -496,6 +496,9 @@
     <ClCompile Include="qcommon\md5.cpp">
       <Filter>QCommon</Filter>
     </ClCompile>
+    <ClCompile Include="qcommon\InventoryNetworker.cpp">
+      <Filter>QCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="botlib\aasfile.h">

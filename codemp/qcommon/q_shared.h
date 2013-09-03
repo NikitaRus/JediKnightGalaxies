@@ -2226,20 +2226,21 @@ typedef struct forcedata_s {
 
 typedef enum
 {
-	ITEM_NONE,
-	ITEM_UNKNOWN=0, // FIXME: remove
-	ITEM_WEAPON,
-	ITEM_ARMOR,
-	ITEM_CLOTHING,
-	ITEM_CRYSTAL,
-	ITEM_CONSUMABLE,
-	ITEM_BUFF=5,	// FIXME: remove
-	ITEM_AMMO,
+	ITEM_NONE,			// FIXME: remove
+	ITEM_UNKNOWN=0,		// Should NEVER spawn as one of these.
+	ITEM_WEAPON,		// Weapons. Additional distinction for sabers in the form of unions.
+	ITEM_ARMOR,			// Armor.
+	ITEM_CLOTHING,		// Clothing, TBA how this is used.
+	ITEM_CRYSTAL,		// Lightsaber crystals. Sorta like ITEM_CONSUMABLE but special
+	ITEM_CONSUMABLE,	// Usable items / items that have an effect when we "use" them in the inventory, like scrolls or whatever.
+	ITEM_BUFF=5,		// FIXME: remove
+	ITEM_AMMO,			// Ammo items. TBA how this is used.
 } inventoryItemType_e;
 
 #ifdef __cplusplus
 #include <string>
 #include <vector>
+#include <map>
 
 // This looks slightly nasty, and I apologize, but let me explain the thinking on this.
 // Inventory (which is a template class) has a bunch of InventoryItemInstances, which
@@ -2269,19 +2270,65 @@ typedef enum
 // The syntax would be:
 // 5 -1 -1 -1 2 3: 2, 4; -1
 
+/*
+==================================
+Initial Definitions
+==================================
+*/
+
 class Inventory;
 typedef std::vector<unsigned char> SerializeString_v;
+typedef std::map<unsigned int, unsigned int> SerializeCompare_m;
+
+/*
+==================================
+InventoryItem
+
+These make up the base chunks of data which we
+draw upon. Item instances (that is, the items
+which are in our inventory) have a pointer to
+a InventoryItem. This is not directly handled by
+the engine, rather it is filled in by cgame/game.
+
+Think of this information as being information
+which does not change no matter how we manipulate
+the item.
+
+99% of the time, this is pure abstract data.
+We derive this class for which side of the game
+we're working with (eg, Game/Client) AND what type
+of item we're dealing with. So we're all over the
+place with this one (if that makes sense).
+==================================
+*/
 
 class InventoryItem
 {
-public:
-	// The parsing is done via the BG crap
-	virtual void ParseInventoryItem( void *cJSONNode ) = 0;
 protected:
 	std::string displayName;
 	std::string internalName;
-	unsigned int itemID;
+	unsigned short itemID;
+
+public:
+	// The parsing is done via the BG crap
+	virtual void ParseInventoryItem( void *cJSONNode ) = 0;
 };
+
+/*
+=================================
+InventoryItemInstance
+
+These are the items which are in our inventory and
+most of the information contained in this class is
+purely volatile.
+
+This is another abstract class. This time though,
+instead of being abstracted by which VM we're
+dealing with, derivatives are based upon what
+type of item we're dealing with. For instance,
+weapons and armor contain different instance data.
+=================================
+*/
 
 class InventoryItemInstance
 {
@@ -2289,44 +2336,74 @@ class InventoryItemInstance
 	// In the engine we simply typedef T to be void* and make a stub for FillBaseData.
 public:
 	virtual InventoryItem *FillBaseData( ) = 0;
+protected:
+	virtual SerializeCompare_m CompareAgainst( InventoryItemInstance *other ) = 0;
+	virtual SerializeCompare_m FullRawString( ) = 0;
+	virtual void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string ) = 0;
+	virtual void SetField( unsigned int fieldID, unsigned int value ) = 0;
+
 	ID_INLINE bool IsValid() { if(id) return true; else return false; };
 	InventoryItem *GetBaseData() { if(IsValid()) return id; else { id = FillBaseData(); return id; } };
+
 protected:
 	InventoryItem *id;
 
-	unsigned int itemID;	// Whenever we get the base data, we supply it with the itemID.
+	unsigned short itemID;	// Whenever we get the base data, we supply it with the itemID.
 
 	inventoryItemType_e iType;	// Technically, this does not change, but we need to access this when we're networking stuff
-	unsigned int uID;	// We assign a uID to each item that enters our inventory. It's unique for each item, that way we know
+	unsigned short uID;	// We assign a uID to each item that enters our inventory. It's unique for each item, that way we know
 						// when there's new stuff in there
-
-	// FIXME: I'd rather not use func pointers, but C++ doesn't allow for virtual static members :/
-	SerializeString_v (*GenerateDelta)( InventoryItemInstance *from, InventoryItemInstance *to );
-	InventoryItemInstance *(*ReadDelta)( SerializeString_v deltaString );
 #ifdef ENGINE
 friend class InventoryNetworker;
 #endif
 };
 
-#ifdef ENGINE
-class InventoryNetworker
-{
-public:
-	static SerializeString_v GenerateDeltaData( Inventory *oldInv, Inventory *newInv );		// generate data
-	static void PushDeltaData( SerializeString_v deltaData );								// network write
-	static SerializeString_v PopDeltaData( void );											// network read
-	static Inventory *ParseDeltaData( SerializeString_v deltaData );						// parse data
-};
-#endif // ENGINE
+/*
+===========================================
+Inventory
+
+This is any sort of container for items, not
+strictly limited to players.
+We network inventory data for all entities,
+because entities can serve as containers, like
+treasure chests for instance. Also, players can
+be traded with in the world.
+
+This class does get derived for the VMs but
+only for some minor things.
+===========================================
+*/
 
 class Inventory
 {
 protected:
 	InventoryItemInstance *items;
-	unsigned int numElements;
+	unsigned short numElements;
 	size_t size;
 
-	unsigned int last_uID;
+	unsigned short last_uID;
+
+	void AddElement( InventoryItemInstance *item )
+	{
+	}
+
+	void RemoveElement( InventoryItemInstance *item )
+	{
+	}
+
+	void RemoveElement( unsigned int elementID )
+	{
+
+	}
+public:
+	// Needed by crap in the engine
+	unsigned short GetNumberItems( ) { return numElements; }
+	unsigned short GetLastuID( ) { return last_uID; }
+	InventoryItemInstance *GetItemAt( unsigned int id ) { if( id >= numElements ) return NULL; return &items[id]; }
+
+	// Constuctor
+	Inventory() { last_uID = 0; numElements = 0; size = 0 };
+
 #ifdef ENGINE
 friend class InventoryNetworker;
 #endif

@@ -1134,4 +1134,14 @@ inline int Round(float value)
 
 #endif
 
+#ifdef __cplusplus
+class InventoryNetworker
+{
+public:
+	static SerializeString_v GenerateDeltaData( Inventory *oldInv, Inventory *newInv );		// generate data
+	static void PushDeltaData( msg_t *msg, SerializeString_v deltaData );					// network write
+	static void PopDeltaData( msg_t *msg, Inventory *oldInv, Inventory *newInv );			// network read + parse
+};
+#endif
+
 #endif // _QCOMMON_H_
