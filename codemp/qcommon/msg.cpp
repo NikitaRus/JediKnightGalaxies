@@ -1149,7 +1149,7 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 		}
 	}
 
-	InventoryNetworker::PushDeltaData( InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
+	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 
 /*
@@ -2108,7 +2108,7 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 		MSG_WriteBits( msg, 0, 1 );	// no change
 	}
 
-	InventoryNetworker::PushDeltaData( InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
+	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 
 

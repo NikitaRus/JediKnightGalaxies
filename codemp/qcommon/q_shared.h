@@ -2255,7 +2255,7 @@ typedef enum
 // we use huffman encoding.
 
 // The basic format of the string is as follows:
-// <m> <im> <it>: <ik> <iv>, <ik> <iv>, ...; <im> <it>: <ik> <iv, ...
+// <m> <im> <ik> <iv> <ik> <iv> ... <im> <ik> <iv> ...
 // where <m> = initial inventory marker (states number of items) [short]
 // where <im> = item marker. This is either -1 (no change at all in this item) or a positive integer (number of changed fields) [byte]
 // where <it> = item type [byte]
@@ -2335,12 +2335,48 @@ class InventoryItemInstance
 	// The T is what constitutes our base data. The base data is NOT networked, this is filled in by the client/server.
 	// In the engine we simply typedef T to be void* and make a stub for FillBaseData.
 public:
+
+	/*
+	FillBaseData()
+	Fills in the pointer to the base data using the itemID to grab from the table on game/cgame side
+	*/
+
 	virtual InventoryItem *FillBaseData( ) = 0;
+
 protected:
+
+	/*
+	CompareAgainst()
+	Returns a list of keys/values which are different between two item instances...must be the same type/itemID
+	*/
+
 	virtual SerializeCompare_m CompareAgainst( InventoryItemInstance *other ) = 0;
+
+	/*
+	FullRawString()
+	Gets the full networked string
+	*/
+
 	virtual SerializeCompare_m FullRawString( ) = 0;
+
+	/*
+	WriteDelta()
+	Adds keys/values to the string
+	FIXME: why can't we do this on the engine? :/
+	*/
+
 	virtual void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string ) = 0;
+
+	/*
+	SetField()
+	Sets a specific field to be a certain value
+	*/
+
 	virtual void SetField( unsigned int fieldID, unsigned int value ) = 0;
+
+	/*
+	Function for checking validity / Function for getting the base data
+	*/
 
 	ID_INLINE bool IsValid() { if(id) return true; else return false; };
 	InventoryItem *GetBaseData() { if(IsValid()) return id; else { id = FillBaseData(); return id; } };
@@ -2383,9 +2419,25 @@ protected:
 
 	unsigned short last_uID;
 
+	/* 
+	AddElement
+	Does what it says on the tin. Also modifies the item by spitting out a new uID on it.
+	*/
+
 	void AddElement( InventoryItemInstance *item )
 	{
+
 	}
+
+	void AddElement( unsigned int itemID, SerializeString_v *kvPair = NULL )
+	{
+
+	}
+
+	/*
+	RemoveElement( InventoryItemInstance *item /\ unsigned int elementID )
+	Does what it says on the tin. Two different overloads with the same goal.
+	*/
 
 	void RemoveElement( InventoryItemInstance *item )
 	{
@@ -2395,6 +2447,7 @@ protected:
 	{
 
 	}
+
 public:
 	// Needed by crap in the engine
 	unsigned short GetNumberItems( ) { return numElements; }
@@ -2402,7 +2455,7 @@ public:
 	InventoryItemInstance *GetItemAt( unsigned int id ) { if( id >= numElements ) return NULL; return &items[id]; }
 
 	// Constuctor
-	Inventory() { last_uID = 0; numElements = 0; size = 0 };
+	Inventory() { last_uID = 0; numElements = 0; size = 0; };
 
 #ifdef ENGINE
 friend class InventoryNetworker;
