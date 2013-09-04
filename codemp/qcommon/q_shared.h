@@ -2343,6 +2343,9 @@ public:
 
 	virtual InventoryItem *FillBaseData( ) = 0;
 
+	unsigned short GetItemID() { return itemID; }
+	inventoryItemType_e GetItemType() { return iType; }
+
 protected:
 
 	/*

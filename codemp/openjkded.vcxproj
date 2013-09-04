@@ -289,6 +289,7 @@
     <ClCompile Include="libraries\zlib\trees.c" />
     <ClCompile Include="libraries\zlib\uncompr.c" />
     <ClCompile Include="libraries\zlib\zutil.c" />
+    <ClCompile Include="qcommon\InventoryNetworker.cpp" />
     <ClCompile Include="qcommon\RoffSystem.cpp" />
     <ClCompile Include="qcommon\cm_draw.cpp" />
     <ClCompile Include="qcommon\cm_load.cpp" />

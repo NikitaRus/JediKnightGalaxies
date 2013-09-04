@@ -260,6 +260,13 @@
     <ClCompile Include="..\game\NPC_Fighter.cpp" />
     <ClCompile Include="..\game\NPC_Speeder.cpp" />
     <ClCompile Include="..\game\NPC_Walker.cpp" />
+    <ClCompile Include="..\JKG\Items\IAmmoItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IArmorItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IClothingItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IConsumableItem.cpp" />
+    <ClCompile Include="..\JKG\Items\ICrystalItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IGenericItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IWeaponItem.cpp" />
     <ClCompile Include="..\libraries\DetourTileCache\DetourTileCacheBuilder.cpp" />
     <ClCompile Include="..\libraries\Detour\Source\DetourAlloc.cpp" />
     <ClCompile Include="..\libraries\Detour\Source\DetourCommon.cpp" />
@@ -342,6 +349,14 @@
   <ItemGroup>
     <ClInclude Include="..\client\FxScheduler.h" />
     <ClInclude Include="..\game\anims.h" />
+    <ClInclude Include="..\JKG\Item.h" />
+    <ClInclude Include="..\JKG\Items\IAmmoItem.h" />
+    <ClInclude Include="..\JKG\Items\IArmorItem.h" />
+    <ClInclude Include="..\JKG\Items\IClothingItem.h" />
+    <ClInclude Include="..\JKG\Items\IConsumableItem.h" />
+    <ClInclude Include="..\JKG\Items\ICrystalItem.h" />
+    <ClInclude Include="..\JKG\Items\IGenericItem.h" />
+    <ClInclude Include="..\JKG\Items\IWeaponItem.h" />
     <ClInclude Include="..\libraries\DetourTileCache\DetourTileCacheBuilder.h" />
     <ClInclude Include="..\libraries\Detour\Include\DetourAlloc.h" />
     <ClInclude Include="..\libraries\Detour\Include\DetourAssert.h" />

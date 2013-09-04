@@ -29,7 +29,13 @@ SerializeString_v InventoryNetworker::GenerateDeltaData( Inventory *oldInv, Inve
 			InventoryItemInstance *itm1 = oldInv->GetItemAt( i );
 			InventoryItemInstance *itm2 = newInv->GetItemAt( i );
 			if( itm1->uID != itm2->uID )
-			{	// Two items are different here.
+			{
+				// completely different item, don't even bother at this point..
+				changedItemsAndValues[i] = itm2->FullRawString();
+			}
+			else
+			{
+				// Two items are different here.
 				SerializeCompare_m itmComparison = itm1->CompareAgainst( itm2 );
 				if( itmComparison.size() > 0 )
 				{

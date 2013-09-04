@@ -27,6 +27,12 @@
     <Filter Include="Libraries\JSON">
       <UniqueIdentifier>{cfcc415b-c79d-46a8-a8c7-f12ad81d4fab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Items">
+      <UniqueIdentifier>{407b8314-7167-4684-8d1a-1db83c8c7ccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Items">
+      <UniqueIdentifier>{c4a9eaf5-01d0-433f-8a62-98e6b755aca9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libraries\RDDebugUtils\Source\DebugDraw.cpp">
@@ -320,6 +326,27 @@
     <ClCompile Include="..\ui\ui_devicecontext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\JKG\Items\IAmmoItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IArmorItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IClothingItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IConsumableItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\ICrystalItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IWeaponItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IGenericItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\game\anims.h">
@@ -492,6 +519,30 @@
     </ClInclude>
     <ClInclude Include="..\ui\ui_devicecontext.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Item.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IAmmoItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IArmorItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IClothingItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IConsumableItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\ICrystalItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IWeaponItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IGenericItem.h">
+      <Filter>Header Files\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

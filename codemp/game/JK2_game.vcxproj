@@ -261,6 +261,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\GLua\glua_json.cpp" />
+    <ClCompile Include="..\JKG\ItemManager.cpp" />
+    <ClCompile Include="..\JKG\Items\IAmmoItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IArmorItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IClothingItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IConsumableItem.cpp" />
+    <ClCompile Include="..\JKG\Items\ICrystalItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IGenericItem.cpp" />
+    <ClCompile Include="..\JKG\Items\IWeaponItem.cpp" />
     <ClCompile Include="..\qcommon\q_math.c" />
     <ClCompile Include="..\qcommon\q_shared.c" />
     <ClCompile Include="ai_dominance.cpp" />
@@ -451,6 +459,15 @@
     <None Include="authdb.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\JKG\Item.h" />
+    <ClInclude Include="..\JKG\ItemManager.h" />
+    <ClInclude Include="..\JKG\Items\IAmmoItem.h" />
+    <ClInclude Include="..\JKG\Items\IArmorItem.h" />
+    <ClInclude Include="..\JKG\Items\IClothingItem.h" />
+    <ClInclude Include="..\JKG\Items\IConsumableItem.h" />
+    <ClInclude Include="..\JKG\Items\ICrystalItem.h" />
+    <ClInclude Include="..\JKG\Items\IGenericItem.h" />
+    <ClInclude Include="..\JKG\Items\IWeaponItem.h" />
     <ClInclude Include="..\qcommon\q_shared.h" />
     <ClInclude Include="ai.h" />
     <ClInclude Include="ai_main.h" />

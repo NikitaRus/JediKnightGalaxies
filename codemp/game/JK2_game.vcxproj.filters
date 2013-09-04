@@ -105,6 +105,12 @@
     <Filter Include="Source Files\Warzone">
       <UniqueIdentifier>{0929b246-539b-4147-bd5d-b7e529ad85ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Items">
+      <UniqueIdentifier>{da24a195-18f2-41f1-8608-19c88c3a72b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Items">
+      <UniqueIdentifier>{b847cfd3-702b-45c2-9f7d-ae49ab96a9a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libraries\json\cJSON.c">
@@ -661,6 +667,30 @@
     </ClCompile>
     <ClCompile Include="..\GLua\glua_json.cpp">
       <Filter>Source Files\GLua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IWeaponItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IArmorItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IClothingItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\ICrystalItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IConsumableItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IAmmoItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\Items\IGenericItem.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\JKG\ItemManager.cpp">
+      <Filter>Source Files\Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1242,6 +1272,33 @@
     </ClInclude>
     <ClInclude Include="..\qcommon\q_shared.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Item.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IWeaponItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IArmorItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IClothingItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\ICrystalItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IConsumableItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IAmmoItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\IGenericItem.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\ItemManager.h">
+      <Filter>Header Files\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
