@@ -21,6 +21,15 @@ public:
 	void SetField( unsigned int fieldID, unsigned int value );
 
 	friend class IClothingItemInstance;
+
+	/* Custom stuff */
+private:
+	enum ikeys
+	{
+		ITMKEY_ITEMID,
+		ITMKEY_UID,
+		ITMKEY_MAX
+	};
 };
 
 #endif

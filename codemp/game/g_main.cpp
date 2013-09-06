@@ -23,6 +23,8 @@
 #include "bg_items.h"
 #include "jkg_easy_items.h"
 
+#include "JKG/ItemManager.h"
+
 #include <assert.h>
 
 int Q_vsnprintf( char *dest, size_t size, const char *fmt, va_list argptr );
@@ -763,6 +765,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	JKG_InitItems();
 	JKG_VendorInit();
 
+	// Temp
+	ItemManager::InitManager();
+
 	JKG_InitializeConstants();
 	
 	// Create items for weapons
@@ -929,6 +934,8 @@ void G_ShutdownGame( int restart ) {
 		trap_FS_FCloseFile( level.security.log );
 		level.security.log = 0;
 	}
+
+	ItemManager::ShutdownManager();
 
 	// write all the client session data so we can get it back
 	G_WriteSessionData();

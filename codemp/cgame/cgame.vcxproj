@@ -260,6 +260,7 @@
     <ClCompile Include="..\game\NPC_Fighter.cpp" />
     <ClCompile Include="..\game\NPC_Speeder.cpp" />
     <ClCompile Include="..\game\NPC_Walker.cpp" />
+    <ClCompile Include="..\JKG\ItemManager.cpp" />
     <ClCompile Include="..\JKG\Items\IAmmoItem.cpp" />
     <ClCompile Include="..\JKG\Items\IArmorItem.cpp" />
     <ClCompile Include="..\JKG\Items\IClothingItem.cpp" />

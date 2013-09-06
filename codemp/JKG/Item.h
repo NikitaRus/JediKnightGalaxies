@@ -2,13 +2,10 @@
 #define __ITEM_H
 
 #include "qcommon/q_shared.h"
-#include "ItemManager.h"
 
 // This is done BG-wide. This is NOT accessed by the engine in any way.
 
 // Inventory management
-
-extern ItemManager *itmm;
 
 #ifdef QAGAME
 
@@ -17,17 +14,14 @@ extern ItemManager *itmm;
 class GInventoryItem : public InventoryItem
 {
 public:
+	std::string GetInternalName() { return internalName; }
+	std::string GetDisplayName() { return displayName; }
 };
 
 class GItemInstance : public InventoryItemInstance
 {
 public:
-	GInventoryItem *FillBaseData() 
-	{
-		if( itemID < 0 )
-			return NULL;
-		return itmm->ItemLookup( itemID );
-	}
+	GInventoryItem *FillBaseData();
 };
 
 #define BG_BUILD_ITEM		GInventoryItem
@@ -38,17 +32,14 @@ public:
 class CGInventoryItem : public InventoryItem
 {
 public:
+	std::string GetInternalName() { return internalName; }
+	std::string GetDisplayName() { return displayName; }
 };
 
 class CGItemInstance : public InventoryItemInstance
 {
 public:
-	CGInventoryItem *FillBaseData() 
-	{
-		if( itemID < 0 )
-			return NULL;
-		return itmm->ItemLookup( itemID );
-	}
+	CGInventoryItem *FillBaseData();
 };
 
 #define BG_BUILD_ITEM		CGInventoryItem

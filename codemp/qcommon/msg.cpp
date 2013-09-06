@@ -1089,13 +1089,13 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 	if ( lc == 0 ) {
 		// nothing at all changed
 		if ( !force ) {
-			return;		// nothing at all
+			goto endOfEntStateWriter;		// nothing at all
 		}
 		// write two bits for no change
 		MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
 		MSG_WriteBits( msg, 0, 1 );		// not removed
 		MSG_WriteBits( msg, 0, 1 );		// no delta
-		return;
+		goto endOfEntStateWriter;
 	}
 
 	MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
@@ -1148,7 +1148,7 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 			}
 		}
 	}
-
+endOfEntStateWriter:
 	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 
@@ -2058,7 +2058,7 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 	if (!statsbits && !persistantbits && !powerupbits) {
 		MSG_WriteBits( msg, 0, 1 );	// no change
 		oldsize += 4;
-		return;
+		goto endOfWrite;
 	}
 	MSG_WriteBits( msg, 1, 1 );	// changed
 
@@ -2108,6 +2108,7 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 		MSG_WriteBits( msg, 0, 1 );	// no change
 	}
 
+endOfWrite:
 	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 

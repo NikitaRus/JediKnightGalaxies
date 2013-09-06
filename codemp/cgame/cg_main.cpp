@@ -15,6 +15,8 @@
 
 #include "ui/ui_devicecontext.h"
 
+#include "JKG/ItemManager.h"
+
 /*
 Ghoul2 Insert Start
 */
@@ -2861,6 +2863,8 @@ Ghoul2 Insert Start
 	/* Initialize the weapon data table */
 	BG_InitializeWeapons();
 
+	ItemManager::InitManager();
+
 	JKG_InitializeConstants();
 
 	/* Here be crystals */
@@ -3220,6 +3224,8 @@ void CG_Shutdown( void )
 
 	// some mods may need to do cleanup work here,
 	// like closing files or archiving session data
+
+	ItemManager::ShutdownManager();
 }
 
 /*
