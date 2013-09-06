@@ -351,6 +351,7 @@
     <ClInclude Include="..\client\FxScheduler.h" />
     <ClInclude Include="..\game\anims.h" />
     <ClInclude Include="..\JKG\Item.h" />
+    <ClInclude Include="..\JKG\ItemManager.h" />
     <ClInclude Include="..\JKG\Items\IAmmoItem.h" />
     <ClInclude Include="..\JKG\Items\IArmorItem.h" />
     <ClInclude Include="..\JKG\Items\IClothingItem.h" />

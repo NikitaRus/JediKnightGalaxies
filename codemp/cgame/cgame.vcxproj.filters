@@ -547,6 +547,9 @@
     <ClInclude Include="..\JKG\Items\IGenericItem.h">
       <Filter>Header Files\Items</Filter>
     </ClInclude>
+    <ClInclude Include="..\JKG\ItemManager.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\win32\cgame.rc">

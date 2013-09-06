@@ -1060,11 +1060,11 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 	// a NULL to is a delta remove message
 	if ( to == NULL ) {
 		if ( from == NULL ) {
-			return;
+			return;;
 		}
 		MSG_WriteBits( msg, from->number, GENTITYNUM_BITS );
 		MSG_WriteBits( msg, 1, 1 );
-		return;
+		return;;
 	}
 
 	if ( to->number < 0 || to->number >= MAX_GENTITIES ) {
@@ -1089,13 +1089,15 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 	if ( lc == 0 ) {
 		// nothing at all changed
 		if ( !force ) {
-			goto endOfEntStateWriter;		// nothing at all
+			//goto endOfEntStateWriter;		// nothing at all
+			return;
 		}
 		// write two bits for no change
 		MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
 		MSG_WriteBits( msg, 0, 1 );		// not removed
 		MSG_WriteBits( msg, 0, 1 );		// no delta
-		goto endOfEntStateWriter;
+		//goto endOfEntStateWriter;
+		return;
 	}
 
 	MSG_WriteBits( msg, to->number, GENTITYNUM_BITS );
@@ -1148,8 +1150,10 @@ void MSG_WriteDeltaEntity( msg_t *msg, struct entityState_s *from, struct entity
 			}
 		}
 	}
-endOfEntStateWriter:
-	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
+	// FIXME:
+//endOfEntStateWriter:
+//	if( from != NULL && to != NULL )
+//		InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 
 /*
@@ -1195,6 +1199,8 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to,
 	if ( MSG_ReadBits( msg, 1 ) == 0 ) {
 		*to = *from;
 		to->number = number;
+		if( cl_shownet->integer == 3 ) Com_Printf("no delta\n");
+		//goto endOfEntityReadDelta;
 		return;
 	}
 
@@ -1285,7 +1291,9 @@ void MSG_ReadDeltaEntity( msg_t *msg, entityState_t *from, entityState_t *to,
 		Com_Printf( " (%i bits)\n", endBit - startBit  );
 	}
 
-	InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
+//endOfEntityReadDelta:
+//	if( from != NULL && to != NULL )
+//		InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
 }
 
 /*
@@ -2109,7 +2117,8 @@ void MSG_WriteDeltaPlayerstate( msg_t *msg, struct playerState_s *from, struct p
 	}
 
 endOfWrite:
-	InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
+	if( from != NULL && to != NULL )
+		InventoryNetworker::PushDeltaData( msg, InventoryNetworker::GenerateDeltaData( &from->inventory, &to->inventory ) );
 }
 
 
@@ -2314,7 +2323,8 @@ void MSG_ReadDeltaPlayerstate (msg_t *msg, playerState_t *from, playerState_t *t
 		Com_Printf( " (%i bits)\n", endBit - startBit  );
 	}
 
-	InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
+	if( from != NULL && to != NULL )
+		InventoryNetworker::PopDeltaData( msg, &from->inventory, &to->inventory );
 }
 
 // Q3 TA freq. table.
