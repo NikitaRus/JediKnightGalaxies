@@ -6,10 +6,11 @@ Item Class
 ===============================
 */
 
-void IGenericItem::ParseInventoryItem( void *cJSONNode )
+IGenericItem::IGenericItem( void *cJSON )
 {
-	// No parsing yet.
-	return;
+	iType = ITEM_UNKNOWN;
+
+	ItemManager::ParseGenericItemFields( this, cJSON );
 }
 
 /*
@@ -20,10 +21,10 @@ Item Instance Class
 
 IGenericItemInstance::IGenericItemInstance()
 {
-	iType = ITEM_NONE;
+	iType = ITEM_UNKNOWN;
 }
 
-SerializeCompare_m IGenericItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IGenericItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -69,7 +70,7 @@ void IGenericItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeStri
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -83,7 +84,7 @@ void IGenericItemInstance::SetField( unsigned int fieldID, unsigned int value )
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

@@ -6,9 +6,14 @@ Item Class
 ===============================
 */
 
-void IArmorItem::ParseInventoryItem( void *cJSONNode )
+IArmorItem::IArmorItem( void *cJSON )
 {
+	iType = ITEM_ARMOR;
 
+	ItemManager::ParseGenericItemFields( this, cJSON );
+
+	armorSlot = cJSON_ToInteger( cJSON_GetObjectItem( cJSON, "armorSlot" ) );
+	armorId = cJSON_ToInteger( cJSON_GetObjectItem( cJSON, "armorID" ) );
 }
 
 /*
@@ -22,7 +27,7 @@ IArmorItemInstance::IArmorItemInstance()
 	iType = ITEM_ARMOR;
 }
 
-SerializeCompare_m IArmorItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IArmorItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -68,7 +73,7 @@ void IArmorItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeString
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -82,7 +87,7 @@ void IArmorItemInstance::SetField( unsigned int fieldID, unsigned int value )
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

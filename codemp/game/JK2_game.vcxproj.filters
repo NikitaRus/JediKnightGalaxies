@@ -1273,9 +1273,6 @@
     <ClInclude Include="..\qcommon\q_shared.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\JKG\Item.h">
-      <Filter>Header Files\Items</Filter>
-    </ClInclude>
     <ClInclude Include="..\JKG\Items\IWeaponItem.h">
       <Filter>Header Files\Items</Filter>
     </ClInclude>
@@ -1298,6 +1295,9 @@
       <Filter>Header Files\Items</Filter>
     </ClInclude>
     <ClInclude Include="..\JKG\ItemManager.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\JKG\Items\ItemInclude.h">
       <Filter>Header Files\Items</Filter>
     </ClInclude>
   </ItemGroup>

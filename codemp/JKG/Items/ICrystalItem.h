@@ -1,26 +1,34 @@
 #ifndef __ICRYSTALITEM_H
 #define __ICRYSTALITEM_H
 
-#include "../Item.h"
+#include "../ItemManager.h"
+#ifdef QAGAME
+#include "game/g_local.h"
+#else
+#include "cgame/cg_local.h"
+#endif
 
-class ICrystalItem : public BG_BUILD_ITEM
+class ICrystalItem : public VMInventoryItem
 {
 	/* Stuff needed from the framework */
 public:
-	void ParseInventoryItem( void *cJSONNode );
+	ICrystalItem( void *cJSON );
+	static ICrystalItem* Factory( void *cJSON ) { return new ICrystalItem( cJSON ); }
 };
 
-class ICrystalItemInstance : public BG_BUILD_INSTANCE
+class ICrystalItemInstance : public VMItemInstance
 {
 	/* Stuff needed from the framework */
 public:
 	ICrystalItemInstance();
-	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m CompareAgainst( InventoryItemInstance *other );
 	SerializeCompare_m FullRawString( );
 	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
 	void SetField( unsigned int fieldID, unsigned int value );
 
-	friend class ICrystalItemInstance;
+	static ICrystalItemInstance* Factory() { return new ICrystalItemInstance(); }
+
+friend class ICrystalItemInstance;
 
 	/* Custom stuff */
 private:

@@ -18,7 +18,7 @@
 #define BG_ITEMS_H
 
 #include "qcommon/q_shared.h"
-#include "JKG/Item.h"
+#include "JKG/ItemManager.h"
 
 #define MAX_ITEM_TABLE_SIZE     (65535)
 #define MAX_ITEM_FILE_LENGTH    (16384)

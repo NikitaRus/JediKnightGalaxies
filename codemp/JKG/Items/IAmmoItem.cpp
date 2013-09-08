@@ -6,9 +6,11 @@ Item Class
 ===============================
 */
 
-void IAmmoItem::ParseInventoryItem( void *cJSONNode )
+IAmmoItem::IAmmoItem( void *cJSON )
 {
+	iType = ITEM_AMMO;
 
+	ItemManager::ParseGenericItemFields( this, cJSON );
 }
 
 /*
@@ -22,7 +24,7 @@ IAmmoItemInstance::IAmmoItemInstance()
 	iType = ITEM_AMMO;
 }
 
-SerializeCompare_m IAmmoItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IAmmoItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -68,7 +70,7 @@ void IAmmoItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeString_
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -82,7 +84,7 @@ void IAmmoItemInstance::SetField( unsigned int fieldID, unsigned int value )
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

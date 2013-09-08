@@ -1,7 +1,7 @@
 #ifndef __IWEAPONITEM_H
 #define __IWEAPONITEM_H
 
-#include "../Item.h"
+#include "../ItemManager.h"
 
 /*
 ===============================
@@ -9,11 +9,18 @@ Item Class
 ===============================
 */
 
-class IWeaponItem : public BG_BUILD_ITEM
+class IWeaponItem : public VMInventoryItem
 {
 	/* Stuff needed from the framework */
 public:
-	void ParseInventoryItem( void *cJSONNode );
+	IWeaponItem( void *cJSON );
+	static IWeaponItem* Factory(void *cJSONNode) { return new IWeaponItem(cJSONNode); }
+	/* Custom stuff */
+private:
+	int weapon;
+	int variation;
+	int varID;
+	std::string xml; // FIXME: remove, this blows donkey dildos
 };
 
 /*
@@ -22,17 +29,19 @@ Item Instance Class
 ===============================
 */
 
-class IWeaponItemInstance : public BG_BUILD_INSTANCE
+class IWeaponItemInstance : public VMItemInstance
 {
 	/* Stuff needed from the framework */
 public:
 	IWeaponItemInstance();
-	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m CompareAgainst( InventoryItemInstance *other );
 	SerializeCompare_m FullRawString( );
 	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
 	void SetField( unsigned int fieldID, unsigned int value );
 
-	friend class IWeaponItemInstance;
+	static IWeaponItemInstance* Factory() { return new IWeaponItemInstance(); }
+
+friend class IWeaponItemInstance;
 
 	/* Custom stuff */
 private:

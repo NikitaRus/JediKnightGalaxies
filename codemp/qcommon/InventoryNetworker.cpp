@@ -75,7 +75,7 @@ SerializeString_v InventoryNetworker::GenerateDeltaData( Inventory *oldInv, Inve
 				InventoryItemInstance *itm = newInv->GetItemAt( i );
 				itm->WriteDelta( keylist, &retVal );
 			}
-			catch( const std::out_of_range &oor )
+			catch( const std::out_of_range & )
 			{
 				// No change in this item
 				retVal.push_back(0xFF);
@@ -112,7 +112,7 @@ void InventoryNetworker::PopDeltaData( msg_t *msg, Inventory *oldInv, Inventory 
 	for( i = 0; i < numItemsNew; i++ )
 	{
 		// we're dealing with an old field, just possibly changed.
-		if( i >= oldInv->numElements )
+		if( i >= oldInv->items.size() )
 		{
 			int numChangedFields = MSG_ReadByte(msg);
 			if( numChangedFields == -1 )

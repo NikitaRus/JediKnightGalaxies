@@ -6,10 +6,18 @@ Item Class
 ===============================
 */
 
-void IWeaponItem::ParseInventoryItem( void *cJSONNode )
+stringID_table_t WPTable[]; // From bg_saga.c
+IWeaponItem::IWeaponItem( void *cJSON )
 {
-	// No parsing yet.
-	return;
+	iType = ITEM_WEAPON;
+
+	ItemManager::ParseGenericItemFields( this, cJSON );
+
+	const char *str = cJSON_ToString(cJSON_GetObjectItem(cJSON, "weapon"));
+	if( !atoi(str) ) weapon = GetIDForString(WPTable, str);
+	else weapon = atoi(str);
+
+	variation = cJSON_ToInteger(cJSON_GetObjectItem(cJSON, "variation"));
 }
 
 /*
@@ -23,7 +31,7 @@ IWeaponItemInstance::IWeaponItemInstance()
 	iType = ITEM_WEAPON;
 }
 
-SerializeCompare_m IWeaponItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IWeaponItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -69,7 +77,7 @@ void IWeaponItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeStrin
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -83,7 +91,7 @@ void IWeaponItemInstance::SetField( unsigned int fieldID, unsigned int value )
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

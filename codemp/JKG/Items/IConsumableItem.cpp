@@ -1,4 +1,9 @@
 #include "IConsumableItem.h"
+#ifdef QAGAME
+#include "game/g_local.h"
+#else
+#include "cgame/cg_local.h"
+#endif
 
 /*
 ===============================
@@ -6,9 +11,11 @@ Item Class
 ===============================
 */
 
-void IConsumableItem::ParseInventoryItem( void *cJSONNode )
+IConsumableItem::IConsumableItem( void *cJSON )
 {
+	iType = ITEM_CONSUMABLE;
 
+	ItemManager::ParseGenericItemFields( this, cJSON );
 }
 
 /*
@@ -22,7 +29,7 @@ IConsumableItemInstance::IConsumableItemInstance()
 	iType = ITEM_CONSUMABLE;
 }
 
-SerializeCompare_m IConsumableItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IConsumableItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -68,7 +75,7 @@ void IConsumableItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeS
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -82,7 +89,7 @@ void IConsumableItemInstance::SetField( unsigned int fieldID, unsigned int value
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

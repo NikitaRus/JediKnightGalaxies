@@ -3488,6 +3488,7 @@ void BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean 
 
 	s->weapon = ps->weapon;
 	s->weaponVariation = ps->weaponVariation;
+	s->weaponId = ps->weaponId;
 	s->groundEntityNum = ps->groundEntityNum;
 	s->saberActionFlags = ps->saberActionFlags;
 	// eezstreet add: we were missing the saber swing speed also
@@ -3657,6 +3658,7 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	}
 	s->weapon = ps->weapon;
 	s->weaponVariation = ps->weaponVariation;
+	s->weaponId = ps->weaponId;
 	s->groundEntityNum = ps->groundEntityNum;
 	//Stoiss add: Missing SaberActionflags!
 	s->saberActionFlags = ps->saberActionFlags;

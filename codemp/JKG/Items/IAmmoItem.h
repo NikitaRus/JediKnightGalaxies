@@ -1,26 +1,34 @@
 #ifndef __IAMMOITEM_H
 #define __IAMMOITEM_H
 
-#include "../Item.h"
+#include "../ItemManager.h"
+#ifdef QAGAME
+#include "game/g_local.h"
+#else
+#include "cgame/cg_local.h"
+#endif
 
-class IAmmoItem : public BG_BUILD_ITEM
+class IAmmoItem : public VMInventoryItem
 {
 	/* Stuff needed from the framework */
 public:
-	void ParseInventoryItem( void *cJSONNode );
+	IAmmoItem( void *cJSON );
+	static IAmmoItem* Factory( void *cJSON ) { return new IAmmoItem( cJSON ); }
 };
 
-class IAmmoItemInstance : public BG_BUILD_INSTANCE
+class IAmmoItemInstance : public VMItemInstance
 {
 	/* Stuff needed from the framework */
 public:
 	IAmmoItemInstance();
-	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m CompareAgainst( InventoryItemInstance *other );
 	SerializeCompare_m FullRawString( );
 	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
 	void SetField( unsigned int fieldID, unsigned int value );
 
-	friend class IAmmoItemInstance;
+	static IAmmoItemInstance* Factory() { return new IAmmoItemInstance(); }
+
+friend class IAmmoItemInstance;
 
 	/* Custom stuff */
 private:

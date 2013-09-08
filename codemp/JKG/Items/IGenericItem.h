@@ -1,26 +1,34 @@
 #ifndef __IGENERICITEM_H
 #define __IGENERICITEM_H
 
-#include "../Item.h"
+#include "../ItemManager.h"
+#ifdef QAGAME
+#include "game/g_local.h"
+#else
+#include "cgame/cg_local.h"
+#endif
 
-class IGenericItem : public BG_BUILD_ITEM
+class IGenericItem : public VMInventoryItem
 {
 	/* Stuff needed from the framework */
 public:
-	void ParseInventoryItem( void *cJSONNode );
+	IGenericItem( void *cJSON );
+	static IGenericItem* Factory( void *cJSON ) { return new IGenericItem( cJSON ); }
 };
 
-class IGenericItemInstance : public BG_BUILD_INSTANCE
+class IGenericItemInstance : public VMItemInstance
 {
 	/* Stuff needed from the framework */
 public:
 	IGenericItemInstance();
-	SerializeCompare_m CompareAgainst( BG_BUILD_INSTANCE *other );
+	SerializeCompare_m CompareAgainst( InventoryItemInstance *other );
 	SerializeCompare_m FullRawString( );
 	void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string );
 	void SetField( unsigned int fieldID, unsigned int value );
 
-	friend class IGenericItemInstance;
+	static IGenericItemInstance* Factory() { return new IGenericItemInstance(); }
+
+friend class IGenericItemInstance;
 
 	/* Custom stuff */
 private:

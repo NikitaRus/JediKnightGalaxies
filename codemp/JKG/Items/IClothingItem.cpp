@@ -6,9 +6,11 @@ Item Class
 ===============================
 */
 
-void IClothingItem::ParseInventoryItem( void *cJSONNode )
+IClothingItem::IClothingItem( void *cJSON )
 {
+	iType = ITEM_CLOTHING;
 
+	ItemManager::ParseGenericItemFields( this, cJSON );
 }
 
 /*
@@ -22,7 +24,7 @@ IClothingItemInstance::IClothingItemInstance()
 	iType = ITEM_CLOTHING;
 }
 
-SerializeCompare_m IClothingItemInstance::CompareAgainst( BG_BUILD_INSTANCE *other )
+SerializeCompare_m IClothingItemInstance::CompareAgainst( InventoryItemInstance *other )
 {
 	if( other->GetItemType() != iType )
 	{
@@ -68,7 +70,7 @@ void IClothingItemInstance::WriteDelta( SerializeCompare_m keylist, SerializeStr
 			string->push_back( value & 0xF );			// lo bits
 			string->push_back( (value >> 8) & 0xF );	// hi bits
 		}
-		catch( const std::out_of_range &oor )
+		catch( const std::out_of_range & )
 		{
 			continue;
 		}
@@ -82,7 +84,7 @@ void IClothingItemInstance::SetField( unsigned int fieldID, unsigned int value )
 		case ITMKEY_ITEMID:
 			{
 				itemID = value;
-				BG_BUILD_ITEM *itm = FillBaseData();
+				VMInventoryItem *itm = FillBaseData();
 				if(!itm) return;
 				id = itm;
 				break;

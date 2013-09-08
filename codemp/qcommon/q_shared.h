@@ -2235,6 +2235,7 @@ typedef enum
 	ITEM_CONSUMABLE,	// Usable items / items that have an effect when we "use" them in the inventory, like scrolls or whatever.
 	ITEM_BUFF=5,		// FIXME: remove
 	ITEM_AMMO,			// Ammo items. TBA how this is used.
+	ITEM_MAX,
 } inventoryItemType_e;
 
 #ifdef __cplusplus
@@ -2310,8 +2311,10 @@ protected:
 	unsigned short itemID;
 
 public:
-	// The parsing is done via the BG crap
-	virtual void ParseInventoryItem( void *cJSONNode ) = 0;
+
+	unsigned short GetItemID() { return itemID; }
+
+friend class InventoryItemInstance;
 };
 
 /*
@@ -2345,6 +2348,23 @@ public:
 
 	unsigned short GetItemID() { return itemID; }
 	inventoryItemType_e GetItemType() { return iType; }
+	unsigned short GetUniqueID() { return uID; }
+
+	ID_INLINE bool IsValid() { if(id) return true; else return false; };
+
+	/*
+	_generateuid()
+	DO NOT CALL.
+	*/
+
+	void _generateuid( unsigned int uIDx ) { uID = uIDx; };
+
+	/*
+	SetField()
+	Sets a specific field to be a certain value
+	*/
+
+	virtual void SetField( unsigned int fieldID, unsigned int value ) = 0;
 
 protected:
 
@@ -2371,17 +2391,9 @@ protected:
 	virtual void WriteDelta( SerializeCompare_m keylist, SerializeString_v *string ) = 0;
 
 	/*
-	SetField()
-	Sets a specific field to be a certain value
-	*/
-
-	virtual void SetField( unsigned int fieldID, unsigned int value ) = 0;
-
-	/*
 	Function for checking validity / Function for getting the base data
 	*/
 
-	ID_INLINE bool IsValid() { if(id) return true; else return false; };
 	InventoryItem *GetBaseData() { if(IsValid()) return id; else { id = FillBaseData(); return id; } };
 
 protected:
@@ -2416,9 +2428,7 @@ only for some minor things.
 class Inventory
 {
 protected:
-	InventoryItemInstance *items;
-	unsigned short numElements;
-	size_t size;
+	std::vector<InventoryItemInstance*> items;
 
 	unsigned short last_uID;
 
@@ -2429,12 +2439,19 @@ protected:
 
 	void AddElement( InventoryItemInstance *item )
 	{
+		if( !item )
+			return;
 
-	}
+		if( !item->IsValid() )
+		{
+			// Generate the base data for it
+			item->FillBaseData();
+		}
 
-	void AddElement( unsigned int itemID, SerializeString_v *kvPair = NULL )
-	{
+		item->_generateuid(last_uID);
+		items.push_back(item);
 
+		last_uID++;
 	}
 
 	/*
@@ -2444,21 +2461,91 @@ protected:
 
 	void RemoveElement( InventoryItemInstance *item )
 	{
+		if( !item )
+			return;
+
+		for(auto it = items.begin(); it != items.end(); ++it)
+		{
+			if( *it == item || (*it)->GetUniqueID() == item->GetUniqueID() )
+			{
+				items.erase(it);
+				return;
+			}
+		}
 	}
 
 	void RemoveElement( unsigned int elementID )
 	{
-
+		try
+		{
+			items.erase(items.begin() + elementID);
+		}
+		catch( std::out_of_range )
+		{
+			return;
+		}
 	}
 
 public:
 	// Needed by crap in the engine
-	unsigned short GetNumberItems( ) { return numElements; }
+	unsigned short GetNumberItems( ) { return items.size(); }
 	unsigned short GetLastuID( ) { return last_uID; }
-	InventoryItemInstance *GetItemAt( unsigned int id ) { if( id >= numElements ) return NULL; return &items[id]; }
+	InventoryItemInstance *GetItemAt( unsigned int id ) { if( id >= items.size() ) return NULL; return items[id]; }
 
 	// Constuctor
-	Inventory() { last_uID = 0; numElements = 0; size = 0; };
+	Inventory() { last_uID = 0; };
+
+	// Overloaded operators
+	Inventory& operator+=( InventoryItemInstance *item )
+	{
+		this->AddElement( item );
+		return *this;
+	}
+
+	ID_INLINE Inventory& operator+( InventoryItemInstance *item )
+	{
+		this->AddElement( item );
+		return *this;
+	}
+
+	Inventory& operator-=( InventoryItemInstance *item )
+	{
+		this->RemoveElement( item );
+		return *this;
+	}
+
+	ID_INLINE Inventory& operator-( InventoryItemInstance *item )
+	{
+		this->RemoveElement( item );
+		return *this;
+	}
+
+	Inventory& operator-=( unsigned int index )
+	{
+		this->RemoveElement( index );
+		return *this;
+	}
+
+	ID_INLINE Inventory& operator-( unsigned int index )
+	{
+		this->RemoveElement(index);
+		return *this;
+	}
+
+	ID_INLINE Inventory& operator=( const Inventory& rtSide )
+	{
+		if( rtSide.items.size() == 0 && items.size() == 0 ) return *this;
+		items.clear();
+		if( rtSide.items.size() > 0 )
+		{
+			for(auto it=rtSide.items.begin(); it != rtSide.items.end(); ++it)
+			{
+				items.push_back(*it);
+			}
+		}
+		last_uID = rtSide.last_uID;
+		return *this;
+	}
 
 #ifdef ENGINE
 friend class InventoryNetworker;
@@ -3194,6 +3281,7 @@ typedef struct entityState_s {
 	//amount of any of these above 1 bit.
 
 	unsigned char	weaponVariation;
+	unsigned char	weaponId;
 	unsigned char	firingMode;
 	unsigned char	weaponstate;
 
@@ -3215,7 +3303,7 @@ typedef struct entityState_s {
 	unsigned short	saberCrystal[2];
 
 	qboolean		sightsTransition;	// Are we in a sights transition? (Used for player animation)
-	Inventory		inventory;			// Inventory (used for trading)
+	//Inventory		inventory;			// Inventory (used for trading)
 } entityState_t;
 
 typedef enum {

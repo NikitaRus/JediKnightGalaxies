@@ -989,6 +989,7 @@ netField_t	entityStateFields[] =
 { NETF(m_iVehicleNum), GENTITYNUM_BITS }, // 10 bits fits all possible entity nums (2^10 = 1024). - AReis
 
 // JKG SPECIFIC
+{ NETF(weaponId), 8 },
 { NETF(weaponVariation), 8 },
 { NETF(firingMode), 8 },
 { NETF(weaponstate), 8 },

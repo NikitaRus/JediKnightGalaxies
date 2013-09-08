@@ -350,7 +350,6 @@
   <ItemGroup>
     <ClInclude Include="..\client\FxScheduler.h" />
     <ClInclude Include="..\game\anims.h" />
-    <ClInclude Include="..\JKG\Item.h" />
     <ClInclude Include="..\JKG\ItemManager.h" />
     <ClInclude Include="..\JKG\Items\IAmmoItem.h" />
     <ClInclude Include="..\JKG\Items\IArmorItem.h" />
@@ -358,6 +357,7 @@
     <ClInclude Include="..\JKG\Items\IConsumableItem.h" />
     <ClInclude Include="..\JKG\Items\ICrystalItem.h" />
     <ClInclude Include="..\JKG\Items\IGenericItem.h" />
+    <ClInclude Include="..\JKG\Items\ItemInclude.h" />
     <ClInclude Include="..\JKG\Items\IWeaponItem.h" />
     <ClInclude Include="..\libraries\DetourTileCache\DetourTileCacheBuilder.h" />
     <ClInclude Include="..\libraries\Detour\Include\DetourAlloc.h" />
