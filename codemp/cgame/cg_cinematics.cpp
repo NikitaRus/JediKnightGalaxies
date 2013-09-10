@@ -179,73 +179,73 @@ typedef struct {
 	int DataOffset;
 } Cinematic_t;
 
-static Cinematic_t cin;
+static Cinematic_t cinematic;
 
 void Cin_SetCamData(int CamMode) {
-	switch (cin.CamMode) {
+	switch (cinematic.CamMode) {
 		case CAM_DEFAULT:
 			break;
 		case CAM_STATIC:
 		case CAM_AIMED:
 		case CAM_HITCHCOCK:
-			free(cin.CamData);
+			free(cinematic.CamData);
 			break;
 		case CAM_LINEAR:
-			free(((CamData_Linear_t *)cin.CamData)->pointData);
-			free(cin.CamData);
+			free(((CamData_Linear_t *)cinematic.CamData)->pointData);
+			free(cinematic.CamData);
 			break;
 		case CAM_SPLINE:
-			free(((CamData_Spline_t *)cin.CamData)->pointData);
-			free(cin.CamData);
+			free(((CamData_Spline_t *)cinematic.CamData)->pointData);
+			free(cinematic.CamData);
 			break;
 		case CAM_VIDEO:
-			trap_CIN_StopCinematic(((CamData_Video_t *)cin.CamData)->videoHandle);
+			trap_CIN_StopCinematic(((CamData_Video_t *)cinematic.CamData)->videoHandle);
 			// Revert cvars
 			trap_Cvar_Set("r_clear", "0");
 			trap_Cvar_Set("r_drawworld", "1");
 			trap_Cvar_Set("r_drawentities", "1");
 
-			trap_Cvar_Set("s_volume", va("%f", ((CamData_Video_t *)cin.CamData)->volume));
-			trap_Cvar_Set("s_volumevoice", va("%f", ((CamData_Video_t *)cin.CamData)->voiceVolume));
-			trap_Cvar_Set("s_musicvolume", va("%f", ((CamData_Video_t *)cin.CamData)->musicVolume));
+			trap_Cvar_Set("s_volume", va("%f", ((CamData_Video_t *)cinematic.CamData)->volume));
+			trap_Cvar_Set("s_volumevoice", va("%f", ((CamData_Video_t *)cinematic.CamData)->voiceVolume));
+			trap_Cvar_Set("s_musicvolume", va("%f", ((CamData_Video_t *)cinematic.CamData)->musicVolume));
 			cg.cinematicVideo = 0;
-			free(cin.CamData);
+			free(cinematic.CamData);
 		default:
 			break;
 	}
-	cin.CamData = 0;
+	cinematic.CamData = 0;
 
 	switch (CamMode) {
 		case CAM_DEFAULT:
 			break;
 		case CAM_STATIC:
-			cin.CamData = malloc(sizeof(CamData_Static_t));
-			memset(cin.CamData, 0, sizeof(CamData_Static_t));
+			cinematic.CamData = malloc(sizeof(CamData_Static_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Static_t));
 			break;
 		case CAM_AIMED:
-			cin.CamData = malloc(sizeof(CamData_Aimed_t));
-			memset(cin.CamData, 0, sizeof(CamData_Aimed_t));
+			cinematic.CamData = malloc(sizeof(CamData_Aimed_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Aimed_t));
 			break;
 		case CAM_LINEAR:
-			cin.CamData = malloc(sizeof(CamData_Linear_t));
-			memset(cin.CamData, 0, sizeof(CamData_Linear_t));
+			cinematic.CamData = malloc(sizeof(CamData_Linear_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Linear_t));
 			break;
 		case CAM_SPLINE:
-			cin.CamData = malloc(sizeof(CamData_Spline_t));
-			memset(cin.CamData, 0, sizeof(CamData_Spline_t));
+			cinematic.CamData = malloc(sizeof(CamData_Spline_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Spline_t));
 			break;
 		case CAM_HITCHCOCK:
-			cin.CamData = malloc(sizeof(CamData_Hitchcock_t));
-			memset(cin.CamData, 0, sizeof(CamData_Hitchcock_t));
+			cinematic.CamData = malloc(sizeof(CamData_Hitchcock_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Hitchcock_t));
 			break;
 		case CAM_VIDEO:
-			cin.CamData = malloc(sizeof(CamData_Video_t));
-			memset(cin.CamData, 0, sizeof(CamData_Video_t));
+			cinematic.CamData = malloc(sizeof(CamData_Video_t));
+			memset(cinematic.CamData, 0, sizeof(CamData_Video_t));
 			break;
 		default:
 			break;
 	}
-	cin.CamMode = CamMode;
+	cinematic.CamMode = CamMode;
 }
 
 void Cin_InitParseBuff(parsebuff_t *pb) {
@@ -730,15 +730,15 @@ float Cin_ProcessFOV();
 
 int Cin_ProcessCamera() {
 	// Returns 1 if we're using a non-default cam
-	CamData_Union_t *CamData = (CamData_Union_t *)cin.CamData;
+	CamData_Union_t *CamData = (CamData_Union_t *)cinematic.CamData;
 	centity_t *ent;
 	vec3_t temp;
 	int i;
 	int pt = 0;
 	float ltime;
 
-	if (!cin.CamMode) return 0;
-	switch (cin.CamMode) {
+	if (!cinematic.CamMode) return 0;
+	switch (cinematic.CamMode) {
 		case CAM_STATIC:
 			VectorCopy(CamData->CamStatic.origin, cg.refdef.vieworg);
 			VectorCopy(CamData->CamStatic.angles, cg.refdef.viewangles);
@@ -900,29 +900,29 @@ void Cin_ProcessFlash() {
 	// Processes flash ins and flash outs
 	vec4_t cincolor;
 	cincolor[0] = cincolor[1] = cincolor[2] = 1;
-	if (cin.Flash.state == 0) return; // Off
-	if (cin.Flash.state == 2) { // Faded white
+	if (cinematic.Flash.state == 0) return; // Off
+	if (cinematic.Flash.state == 2) { // Faded white
 		cincolor[3] = 1;
 		trap_R_SetColor(&cincolor[0]);
 		trap_R_DrawStretchPic(0,0,640,480,0,0,0,0,cgs.media.whiteShader);
 		trap_R_SetColor(NULL);
 		return;
 	}
-	if (cin.Flash.state == 1) {
+	if (cinematic.Flash.state == 1) {
 		float alpha;
-		if (cg.time > cin.Flash.startTime + cin.Flash.duration) {
-			if (cin.Flash.to == 100) {
-				cin.Flash.state = 2;
+		if (cg.time > cinematic.Flash.startTime + cinematic.Flash.duration) {
+			if (cinematic.Flash.to == 100) {
+				cinematic.Flash.state = 2;
 				alpha = 1;
 			} else {
-				cin.Flash.state = 0;
+				cinematic.Flash.state = 0;
 				alpha = 0;
 			}
-		} else if (cg.time < cin.Flash.startTime) {
-			alpha = (float)cin.Flash.from / 100.f;
+		} else if (cg.time < cinematic.Flash.startTime) {
+			alpha = (float)cinematic.Flash.from / 100.f;
 		} else {
-			alpha = ((float)(cg.time - cin.Flash.startTime) / cin.Flash.duration);
-			alpha = ((cin.Flash.to * alpha) + (cin.Flash.from * (1-alpha))) / 100;
+			alpha = ((float)(cg.time - cinematic.Flash.startTime) / cinematic.Flash.duration);
+			alpha = ((cinematic.Flash.to * alpha) + (cinematic.Flash.from * (1-alpha))) / 100;
 		}
 		cincolor[3] = alpha;
 		trap_R_SetColor(&cincolor[0]);
@@ -931,36 +931,36 @@ void Cin_ProcessFlash() {
 		return;
 	}
 
-	trap_Error(va("ERROR: Cin_ProcessFlash: Invalid state %i", cin.Flash.state));
+	trap_Error(va("ERROR: Cin_ProcessFlash: Invalid state %i", cinematic.Flash.state));
 }
 
 void Cin_ProcessFade() {
 	// Processes fade ins and fade outs
 	vec4_t cincolor;
 	cincolor[0] = cincolor[1] = cincolor[2] = 0;
-	if (cin.Fade.state == 0) return; // Off
-	if (cin.Fade.state == 2) { // Faded black
+	if (cinematic.Fade.state == 0) return; // Off
+	if (cinematic.Fade.state == 2) { // Faded black
 		cincolor[3] = 1;
 		trap_R_SetColor(&cincolor[0]);
 		trap_R_DrawStretchPic(0,0,640,480,0,0,0,0,cgs.media.whiteShader);
 		trap_R_SetColor(NULL);
 		return;
 	}
-	if (cin.Fade.state == 1) {
+	if (cinematic.Fade.state == 1) {
 		float alpha;
-		if (cg.time > cin.Fade.startTime + cin.Fade.duration) {
-			if (cin.Fade.to == 100) {
-				cin.Fade.state = 2;
+		if (cg.time > cinematic.Fade.startTime + cinematic.Fade.duration) {
+			if (cinematic.Fade.to == 100) {
+				cinematic.Fade.state = 2;
 				alpha = 1;
 			} else {
-				cin.Fade.state = 0;
+				cinematic.Fade.state = 0;
 				alpha = 0;
 			}
-		} else if (cg.time < cin.Fade.startTime) {
-			alpha = (float)cin.Fade.from / 100.f;
+		} else if (cg.time < cinematic.Fade.startTime) {
+			alpha = (float)cinematic.Fade.from / 100.f;
 		} else {
-			alpha = ((float)(cg.time - cin.Fade.startTime) / cin.Fade.duration);
-			alpha = ((cin.Fade.to * alpha) + (cin.Fade.from * (1-alpha))) / 100;
+			alpha = ((float)(cg.time - cinematic.Fade.startTime) / cinematic.Fade.duration);
+			alpha = ((cinematic.Fade.to * alpha) + (cinematic.Fade.from * (1-alpha))) / 100;
 		}
 		cincolor[3] = alpha;
 		trap_R_SetColor(&cincolor[0]);
@@ -969,47 +969,47 @@ void Cin_ProcessFade() {
 		return;
 	}
 
-	trap_Error(va("ERROR: Cin_ProcessFade: Invalid state %i", cin.Fade.state));
+	trap_Error(va("ERROR: Cin_ProcessFade: Invalid state %i", cinematic.Fade.state));
 }
 
 int Cin_ProcessMB() {
 	// Returns the motion blur level to use
-	if (!cin.Motionblur.state) return 0;
-	if (cin.Motionblur.state == 2) {
+	if (!cinematic.Motionblur.state) return 0;
+	if (cinematic.Motionblur.state == 2) {
 		// Static
-		return cin.Motionblur.from;
+		return cinematic.Motionblur.from;
 	}
-	if (cin.Motionblur.state == 1) {
+	if (cinematic.Motionblur.state == 1) {
 		// Fading
 		float fade;
-		if (cg.time > cin.Motionblur.startTime + cin.Motionblur.duration) {
-			if (cin.Motionblur.to == 0) {
-				cin.Motionblur.state = 0;
+		if (cg.time > cinematic.Motionblur.startTime + cinematic.Motionblur.duration) {
+			if (cinematic.Motionblur.to == 0) {
+				cinematic.Motionblur.state = 0;
 				return 0;
 			} else {
-				cin.Motionblur.state = 2;
-				cin.Motionblur.from = cin.Motionblur.to;
-				return cin.Motionblur.to;
+				cinematic.Motionblur.state = 2;
+				cinematic.Motionblur.from = cinematic.Motionblur.to;
+				return cinematic.Motionblur.to;
 			}
-		} else if (cg.time < cin.Motionblur.startTime) {
-			fade = (float)cin.Motionblur.from;
+		} else if (cg.time < cinematic.Motionblur.startTime) {
+			fade = (float)cinematic.Motionblur.from;
 		} else {
-			fade = ((float)(cg.time - cin.Motionblur.startTime) / cin.Motionblur.duration);
-			fade = ((cin.Motionblur.to * fade) + (cin.Motionblur.from * (1-fade)));
+			fade = ((float)(cg.time - cinematic.Motionblur.startTime) / cinematic.Motionblur.duration);
+			fade = ((cinematic.Motionblur.to * fade) + (cinematic.Motionblur.from * (1-fade)));
 		}
 		return (int)fade;
 	}
-	trap_Error(va("ERROR: Cin_ProcessMB: Invalid state %i", cin.Motionblur.state));
+	trap_Error(va("ERROR: Cin_ProcessMB: Invalid state %i", cinematic.Motionblur.state));
 	return 0;
 }
 
 void Cin_ProcessVideo() {
 	CamData_Video_t *data;
 
-	if (cin.CamMode != CAM_VIDEO) {
+	if (cinematic.CamMode != CAM_VIDEO) {
 		return;
 	}
-	data = (CamData_Video_t *)cin.CamData;
+	data = (CamData_Video_t *)cinematic.CamData;
 
 	trap_CIN_RunCinematic(data->videoHandle);
 	trap_CIN_DrawCinematic(data->videoHandle);
@@ -1017,32 +1017,32 @@ void Cin_ProcessVideo() {
 
 float Cin_ProcessFOV() {
 	// Returns the motion blur level to use
-	if (!cin.Fov.state) return cg_fov.value;
-	if (cin.Fov.state == 2) {
+	if (!cinematic.Fov.state) return cg_fov.value;
+	if (cinematic.Fov.state == 2) {
 		// Static
-		return cin.Fov.from;
+		return cinematic.Fov.from;
 	}
-	if (cin.Fov.state == 1) {
+	if (cinematic.Fov.state == 1) {
 		// Fading
 		float fade;
-		if (cg.time > cin.Fov.startTime + cin.Fov.duration) {
-			if (cin.Fov.to == cg_fov.integer) {
-				cin.Fov.state = 0;
+		if (cg.time > cinematic.Fov.startTime + cinematic.Fov.duration) {
+			if (cinematic.Fov.to == cg_fov.integer) {
+				cinematic.Fov.state = 0;
 				return cg_fov.integer;
 			} else {
-				cin.Fov.state = 2;
-				cin.Fov.from = cin.Fov.to;
-				return cin.Fov.to;
+				cinematic.Fov.state = 2;
+				cinematic.Fov.from = cinematic.Fov.to;
+				return cinematic.Fov.to;
 			}
-		} else if (cg.time < cin.Fov.startTime) {
-			fade = (float)cin.Fov.from;
+		} else if (cg.time < cinematic.Fov.startTime) {
+			fade = (float)cinematic.Fov.from;
 		} else {
-			fade = ((float)(cg.time - cin.Fov.startTime) / cin.Fov.duration);
-			fade = ((cin.Fov.to * fade) + (cin.Fov.from * (1-fade)));
+			fade = ((float)(cg.time - cinematic.Fov.startTime) / cinematic.Fov.duration);
+			fade = ((cinematic.Fov.to * fade) + (cinematic.Fov.from * (1-fade)));
 		}
 		return fade;
 	}
-	trap_Error(va("ERROR: Cin_ProcessFOV: Invalid state %i", cin.Fov.state));
+	trap_Error(va("ERROR: Cin_ProcessFOV: Invalid state %i", cinematic.Fov.state));
 	return cg_fov.integer;
 }
 
@@ -1052,15 +1052,15 @@ static void Cin_DoLinearInterpolation();
 static void Cin_DoCubicSplineInterpolation();
 
 static void Cin_Reset() {
-	cin.CinActive = 0;
-	cin.AwaitingData = 0;
+	cinematic.CinActive = 0;
+	cinematic.AwaitingData = 0;
 	Cin_SetCamData(CAM_DEFAULT);
 
-	cin.Motionblur.state = 0;
-	cin.Fov.state = 0;
-	memset(&cin.CM, 0, sizeof(cin.CM));
-	cin.Fade.state = 0;
-	cin.Flash.state = 0;
+	cinematic.Motionblur.state = 0;
+	cinematic.Fov.state = 0;
+	memset(&cinematic.CM, 0, sizeof(cinematic.CM));
+	cinematic.Fade.state = 0;
+	cinematic.Flash.state = 0;
 	if (cg.trapEscape) {
 		cg.trapEscape = 0;
 		uiImports->SetEscapeTrap(qfalse);
@@ -1153,37 +1153,37 @@ void Cin_ProcessCinematicBinary_f() {
 			// End of message
 			return;
 		case CIN_ACT_FADEIN:
-			cin.Fade.startTime = cg.time;
-			cin.Fade.from = 100;
-			cin.Fade.to = 0; // in percentage scale (alpha)
-			cin.Fade.duration = BitStream_ReadTime(&stream);
-			cin.Fade.state = 1; // Fading
+			cinematic.Fade.startTime = cg.time;
+			cinematic.Fade.from = 100;
+			cinematic.Fade.to = 0; // in percentage scale (alpha)
+			cinematic.Fade.duration = BitStream_ReadTime(&stream);
+			cinematic.Fade.state = 1; // Fading
 			break;
 		case CIN_ACT_FADEOUT:
-			cin.Fade.startTime = cg.time;
-			cin.Fade.from = 0;
-			cin.Fade.to = 100; // in percentage scale (alpha)
-			cin.Fade.duration = BitStream_ReadTime(&stream);
-			cin.Fade.state = 1; // Fading
+			cinematic.Fade.startTime = cg.time;
+			cinematic.Fade.from = 0;
+			cinematic.Fade.to = 100; // in percentage scale (alpha)
+			cinematic.Fade.duration = BitStream_ReadTime(&stream);
+			cinematic.Fade.state = 1; // Fading
 			break;
 		case CIN_ACT_STATICCAM:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_STATIC);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			BitStream_ReadVector(&stream, &CamData->CamStatic.origin);
 			BitStream_ReadVector(&stream, &CamData->CamStatic.angles);
 			break;
 		case CIN_ACT_AIMEDCAM:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_AIMED);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamAimed.entID = BitStream_ReadBits(&stream, 10);
 			BitStream_ReadVector(&stream, &CamData->CamAimed.origin);
 			break;
 		case CIN_ACT_LINEARCAM:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_LINEAR);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamLinear.camStartTime = cg.time;
 			if (BitStream_ReadBool(&stream)) { // Targetted?
 				CamData->CamLinear.targetType = 1 + BitStream_ReadBool(&stream); // Check target type (explicit vs entity)
@@ -1230,16 +1230,16 @@ void Cin_ProcessCinematicBinary_f() {
 				}
 			}
 			if (len != CamData->CamLinear.pointcount) { // This message was fragmented, stop processing and wait for the rest
-				cin.AwaitingData = 1;
-				cin.DataOffset = i;
+				cinematic.AwaitingData = 1;
+				cinematic.DataOffset = i;
 				return;
 			}
 			Cin_DoLinearInterpolation();
 			break;
 		case CIN_ACT_SPLINECAM:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_SPLINE);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamSpline.camStartTime = cg.time;
 
 			if (BitStream_ReadBool(&stream)) { // Targetted?
@@ -1293,8 +1293,8 @@ void Cin_ProcessCinematicBinary_f() {
 				}
 			}
 			if (len != CamData->CamSpline.pointcount) { // This message was fragmented, stop processing and wait for the rest
-				cin.AwaitingData = 1;
-				cin.DataOffset = i;
+				cinematic.AwaitingData = 1;
+				cinematic.DataOffset = i;
 				return;
 			}
 			
@@ -1307,49 +1307,49 @@ void Cin_ProcessCinematicBinary_f() {
 			break;
 		case CIN_ACT_MOTIONBLUR:
 			if (BitStream_ReadBool(&stream)) { // Are we fading?
-				cin.Motionblur.state = 1;
-				cin.Motionblur.startTime = cg.time;
-				cin.Motionblur.from = BitStream_ReadTimeHR(&stream);	// From and to values are sent as HR time values
-				cin.Motionblur.to = BitStream_ReadTimeHR(&stream);
-				cin.Motionblur.duration = BitStream_ReadTime(&stream);
+				cinematic.Motionblur.state = 1;
+				cinematic.Motionblur.startTime = cg.time;
+				cinematic.Motionblur.from = BitStream_ReadTimeHR(&stream);	// From and to values are sent as HR time values
+				cinematic.Motionblur.to = BitStream_ReadTimeHR(&stream);
+				cinematic.Motionblur.duration = BitStream_ReadTime(&stream);
 			} else {
-				cin.Motionblur.state = 2;
-				cin.Motionblur.from = BitStream_ReadTimeHR(&stream);
-				if (cin.Motionblur.from == 0) { // turn it off
-					cin.Motionblur.state = 0;
+				cinematic.Motionblur.state = 2;
+				cinematic.Motionblur.from = BitStream_ReadTimeHR(&stream);
+				if (cinematic.Motionblur.from == 0) { // turn it off
+					cinematic.Motionblur.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_FOV:
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.Fov.state = 1;
-				cin.Fov.startTime = cg.time;
-				cin.Fov.from = (int)BitStream_ReadBits(&stream, -9);
-				if (cin.Fov.from < 0) cin.Fov.from = cg_fov.integer;
+				cinematic.Fov.state = 1;
+				cinematic.Fov.startTime = cg.time;
+				cinematic.Fov.from = (int)BitStream_ReadBits(&stream, -9);
+				if (cinematic.Fov.from < 0) cinematic.Fov.from = cg_fov.integer;
 
-				cin.Fov.to = (int)BitStream_ReadBits(&stream, -9);
-				if (cin.Fov.to < 0) cin.Fov.to = cg_fov.integer;
+				cinematic.Fov.to = (int)BitStream_ReadBits(&stream, -9);
+				if (cinematic.Fov.to < 0) cinematic.Fov.to = cg_fov.integer;
 
-				cin.Fov.duration = BitStream_ReadTime(&stream);
+				cinematic.Fov.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.Fov.state = 2;
-				cin.Fov.from = (int)BitStream_ReadBits(&stream, -9);
-				if (cin.Fov.from < 0) { // turn it off
-					cin.Fov.state = 0;
+				cinematic.Fov.state = 2;
+				cinematic.Fov.from = (int)BitStream_ReadBits(&stream, -9);
+				if (cinematic.Fov.from < 0) { // turn it off
+					cinematic.Fov.state = 0;
 				}
 			}
 
 			break;
 
 		case CIN_ACT_RESTORE:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_DEFAULT);
 			break;
 		case CIN_ACT_HITCHCOCKEFFECT:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_HITCHCOCK);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamHitchcock.camStartTime = cg.time;
 			BitStream_ReadVector(&stream, &CamData->CamHitchcock.origin);
 			BitStream_ReadVector(&stream, &CamData->CamHitchcock.angles);
@@ -1362,16 +1362,16 @@ void Cin_ProcessCinematicBinary_f() {
 			
 			CamData->CamHitchcock.duration = BitStream_ReadTime(&stream);
 			// enable FOV while we're at it
-			cin.Fov.state = 1;
-			cin.Fov.startTime = cg.time;
-			cin.Fov.from = CamData->CamHitchcock.startFov;
-			cin.Fov.to = CamData->CamHitchcock.endFov;
-			cin.Fov.duration = CamData->CamHitchcock.duration;
+			cinematic.Fov.state = 1;
+			cinematic.Fov.startTime = cg.time;
+			cinematic.Fov.from = CamData->CamHitchcock.startFov;
+			cinematic.Fov.to = CamData->CamHitchcock.endFov;
+			cinematic.Fov.duration = CamData->CamHitchcock.duration;
 			break;
 		case CIN_ACT_VIDEO:
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_VIDEO);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamVideo.looping = BitStream_ReadBool(&stream);
 			BitStream_ReadString(&stream, CamData->CamVideo.filename, 64);
 
@@ -1396,185 +1396,185 @@ void Cin_ProcessCinematicBinary_f() {
 			break; // NOT IMPLEMENTED YET
 		case CIN_ACT_COLORMOD_SCALE:
 			if (BitStream_ReadBool(&stream)) { // Disable?
-				cin.CM.scale.state = 0;
+				cinematic.CM.scale.state = 0;
 				break;
 			}
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.CM.scale.state = 1;
-				cin.CM.scale.startTime = cg.time;
-				cin.CM.scale.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.state = 1;
+				cinematic.CM.scale.startTime = cg.time;
+				cinematic.CM.scale.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.scale.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.to[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.to[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.scale.duration = BitStream_ReadTime(&stream);
+				cinematic.CM.scale.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.CM.scale.state = 2;
+				cinematic.CM.scale.state = 2;
 
-				cin.CM.scale.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.scale.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.scale.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				if (cin.CM.scale.from[0] == 1 && cin.CM.scale.from[1] == 1 && cin.CM.scale.from[2] == 1) {
-					cin.CM.scale.state = 0;
+				if (cinematic.CM.scale.from[0] == 1 && cinematic.CM.scale.from[1] == 1 && cinematic.CM.scale.from[2] == 1) {
+					cinematic.CM.scale.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_COLORMOD_BIAS:
 			if (BitStream_ReadBool(&stream)) { // Disable?
-				cin.CM.bias.state = 0;
+				cinematic.CM.bias.state = 0;
 				break;
 			}
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.CM.bias.state = 1;
-				cin.CM.bias.startTime = cg.time;
-				cin.CM.bias.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.state = 1;
+				cinematic.CM.bias.startTime = cg.time;
+				cinematic.CM.bias.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.bias.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.to[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.to[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.bias.duration = BitStream_ReadTime(&stream);
+				cinematic.CM.bias.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.CM.bias.state = 2;
+				cinematic.CM.bias.state = 2;
 
-				cin.CM.bias.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.bias.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.bias.from[2] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				if (cin.CM.bias.from[0] == 1 && cin.CM.bias.from[1] == 1 && cin.CM.bias.from[2] == 1) {
-					cin.CM.bias.state = 0;
+				if (cinematic.CM.bias.from[0] == 1 && cinematic.CM.bias.from[1] == 1 && cinematic.CM.bias.from[2] == 1) {
+					cinematic.CM.bias.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_COLORMOD_BC:
 			if (BitStream_ReadBool(&stream)) { // Disable?
-				cin.CM.bc.state = 0;
+				cinematic.CM.bc.state = 0;
 				break;
 			}
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.CM.bc.state = 1;
-				cin.CM.bc.startTime = cg.time;
-				cin.CM.bc.from[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
-				cin.CM.bc.from[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.state = 1;
+				cinematic.CM.bc.startTime = cg.time;
+				cinematic.CM.bc.from[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.from[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
 
-				cin.CM.bc.to[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
-				cin.CM.bc.to[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.to[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.to[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
 
-				cin.CM.bc.duration = BitStream_ReadTime(&stream);
+				cinematic.CM.bc.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.CM.bc.state = 2;
+				cinematic.CM.bc.state = 2;
 
-				cin.CM.bc.from[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
-				cin.CM.bc.from[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.from[0] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
+				cinematic.CM.bc.from[1] = (float)((int)BitStream_ReadBits(&stream, -13)) / 100.0;
 
-				if (cin.CM.bc.from[0] == 0 && cin.CM.bc.from[1] == 1) {
-					cin.CM.bc.state = 0;
+				if (cinematic.CM.bc.from[0] == 0 && cinematic.CM.bc.from[1] == 1) {
+					cinematic.CM.bc.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_COLORMOD_FX:
 			if (BitStream_ReadBool(&stream)) { // Disable?
-				cin.CM.fx.state = 0;
+				cinematic.CM.fx.state = 0;
 				break;
 			}
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.CM.fx.state = 1;
-				cin.CM.fx.startTime = cg.time;
+				cinematic.CM.fx.state = 1;
+				cinematic.CM.fx.startTime = cg.time;
 
-				cin.CM.fx.fxID = BitStream_ReadBits(&stream, 2);
+				cinematic.CM.fx.fxID = BitStream_ReadBits(&stream, 2);
 
-				cin.CM.fx.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.fx.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.fx.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.fx.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.to[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.to[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				cin.CM.fx.duration = BitStream_ReadTime(&stream);
+				cinematic.CM.fx.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.CM.fx.state = 2;
+				cinematic.CM.fx.state = 2;
 
-				cin.CM.fx.fxID = BitStream_ReadBits(&stream, 2);
+				cinematic.CM.fx.fxID = BitStream_ReadBits(&stream, 2);
 
-				cin.CM.fx.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
-				cin.CM.fx.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.from[0] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
+				cinematic.CM.fx.from[1] = (float)BitStream_ReadBits(&stream, 12) / 100.0;
 
-				if (cin.CM.fx.fxID == 0 || cin.CM.fx.from[0] == 0) {
-					cin.CM.fx.state = 0;
+				if (cinematic.CM.fx.fxID == 0 || cinematic.CM.fx.from[0] == 0) {
+					cinematic.CM.fx.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_COLORMOD_INV:
 			if (BitStream_ReadBool(&stream)) { // Disable?
-				cin.CM.inv.state = 0;
+				cinematic.CM.inv.state = 0;
 				break;
 			}
 			if (BitStream_ReadBool(&stream)) { // Fading?
-				cin.CM.inv.state = 1;
-				cin.CM.inv.startTime = cg.time;
+				cinematic.CM.inv.state = 1;
+				cinematic.CM.inv.startTime = cg.time;
 
-				cin.CM.inv.from = (float)BitStream_ReadBits(&stream, 7) / 100.0;
+				cinematic.CM.inv.from = (float)BitStream_ReadBits(&stream, 7) / 100.0;
 				
-				cin.CM.inv.to = (float)BitStream_ReadBits(&stream, 7) / 100.0;
+				cinematic.CM.inv.to = (float)BitStream_ReadBits(&stream, 7) / 100.0;
 
-				cin.CM.inv.duration = BitStream_ReadTime(&stream);
+				cinematic.CM.inv.duration = BitStream_ReadTime(&stream);
 
 			} else {
-				cin.CM.inv.state = 2;
+				cinematic.CM.inv.state = 2;
 
-				cin.CM.inv.from = (float)BitStream_ReadBits(&stream, 7) / 100.0;
+				cinematic.CM.inv.from = (float)BitStream_ReadBits(&stream, 7) / 100.0;
 
-				if (cin.CM.inv.from == 0) {
-					cin.CM.inv.state = 0;
+				if (cinematic.CM.inv.from == 0) {
+					cinematic.CM.inv.state = 0;
 				}
 			}
 			break;
 		case CIN_ACT_CAPTION:
 			break; // NOT IMPLEMENTED YET
 		case CIN_ACT_FLASHIN:
-			cin.Flash.startTime = cg.time;
-			cin.Flash.from = 100;
-			cin.Flash.to = 0; // in percentage scale (alpha)
-			cin.Flash.duration = BitStream_ReadTime(&stream);
-			cin.Flash.state = 1; // Fading
+			cinematic.Flash.startTime = cg.time;
+			cinematic.Flash.from = 100;
+			cinematic.Flash.to = 0; // in percentage scale (alpha)
+			cinematic.Flash.duration = BitStream_ReadTime(&stream);
+			cinematic.Flash.state = 1; // Fading
 			break;
 		case CIN_ACT_FLASHOUT:
-			cin.Flash.startTime = cg.time;
-			cin.Flash.from = 0;
-			cin.Flash.to = 100; // in percentage scale (alpha)
-			cin.Flash.duration = BitStream_ReadTime(&stream);
-			cin.Flash.state = 1; // Fading
+			cinematic.Flash.startTime = cg.time;
+			cinematic.Flash.from = 0;
+			cinematic.Flash.to = 100; // in percentage scale (alpha)
+			cinematic.Flash.duration = BitStream_ReadTime(&stream);
+			cinematic.Flash.state = 1; // Fading
 			break;
 		case CIN_ACT_CONTDATA:
-			if (!cin.AwaitingData) {
+			if (!cinematic.AwaitingData) {
 				CG_Printf("WARNING: ^3Error processing cinematic info: Cont received without awaiting further data\n");
 				return;
 			}
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
-			cin.AwaitingData = 0;
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
+			cinematic.AwaitingData = 0;
 
 			// Check for fragmentation
 			if (BitStream_ReadBool(&stream)) {
 				// Message is fragmented, check how many points we can read from this message
-				len = cin.DataOffset + BitStream_ReadByte(&stream);
+				len = cinematic.DataOffset + BitStream_ReadByte(&stream);
 			} else {
 				len = -1;
 			}
 
-			if (cin.CamMode == CAM_LINEAR) {
+			if (cinematic.CamMode == CAM_LINEAR) {
 				if (len == -1) { len = CamData->CamLinear.pointcount; }
-				temp = CamData->CamLinear.pointData[cin.DataOffset - 1].offset;
+				temp = CamData->CamLinear.pointData[cinematic.DataOffset - 1].offset;
 
-				for (i=cin.DataOffset; i < len; i++) {
+				for (i=cinematic.DataOffset; i < len; i++) {
 					CamData->CamLinear.pointData[i].offset = BitStream_ReadTimeHR(&stream) + temp;
 					temp = CamData->CamLinear.pointData[i].offset;
 
@@ -1585,16 +1585,16 @@ void Cin_ProcessCinematicBinary_f() {
 					}
 				}
 				if (len != CamData->CamLinear.pointcount) { // This message was fragmented, stop processing and wait for the rest
-					cin.AwaitingData = 1;
-					cin.DataOffset = i;
+					cinematic.AwaitingData = 1;
+					cinematic.DataOffset = i;
 					return;
 				}
 				Cin_DoLinearInterpolation();
-			} else if (cin.CamMode == CAM_SPLINE) {
+			} else if (cinematic.CamMode == CAM_SPLINE) {
 				if (len == -1) { len = CamData->CamSpline.pointcount; }
-				temp = CamData->CamSpline.pointData[cin.DataOffset - 1].offset;
+				temp = CamData->CamSpline.pointData[cinematic.DataOffset - 1].offset;
 
-				for (i=cin.DataOffset; i < len; i++) {
+				for (i=cinematic.DataOffset; i < len; i++) {
 					CamData->CamSpline.pointData[i].offset = BitStream_ReadTimeHR(&stream) + temp;
 					temp = CamData->CamSpline.pointData[i].offset;
 
@@ -1605,8 +1605,8 @@ void Cin_ProcessCinematicBinary_f() {
 					}
 				}
 				if (len != CamData->CamSpline.pointcount) { // This message was fragmented, stop processing and wait for the rest
-					cin.AwaitingData = 1;
-					cin.DataOffset = i;
+					cinematic.AwaitingData = 1;
+					cinematic.DataOffset = i;
 					return;
 				}
 				for (i=0; i<6; i++) {
@@ -1640,12 +1640,12 @@ void Cin_ProcessCinematic_f() {
 		if (!token) break;
 
 		if (!Q_stricmp(token,"start")) {
-			if (!cin.CinActive) {
+			if (!cinematic.CinActive) {
 				Cin_Reset();
 				// Start cinematic mode
 				cg.cinematicState = 1;
 				cg.cinematicTime = cg.time;
-				cin.CinActive = 1;
+				cinematic.CinActive = 1;
 			}
 			continue;
 		}
@@ -1670,7 +1670,7 @@ void Cin_ProcessCinematic_f() {
 		}
 		if (!Q_stricmp(token,"rdc")) {
 			// Stop cinematic mode
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_DEFAULT);
 			continue;
 		}
@@ -1682,11 +1682,11 @@ void Cin_ProcessCinematic_f() {
 				CG_Printf("WARNING: ^3Error processing cinematic info: No fadetime after fi instruction\n");
 				return;
 			}
-			cin.Fade.startTime = cg.time;
-			cin.Fade.from = 100;
-			cin.Fade.to = 0; // in percentage scale (alpha)
-			cin.Fade.duration = atoi(token);
-			cin.Fade.state = 1; // Fading
+			cinematic.Fade.startTime = cg.time;
+			cinematic.Fade.from = 100;
+			cinematic.Fade.to = 0; // in percentage scale (alpha)
+			cinematic.Fade.duration = atoi(token);
+			cinematic.Fade.state = 1; // Fading
 			continue;
 		}
 		if (!Q_stricmp(token,"fo")) {
@@ -1696,11 +1696,11 @@ void Cin_ProcessCinematic_f() {
 				CG_Printf("WARNING: ^3Error processing cinematic info: No fadetime after fo instruction\n");
 				return;
 			}
-			cin.Fade.startTime = cg.time;
-			cin.Fade.from = 0;
-			cin.Fade.to = 100; // in percentage scale (alpha)
-			cin.Fade.duration = atoi(token);
-			cin.Fade.state = 1; // Fading
+			cinematic.Fade.startTime = cg.time;
+			cinematic.Fade.from = 0;
+			cinematic.Fade.to = 100; // in percentage scale (alpha)
+			cinematic.Fade.duration = atoi(token);
+			cinematic.Fade.state = 1; // Fading
 			continue;
 		}
 		if (!Q_stricmp(token,"fli")) {
@@ -1710,11 +1710,11 @@ void Cin_ProcessCinematic_f() {
 				CG_Printf("WARNING: ^3Error processing cinematic info: No fadetime after fli instruction\n");
 				return;
 			}
-			cin.Flash.startTime = cg.time;
-			cin.Flash.from = 100;
-			cin.Flash.to = 0; // in percentage scale (alpha)
-			cin.Flash.duration = atoi(token);
-			cin.Flash.state = 1; // Fading
+			cinematic.Flash.startTime = cg.time;
+			cinematic.Flash.from = 100;
+			cinematic.Flash.to = 0; // in percentage scale (alpha)
+			cinematic.Flash.duration = atoi(token);
+			cinematic.Flash.state = 1; // Fading
 			continue;
 		}
 		if (!Q_stricmp(token,"flo")) {
@@ -1724,33 +1724,33 @@ void Cin_ProcessCinematic_f() {
 				CG_Printf("WARNING: ^3Error processing cinematic info: No fadetime after flo instruction\n");
 				return;
 			}
-			cin.Flash.startTime = cg.time;
-			cin.Flash.from = 0;
-			cin.Flash.to = 100; // in percentage scale (alpha)
-			cin.Flash.duration = atoi(token);
-			cin.Flash.state = 1; // Fading
+			cinematic.Flash.startTime = cg.time;
+			cinematic.Flash.from = 0;
+			cinematic.Flash.to = 100; // in percentage scale (alpha)
+			cinematic.Flash.duration = atoi(token);
+			cinematic.Flash.state = 1; // Fading
 			continue;
 		}
 		if (!Q_stricmp(token, "sc")) {
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_STATIC);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			if (Cin_ParseVector(&pb, &CamData->CamStatic.origin)) return;
 			if (Cin_ParseVector(&pb, &CamData->CamStatic.angles)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "ac")) {
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_AIMED);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			if (Cin_ParseInt(&pb, &CamData->CamAimed.entID)) return;
 			if (Cin_ParseVector(&pb, &CamData->CamAimed.origin)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "lc")) {
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_LINEAR);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamLinear.camStartTime = cg.time;
 			if (Cin_ParseInt(&pb, &CamData->CamLinear.targetType)) return;
 			if (CamData->CamLinear.targetType == 0) {
@@ -1774,8 +1774,8 @@ void Cin_ProcessCinematic_f() {
 			for (i=0; i<CamData->CamLinear.pointcount; i++) {
 				if (!Cin_TokensAvailable(&pb)) {
 					// Ok we're out of data, mark this position and bail out
-					cin.AwaitingData = 1;
-					cin.DataOffset = i;
+					cinematic.AwaitingData = 1;
+					cinematic.DataOffset = i;
 					return;
 				}
 				if (Cin_ParseInt(&pb, &CamData->CamLinear.pointData[i].offset)) return;
@@ -1789,9 +1789,9 @@ void Cin_ProcessCinematic_f() {
 		}
 		if (!Q_stricmp(token, "spc")) {
 			int algos;
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_SPLINE);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamSpline.camStartTime = cg.time;
 			if (Cin_ParseInt(&pb, &CamData->CamSpline.targetType)) return;
 			if (CamData->CamSpline.targetType == 0) {
@@ -1827,8 +1827,8 @@ void Cin_ProcessCinematic_f() {
 			for (i=0; i<CamData->CamSpline.pointcount; i++) {
 				if (!Cin_TokensAvailable(&pb)) {
 					// Ok we're out of data, mark this position and bail out
-					cin.AwaitingData = 1;
-					cin.DataOffset = i;
+					cinematic.AwaitingData = 1;
+					cinematic.DataOffset = i;
 					return;
 				}
 				if (Cin_ParseInt(&pb, &CamData->CamSpline.pointData[i].offset)) return;
@@ -1848,18 +1848,18 @@ void Cin_ProcessCinematic_f() {
 		}
 		if (!Q_stricmp(token, "cont")) {
 			// Continuation of a previous coord set
-			if (!cin.AwaitingData) {
+			if (!cinematic.AwaitingData) {
 				CG_Printf("WARNING: ^3Error processing cinematic info: Cont received without awaiting further data\n");
 				return;
 			}
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
-			cin.AwaitingData = 0;
-			if (cin.CamMode == CAM_LINEAR) {
-				for (i=cin.DataOffset; i<CamData->CamLinear.pointcount; i++) {
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
+			cinematic.AwaitingData = 0;
+			if (cinematic.CamMode == CAM_LINEAR) {
+				for (i=cinematic.DataOffset; i<CamData->CamLinear.pointcount; i++) {
 					if (!Cin_TokensAvailable(&pb)) {
 						// Ok we're out of data, mark this position and bail out
-						cin.AwaitingData = 1;
-						cin.DataOffset = i;
+						cinematic.AwaitingData = 1;
+						cinematic.DataOffset = i;
 						return;
 					}
 					if (Cin_ParseInt(&pb, &CamData->CamLinear.pointData[i].offset)) return;
@@ -1869,12 +1869,12 @@ void Cin_ProcessCinematic_f() {
 					}
 				}
 				Cin_DoLinearInterpolation();
-			} else if (cin.CamMode == CAM_SPLINE) {
-				for (i=cin.DataOffset; i<CamData->CamSpline.pointcount; i++) {
+			} else if (cinematic.CamMode == CAM_SPLINE) {
+				for (i=cinematic.DataOffset; i<CamData->CamSpline.pointcount; i++) {
 					if (!Cin_TokensAvailable(&pb)) {
 						// Ok we're out of data, mark this position and bail out
-						cin.AwaitingData = 1;
-						cin.DataOffset = i;
+						cinematic.AwaitingData = 1;
+						cinematic.DataOffset = i;
 						return;
 					}
 					if (Cin_ParseInt(&pb, &CamData->CamSpline.pointData[i].offset)) return;
@@ -1893,166 +1893,166 @@ void Cin_ProcessCinematic_f() {
 			continue;
 		}
 		if (!Q_stricmp(token, "mb")) {
-			cin.Motionblur.state = 2;
-			if (Cin_ParseInt(&pb, &cin.Motionblur.from)) return;
-			if (cin.Motionblur.from < 0) { // turn it off
-				cin.Motionblur.state = 0;
+			cinematic.Motionblur.state = 2;
+			if (Cin_ParseInt(&pb, &cinematic.Motionblur.from)) return;
+			if (cinematic.Motionblur.from < 0) { // turn it off
+				cinematic.Motionblur.state = 0;
 			}
 			continue;
 		}
 
 		if (!Q_stricmp(token, "mbf")) {
-			cin.Motionblur.state = 1;
-			cin.Motionblur.startTime = cg.time;
-			if (Cin_ParseInt(&pb, &cin.Motionblur.from)) return;
-			if (cin.Motionblur.from < 0) cin.Motionblur.from = 0;
-			if (Cin_ParseInt(&pb, &cin.Motionblur.to)) return;
-			if (cin.Motionblur.to < 0) cin.Motionblur.to = 0;
-			if (Cin_ParseInt(&pb, &cin.Motionblur.duration)) return;
+			cinematic.Motionblur.state = 1;
+			cinematic.Motionblur.startTime = cg.time;
+			if (Cin_ParseInt(&pb, &cinematic.Motionblur.from)) return;
+			if (cinematic.Motionblur.from < 0) cinematic.Motionblur.from = 0;
+			if (Cin_ParseInt(&pb, &cinematic.Motionblur.to)) return;
+			if (cinematic.Motionblur.to < 0) cinematic.Motionblur.to = 0;
+			if (Cin_ParseInt(&pb, &cinematic.Motionblur.duration)) return;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "fov")) {
-			cin.Fov.state = 2;
-			if (Cin_ParseInt(&pb, &cin.Fov.from)) return;
-			if (cin.Fov.from < 0) { // turn it off
-				cin.Fov.state = 0;
+			cinematic.Fov.state = 2;
+			if (Cin_ParseInt(&pb, &cinematic.Fov.from)) return;
+			if (cinematic.Fov.from < 0) { // turn it off
+				cinematic.Fov.state = 0;
 			}
 			continue;
 		}
 
 		if (!Q_stricmp(token, "fovf")) {
-			cin.Fov.state = 1;
-			cin.Fov.startTime = cg.time;
-			if (Cin_ParseInt(&pb, &cin.Fov.from)) return;
-			if (cin.Fov.from < 0) cin.Fov.from = cg_fov.integer;
-			if (Cin_ParseInt(&pb, &cin.Fov.to)) return;
-			if (cin.Fov.to < 0) cin.Fov.to = cg_fov.integer;
-			if (Cin_ParseInt(&pb, &cin.Fov.duration)) return;
+			cinematic.Fov.state = 1;
+			cinematic.Fov.startTime = cg.time;
+			if (Cin_ParseInt(&pb, &cinematic.Fov.from)) return;
+			if (cinematic.Fov.from < 0) cinematic.Fov.from = cg_fov.integer;
+			if (Cin_ParseInt(&pb, &cinematic.Fov.to)) return;
+			if (cinematic.Fov.to < 0) cinematic.Fov.to = cg_fov.integer;
+			if (Cin_ParseInt(&pb, &cinematic.Fov.duration)) return;
 			continue;
 		}
 		// Color mod - Scale
 		if (!Q_stricmp(token, "cmso")) {
-			cin.CM.scale.state = 0;
+			cinematic.CM.scale.state = 0;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "cmsf")) {
-			cin.CM.scale.state = 1;
-			cin.CM.scale.startTime = cg.time;
-			if (Cin_ParseVector(&pb, &cin.CM.scale.from)) return;
-			if (Cin_ParseVector(&pb, &cin.CM.scale.to)) return;
-			if (Cin_ParseInt(&pb, &cin.CM.scale.duration)) return;
+			cinematic.CM.scale.state = 1;
+			cinematic.CM.scale.startTime = cg.time;
+			if (Cin_ParseVector(&pb, &cinematic.CM.scale.from)) return;
+			if (Cin_ParseVector(&pb, &cinematic.CM.scale.to)) return;
+			if (Cin_ParseInt(&pb, &cinematic.CM.scale.duration)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "cms")) {
-			cin.CM.scale.state = 2;
-			if (Cin_ParseVector(&pb, &cin.CM.scale.from)) return;
-			if (cin.CM.scale.from[0] == 1 && cin.CM.scale.from[1] == 1 && cin.CM.scale.from[2] == 1) {
-				cin.CM.scale.state = 0;
+			cinematic.CM.scale.state = 2;
+			if (Cin_ParseVector(&pb, &cinematic.CM.scale.from)) return;
+			if (cinematic.CM.scale.from[0] == 1 && cinematic.CM.scale.from[1] == 1 && cinematic.CM.scale.from[2] == 1) {
+				cinematic.CM.scale.state = 0;
 			}
 			continue;
 		}
 
 		// Color mod - Bias
 		if (!Q_stricmp(token, "cmbo")) {
-			cin.CM.bias.state = 0;
+			cinematic.CM.bias.state = 0;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "cmbf")) {
-			cin.CM.bias.state = 1;
-			cin.CM.bias.startTime = cg.time;
-			if (Cin_ParseVector(&pb, &cin.CM.bias.from)) return;
-			if (Cin_ParseVector(&pb, &cin.CM.bias.to)) return;
-			if (Cin_ParseInt(&pb, &cin.CM.bias.duration)) return;
+			cinematic.CM.bias.state = 1;
+			cinematic.CM.bias.startTime = cg.time;
+			if (Cin_ParseVector(&pb, &cinematic.CM.bias.from)) return;
+			if (Cin_ParseVector(&pb, &cinematic.CM.bias.to)) return;
+			if (Cin_ParseInt(&pb, &cinematic.CM.bias.duration)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "cmb")) {
-			cin.CM.bias.state = 2;
-			if (Cin_ParseVector(&pb, &cin.CM.bias.from)) return;
-			if (cin.CM.bias.from[0] == 0 && cin.CM.bias.from[1] == 0 && cin.CM.bias.from[2] == 0) {
-				cin.CM.bias.state = 0;
+			cinematic.CM.bias.state = 2;
+			if (Cin_ParseVector(&pb, &cinematic.CM.bias.from)) return;
+			if (cinematic.CM.bias.from[0] == 0 && cinematic.CM.bias.from[1] == 0 && cinematic.CM.bias.from[2] == 0) {
+				cinematic.CM.bias.state = 0;
 			}
 			continue;
 		}
 
 		// Color mod - Brightness/Contrast
 		if (!Q_stricmp(token, "cmco")) {
-			cin.CM.bc.state = 0;
+			cinematic.CM.bc.state = 0;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "cmcf")) {
-			cin.CM.bc.state = 1;
-			cin.CM.bc.startTime = cg.time;
-			if (Cin_ParseVector2(&pb, &cin.CM.bc.from)) return;
-			if (Cin_ParseVector2(&pb, &cin.CM.bc.to)) return;
-			if (Cin_ParseInt(&pb, &cin.CM.bc.duration)) return;
+			cinematic.CM.bc.state = 1;
+			cinematic.CM.bc.startTime = cg.time;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.bc.from)) return;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.bc.to)) return;
+			if (Cin_ParseInt(&pb, &cinematic.CM.bc.duration)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "cmc")) {
-			cin.CM.bc.state = 2;
-			if (Cin_ParseVector2(&pb, &cin.CM.bc.from)) return;
-			if (cin.CM.bc.from[0] == 0 && cin.CM.bc.from[1] == 1) {
-				cin.CM.bc.state = 0;
+			cinematic.CM.bc.state = 2;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.bc.from)) return;
+			if (cinematic.CM.bc.from[0] == 0 && cinematic.CM.bc.from[1] == 1) {
+				cinematic.CM.bc.state = 0;
 			}
 			continue;
 		}
 
 		// Color mod - FX
 		if (!Q_stricmp(token, "cmfo")) {
-			cin.CM.fx.state = 0;
+			cinematic.CM.fx.state = 0;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "cmff")) {
-			cin.CM.fx.state = 1;
-			cin.CM.fx.startTime = cg.time;
-			if (Cin_ParseInt(&pb, &cin.CM.fx.fxID)) return;
-			if (Cin_ParseVector2(&pb, &cin.CM.fx.from)) return;
-			if (Cin_ParseVector2(&pb, &cin.CM.fx.to)) return;
-			if (Cin_ParseInt(&pb, &cin.CM.fx.duration)) return;
+			cinematic.CM.fx.state = 1;
+			cinematic.CM.fx.startTime = cg.time;
+			if (Cin_ParseInt(&pb, &cinematic.CM.fx.fxID)) return;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.fx.from)) return;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.fx.to)) return;
+			if (Cin_ParseInt(&pb, &cinematic.CM.fx.duration)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "cmf")) {
-			cin.CM.fx.state = 2;
-			if (Cin_ParseInt(&pb, &cin.CM.fx.fxID)) return;
-			if (Cin_ParseVector2(&pb, &cin.CM.fx.from)) return;
-			if (cin.CM.fx.fxID == 0 || cin.CM.fx.from[0] == 0) {
-				cin.CM.fx.state = 0;
+			cinematic.CM.fx.state = 2;
+			if (Cin_ParseInt(&pb, &cinematic.CM.fx.fxID)) return;
+			if (Cin_ParseVector2(&pb, &cinematic.CM.fx.from)) return;
+			if (cinematic.CM.fx.fxID == 0 || cinematic.CM.fx.from[0] == 0) {
+				cinematic.CM.fx.state = 0;
 			}
 			continue;
 		}
 
 		// Color mod - Inversion
 		if (!Q_stricmp(token, "cmio")) {
-			cin.CM.inv.state = 0;
+			cinematic.CM.inv.state = 0;
 			continue;
 		}
 
 		if (!Q_stricmp(token, "cmif")) {
-			cin.CM.inv.state = 1;
-			cin.CM.inv.startTime = cg.time;
-			if (Cin_ParseFloat(&pb, &cin.CM.inv.from)) return;
-			if (Cin_ParseFloat(&pb, &cin.CM.inv.to)) return;
-			if (Cin_ParseInt(&pb, &cin.CM.inv.duration)) return;
+			cinematic.CM.inv.state = 1;
+			cinematic.CM.inv.startTime = cg.time;
+			if (Cin_ParseFloat(&pb, &cinematic.CM.inv.from)) return;
+			if (Cin_ParseFloat(&pb, &cinematic.CM.inv.to)) return;
+			if (Cin_ParseInt(&pb, &cinematic.CM.inv.duration)) return;
 			continue;
 		}
 		if (!Q_stricmp(token, "cmi")) {
-			cin.CM.inv.state = 2;
-			if (Cin_ParseFloat(&pb, &cin.CM.inv.from)) return;
-			if (cin.CM.inv.from == 0) {
-				cin.CM.inv.state = 0;
+			cinematic.CM.inv.state = 2;
+			if (Cin_ParseFloat(&pb, &cinematic.CM.inv.from)) return;
+			if (cinematic.CM.inv.from == 0) {
+				cinematic.CM.inv.state = 0;
 			}
 			continue;
 		}
 
 		if (!Q_stricmp(token, "he")) { // Hitchcock effect
 			// This one is converted into two acts: a linear cam act and an fov act
-			cin.AwaitingData = 0;
+			cinematic.AwaitingData = 0;
 			Cin_SetCamData(CAM_HITCHCOCK);
-			CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+			CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 			CamData->CamHitchcock.camStartTime = cg.time;
 			if (Cin_ParseVector(&pb, &CamData->CamHitchcock.origin)) return;
 			if (Cin_ParseVector(&pb, &CamData->CamHitchcock.angles)) return;
@@ -2063,11 +2063,11 @@ void Cin_ProcessCinematic_f() {
 			if (CamData->CamHitchcock.endFov == -1) CamData->CamHitchcock.endFov = cg_fov.integer;
 			if (Cin_ParseInt(&pb, &CamData->CamHitchcock.duration)) return;
 			// enable FOV while we're at it
-			cin.Fov.state = 1;
-			cin.Fov.startTime = cg.time;
-			cin.Fov.from = CamData->CamHitchcock.startFov;
-			cin.Fov.to = CamData->CamHitchcock.endFov;
-			cin.Fov.duration = CamData->CamHitchcock.duration;
+			cinematic.Fov.state = 1;
+			cinematic.Fov.startTime = cg.time;
+			cinematic.Fov.from = CamData->CamHitchcock.startFov;
+			cinematic.Fov.to = CamData->CamHitchcock.endFov;
+			cinematic.Fov.duration = CamData->CamHitchcock.duration;
 		}
 	}
 }
@@ -2076,12 +2076,12 @@ static void Cin_DoLinearInterpolation() {
 	CamData_Union_t *CamData;
 	CamData_Linear_Point_t *pd;
 	int i;
-	if (cin.CamMode != CAM_LINEAR) return;
-	if (cin.AwaitingData) return;
+	if (cinematic.CamMode != CAM_LINEAR) return;
+	if (cinematic.AwaitingData) return;
 	// First things first, check if the first cam is at offset 0
 	// If not, add the current refdef as first point, so we can interpolate that too
 	
-	CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+	CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 	if (CamData->CamLinear.pointData[0].offset != 0) {
 		// Alright we gotta include the current refdef as first point, so lets do it!
 		CamData_Linear_Point_t *newarr;
@@ -2194,11 +2194,11 @@ static void Cin_DoCubicSplineInterpolation() {
 	double deltaD;
 	int CamCount;
 
-	if (cin.CamMode != CAM_SPLINE) return;
-	if (cin.AwaitingData) return;
+	if (cinematic.CamMode != CAM_SPLINE) return;
+	if (cinematic.AwaitingData) return;
 	// First things first, check if the first cam is at offset 0
 	// If not, add the current refdef as first point, so we can interpolate that too
-	CamData = reinterpret_cast<CamData_Union_t *>(cin.CamData);
+	CamData = reinterpret_cast<CamData_Union_t *>(cinematic.CamData);
 	if (CamData->CamSpline.pointData[0].offset != 0) {
 		// Alright we gotta include the current refdef as first point, so lets do it!
 		CamData_Spline_Point_t *newarr;
