@@ -12,15 +12,17 @@ qboolean	G_SpawnString( const char *key, const char *defaultString, char **out )
 //		G_Error( "G_SpawnString() called while not spawning" );
 	}
 
-	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
-		if ( !Q_stricmp( key, level.spawnVars[i][0] ) ) {
-			*out = level.spawnVars[i][1];
-			return qtrue;
-		}
+	try
+	{
+		*out = const_cast<char*>(level.spawnVars2[key].c_str());
+		return qtrue;
+	}
+	catch( ... )
+	{
+		return false;
 	}
 
-	*out = (char *)defaultString;
-	return qfalse;
+	return false;
 }
 
 qboolean	G_SpawnFloat( const char *key, const char *defaultString, float *out ) {
@@ -937,9 +939,8 @@ void G_SpawnGEntityFromSpawnVars( qboolean inSubBSP )
 	// get the next free entity
 	ent = G_Spawn();
 
-	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
-		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
-	}
+	for ( auto it = level.spawnVars2.begin(); it != level.spawnVars2.end(); ++it )
+		G_ParseField( (*it).first.c_str(), (*it).second.c_str(), ent );
 
 	// check for "notsingle" flag
 	if ( level.gametype == GT_SINGLE_PLAYER ) {
@@ -988,8 +989,9 @@ void G_SpawnGEntityFromSpawnVars( qboolean inSubBSP )
 	
 	// Store the spawnvars for later use
 	spv = &g_spawnvars[ent->s.number];
-	for (i=0; i < level.numSpawnVars; i++) {
-		JKG_Pairs_Add(spv, level.spawnVars[i][0], level.spawnVars[i][1]);
+	for ( auto it = level.spawnVars2.begin(); it != level.spawnVars2.end(); ++it )
+	{
+		JKG_Pairs_Add(spv, (*it).first.c_str(), (*it).second.c_str());
 	}
 
 	// if we didn't get a classname, don't bother spawning anything
@@ -1040,9 +1042,8 @@ void G_SpawnEntity(gentity_t **outent) {
 
 	*outent = ent;
 
-	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
-		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
-	}
+	for ( auto it = level.spawnVars2.begin(); it != level.spawnVars2.end(); ++it )
+		G_ParseField( (*it).first.c_str(), (*it).second.c_str(), ent );
 
 	// check for "notsingle" flag
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
@@ -1093,9 +1094,8 @@ void G_SpawnEntity(gentity_t **outent) {
 
 	// Store the spawnvars for later use
 	spv = &g_spawnvars[ent->s.number];
-	for (i=0; i < level.numSpawnVars; i++) {
-		JKG_Pairs_Add(spv, level.spawnVars[i][0], level.spawnVars[i][1]);
-	}
+	for ( auto it = level.spawnVars2.begin(); it != level.spawnVars2.end(); ++it )
+		JKG_Pairs_Add(spv, (*it).first.c_str(), (*it).second.c_str());
 
 	// if we didn't get a classname, don't bother spawning anything
 	if ( !G_CallSpawn( ent ) ) {
@@ -1117,44 +1117,9 @@ void G_SpawnEntity(gentity_t **outent) {
 	}
 }
 
-/*
-====================
-G_AddSpawnVarToken
-====================
-*/
-char *G_AddSpawnVarToken( const char *string ) {
-	int		l;
-	char	*dest;
-
-	l = strlen( string );
-	if ( level.numSpawnVarChars + l + 1 > MAX_SPAWN_VARS_CHARS ) {
-		G_Error( "G_AddSpawnVarToken: MAX_SPAWN_VARS_CHARS" );
-	}
-
-	dest = level.spawnVarChars + level.numSpawnVarChars;
-	memcpy( dest, string, l+1 );
-
-	level.numSpawnVarChars += l + 1;
-
-	return dest;
-}
-
 void AddSpawnField(char *field, char *value)
 {
-	int	i;
-
-	for(i=0;i<level.numSpawnVars;i++)
-	{
-		if (Q_stricmp(level.spawnVars[i][0], field) == 0)
-		{
-			level.spawnVars[ i ][1] = G_AddSpawnVarToken( value );
-			return;
-		}
-	}
-
-	level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken( field );
-	level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken( value );
-	level.numSpawnVars++;
+	level.spawnVars2[field] = value;
 }
 
 #define NOVALUE "novalue"
@@ -1302,9 +1267,6 @@ qboolean G_ParseSpawnVars( qboolean inSubBSP ) {
 	char		keyname[MAX_TOKEN_CHARS];
 	char		com_token[MAX_TOKEN_CHARS];
 
-	level.numSpawnVars = 0;
-	level.numSpawnVarChars = 0;
-
 	// parse the opening brace
 	if ( !trap_GetEntityToken( com_token, sizeof( com_token ) ) ) {
 		// end of spawn string
@@ -1333,12 +1295,7 @@ qboolean G_ParseSpawnVars( qboolean inSubBSP ) {
 		if ( com_token[0] == '}' ) {
 			G_Error( "G_ParseSpawnVars: closing brace without data" );
 		}
-		if ( level.numSpawnVars == MAX_SPAWN_VARS ) {
-			G_Error( "G_ParseSpawnVars: MAX_SPAWN_VARS" );
-		}
-		level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken( keyname );
-		level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken( com_token );
-		level.numSpawnVars++;
+		level.spawnVars2[ keyname ] = com_token;
 	}
 
 	if (inSubBSP)
@@ -1363,9 +1320,6 @@ This does not actually spawn an entity.
 qboolean G_ParseSpawnVarsEx( int handle ) {
 	pc_token_t	token;
 	char		keyname[MAX_TOKEN_CHARS];
-	
-	level.numSpawnVars = 0;
-	level.numSpawnVarChars = 0;
 
 	// parse the opening brace
 	if (trap_PC_ReadToken(handle, &token) == 0)
@@ -1393,12 +1347,7 @@ qboolean G_ParseSpawnVarsEx( int handle ) {
 		if (Q_stricmp(token.string, "}") == 0)
 			G_Error("G_ParseSpawnVarsEx: closing brace without data");
 
-		if (level.numSpawnVars == MAX_SPAWN_VARS)
-			G_Error("G_ParseSpawnVarsEx: MAX_SPAWN_VARS");
-
-		level.spawnVars[ level.numSpawnVars ][0] = G_AddSpawnVarToken(keyname);
-		level.spawnVars[ level.numSpawnVars ][1] = G_AddSpawnVarToken(token.string);
-		level.numSpawnVars++;
+		level.spawnVars2[ keyname ] = token.string;
 	}
 
 	return qtrue;
@@ -1612,13 +1561,8 @@ void SP_worldspawn( void )
 		G_Error( "SP_worldspawn: The first entity isn't 'worldspawn'" );
 	}
 
-	for ( i = 0 ; i < level.numSpawnVars ; i++ ) 
-	{
-		if ( Q_stricmp( "spawnscript", level.spawnVars[i][0] ) == 0 )
-		{//ONly let them set spawnscript, we don't want them setting an angle or something on the world.
-			G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], &g_entities[ENTITYNUM_WORLD] );
-		}
-	}
+	G_ParseField( "spawnscript", level.spawnVars2["spawnscript"].c_str(), &g_entities[ENTITYNUM_WORLD] );
+
 	//The server will precache the standard model and animations, so that there is no hit
 	//when the first client connnects.
 	if (!BGPAFtextLoaded)
@@ -1796,7 +1740,6 @@ void G_SpawnEntitiesFromString( qboolean inSubBSP ) {
 
 	// allow calls to G_Spawn*()
 	level.spawning = qtrue;
-	level.numSpawnVars = 0;
 
 	// the worldspawn is not an actual entity, but it still
 	// has a "spawn" function to perform any global setup

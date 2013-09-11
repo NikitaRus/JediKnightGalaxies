@@ -15,6 +15,9 @@
 
 #include <stdlib.h>
 #include <string>
+#include <list>
+#include <vector>
+#include <map>
 
 #ifndef __LCC__
 #define GAME_INLINE ID_INLINE
@@ -1170,10 +1173,7 @@ typedef struct {
 
 	// spawn variables
 	qboolean	spawning;				// the G_Spawn*() functions are valid
-	int			numSpawnVars;
-	char		*spawnVars[MAX_SPAWN_VARS][2];	// key / value pairs
-	int			numSpawnVarChars;
-	char		spawnVarChars[MAX_SPAWN_VARS_CHARS];
+	std::map<std::string,std::string>	spawnVars2;
 
 	// intermission state
 	int			intermissionQueued;		// intermission was qualified, but

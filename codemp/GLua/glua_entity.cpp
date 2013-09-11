@@ -1230,14 +1230,13 @@ static int GLua_EntityFactory_GetVarCount(lua_State *L) {
 }
 
 void G_SpawnEntity(gentity_t **outent);
-char *G_AddSpawnVarToken( const char *string );
 
 static int GLua_EntityFactory_Create(lua_State *L) {
 	GLua_Data_EntityFactory_t *entfact = GLua_CheckEntityFactory(L, 1);
 	gentity_t *ent = NULL;
 	unsigned int i;
 	qboolean oldspawning = level.spawning;
-	if (level.spawning && level.numSpawnVars != 0) {
+	if (level.spawning) {
 		// Game is currently busy spawning an ent
 		// Usually means we tried to create an ent inside a custom ent's spawn function
 		G_Printf("WARNING: Entity Factory tried to spawn an entity while the spawner was in use\n");
@@ -1251,13 +1250,9 @@ static int GLua_EntityFactory_Create(lua_State *L) {
 	}
 	// Spawn it
 	level.spawning = qtrue;
-	level.numSpawnVars = 0;
-	level.numSpawnVarChars = 0;
-	for (i=0; i<entfact->keys.count; i++) {
-		if (i>63) break; // No more than 64 keys
-		level.spawnVars[i][0] = G_AddSpawnVarToken(entfact->keys.pairs[i].key);
-		level.spawnVars[i][1] = G_AddSpawnVarToken(entfact->keys.pairs[i].value);
-		level.numSpawnVars++;
+	for (i=0; i<entfact->keys.count; i++) 
+	{
+		level.spawnVars2[entfact->keys.pairs[i].key] = entfact->keys.pairs[i].value;
 	}
 
 	G_SpawnEntity(&ent);
