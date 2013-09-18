@@ -675,6 +675,9 @@ qboolean JKG_CheckRoutingFrom( int wp )
 	// Check for routing to a spawnpoint from a (spawn) waypoint...
 	spot = G_Find(spot, FOFS(classname), "info_player_deathmatch");
 
+	if (!spot)
+		Com_Error(ERR_FATAL, "JKG_CheckRoutingFrom: Couldn't find a spawn point (info_player_deathmatch)");
+
 	if (spot->wpCurrent <= 0) // Should only need to do this part once...
 		spot->wpCurrent = DOM_GetBestWaypoint(spot->s.origin, -1, -1);
 
