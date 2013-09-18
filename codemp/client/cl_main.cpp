@@ -2234,6 +2234,9 @@ CL_ShutdownRef
 ============
 */
 void CL_ShutdownRef( void ) {
+	if ( !re )
+		return;
+
 	if ( !re->Shutdown ) {
 		return;
 	}

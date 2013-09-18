@@ -604,7 +604,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_InitMemory();
 
 	// set some level globals
-	memset( &level, 0, sizeof( level ) );
+	//memset( &level, 0, sizeof( level ) );
+	memset( &level, 0, sizeof( level ) - sizeof( level.spawnVars2 ) ); // HAX HAX HAX
+	level.spawnVars2.clear();
 	level.time = levelTime;
 	level.startTime = levelTime;
 

@@ -14,7 +14,7 @@ qboolean	G_SpawnString( const char *key, const char *defaultString, char **out )
 
 	try
 	{
-		*out = const_cast<char*>(level.spawnVars2[key].c_str());
+		*out = const_cast<char *>(level.spawnVars2[key].c_str());
 		return qtrue;
 	}
 	catch( ... )
@@ -1119,7 +1119,12 @@ void G_SpawnEntity(gentity_t **outent) {
 
 void AddSpawnField(char *field, char *value)
 {
-	level.spawnVars2[field] = value;
+#ifdef _WIN32
+	// fucking microsoft has to make things weird and complex for no reason, as usual
+	level.spawnVars2.insert(std::unordered_map<std::string, std::string>::value_type(field, value));
+#else
+	level.spawnVars2.insert(std::make_pair<std::string, std::string>(field, value));
+#endif
 }
 
 #define NOVALUE "novalue"
@@ -1295,7 +1300,7 @@ qboolean G_ParseSpawnVars( qboolean inSubBSP ) {
 		if ( com_token[0] == '}' ) {
 			G_Error( "G_ParseSpawnVars: closing brace without data" );
 		}
-		level.spawnVars2[ keyname ] = com_token;
+		AddSpawnField( keyname, com_token );
 	}
 
 	if (inSubBSP)
@@ -1347,7 +1352,7 @@ qboolean G_ParseSpawnVarsEx( int handle ) {
 		if (Q_stricmp(token.string, "}") == 0)
 			G_Error("G_ParseSpawnVarsEx: closing brace without data");
 
-		level.spawnVars2[ keyname ] = token.string;
+		AddSpawnField( keyname, token.string );
 	}
 
 	return qtrue;
@@ -1804,6 +1809,7 @@ void G_SpawnEntitiesFromString( qboolean inSubBSP ) {
 	{// Parse ents from the actual map bsp.
 		while( G_ParseSpawnVars(inSubBSP) ) {
 			G_SpawnGEntityFromSpawnVars(inSubBSP);
+			level.spawnVars2.clear();
 		}	
 	}
 
@@ -1864,6 +1870,7 @@ void G_SpawnEntitiesFromString( qboolean inSubBSP ) {
 
 	if (!inSubBSP)
 	{
+		level.spawnVars2.clear();
 		level.spawning = qfalse;			// any future calls to G_Spawn*() will be errors
 	}
 

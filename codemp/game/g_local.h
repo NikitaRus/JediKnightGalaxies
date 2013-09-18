@@ -18,6 +18,7 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 #ifndef __LCC__
 #define GAME_INLINE ID_INLINE
@@ -1171,10 +1172,6 @@ typedef struct {
 	int			teamVoteNo[2];
 	int			numteamVotingClients[2];// set by CalculateRanks
 
-	// spawn variables
-	qboolean	spawning;				// the G_Spawn*() functions are valid
-	std::map<std::string,std::string>	spawnVars2;
-
 	// intermission state
 	int			intermissionQueued;		// intermission was qualified, but
 										// wait INTERMISSION_DELAY_TIME before
@@ -1247,6 +1244,12 @@ typedef struct {
 #endif
 
 	gametype_t	gametype;
+
+	// spawn variables
+	// these must be last otherwise you will get an assertion failure
+	// TODO: make level_local_s into a class..
+	qboolean	spawning;				// the G_Spawn*() functions are valid
+	std::unordered_map<std::string,std::string>	spawnVars2;
 } level_locals_t;
 
 // Warzone Gametype...

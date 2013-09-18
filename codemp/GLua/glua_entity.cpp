@@ -1230,6 +1230,7 @@ static int GLua_EntityFactory_GetVarCount(lua_State *L) {
 }
 
 void G_SpawnEntity(gentity_t **outent);
+extern void AddSpawnField( char *key, char *value );
 
 static int GLua_EntityFactory_Create(lua_State *L) {
 	GLua_Data_EntityFactory_t *entfact = GLua_CheckEntityFactory(L, 1);
@@ -1252,7 +1253,7 @@ static int GLua_EntityFactory_Create(lua_State *L) {
 	level.spawning = qtrue;
 	for (i=0; i<entfact->keys.count; i++) 
 	{
-		level.spawnVars2[entfact->keys.pairs[i].key] = entfact->keys.pairs[i].value;
+		AddSpawnField( entfact->keys.pairs[i].key, entfact->keys.pairs[i].value );
 	}
 
 	G_SpawnEntity(&ent);
