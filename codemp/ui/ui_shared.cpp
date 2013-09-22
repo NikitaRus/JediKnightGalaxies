@@ -11,7 +11,6 @@
 #include "../game/anims.h"
 #include "ghoul2/G2.h"
 #include "jkg_inventory.h"
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
 extern void UI_UpdateCharacterSkin( void );
 extern void JKG_Shop_UpdateShopStuff(int filterVal);
 
@@ -6216,7 +6215,7 @@ void Item_Model_Paint(itemDef_t *item)
 			{
 			case BOTH_FORCEWALLREBOUND_FORWARD:
 			case BOTH_FORCEJUMP1: 
-				ItemParse_model_g2anim_go( item, animTable[BOTH_FORCEINAIR1].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_FORCEINAIR1).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				if ( !uiInfo.moveAnimTime )
 				{
@@ -6225,35 +6224,35 @@ void Item_Model_Paint(itemDef_t *item)
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_FORCEINAIR1:
-				ItemParse_model_g2anim_go( item, animTable[BOTH_FORCELAND1].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_FORCELAND1).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_FORCEWALLRUNFLIP_START:
-				ItemParse_model_g2anim_go( item, animTable[BOTH_FORCEWALLRUNFLIP_END].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_FORCEWALLRUNFLIP_END).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_FORCELONGLEAP_START:
-				ItemParse_model_g2anim_go( item, animTable[BOTH_FORCELONGLEAP_LAND].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_FORCELONGLEAP_LAND).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_KNOCKDOWN3://on front - into force getup
 				trap_S_StartLocalSound( uiInfo.uiDC.Assets.moveJumpSound, CHAN_LOCAL );
-				ItemParse_model_g2anim_go( item, animTable[BOTH_FORCE_GETUP_F1].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_FORCE_GETUP_F1).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_KNOCKDOWN2://on back - kick forward getup
 				trap_S_StartLocalSound( uiInfo.uiDC.Assets.moveJumpSound, CHAN_LOCAL );
-				ItemParse_model_g2anim_go( item, animTable[BOTH_GETUP_BROLL_F].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_GETUP_BROLL_F).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
 			case BOTH_KNOCKDOWN1://on back - roll-away
 				trap_S_StartLocalSound( uiInfo.uiDC.Assets.moveRollSound, CHAN_LOCAL );
-				ItemParse_model_g2anim_go( item, animTable[BOTH_GETUP_BROLL_R].name );
+				ItemParse_model_g2anim_go( item, animTable.left.at(BOTH_GETUP_BROLL_R).c_str() );
 				ItemParse_asset_model_go( item, modelPath, &uiInfo.moveAnimTime );
 				uiInfo.moveAnimTime += uiInfo.uiDC.realTime;
 				break;
@@ -8397,17 +8396,13 @@ qboolean ItemParse_model_g2anim( itemDef_t *item, int handle ) {
 		return qtrue;
 	}
 
-	while (i < MAX_ANIMATIONS)
+	modelPtr->g2anim = Q_bimapleft<int, std::string>(animTable, token.string, false);
+	if( modelPtr->g2anim == -1 )
 	{
-		if (!Q_stricmp(token.string, animTable[i].name))
-		{ //found it
-			modelPtr->g2anim = i;
-			return qtrue;
-		}
-		i++;
+		Com_Printf("^1ERROR: g2anim failed to load %s\n", token.string);
+		return qfalse;
 	}
 
-	Com_Printf("Could not find '%s' in the anim table\n", token.string);
 	return qtrue;
 }
 
@@ -8454,17 +8449,8 @@ qboolean ItemParse_model_g2anim_go( itemDef_t *item, const char *animName )
 		return qtrue;
 	}
 
-	while (i < MAX_ANIMATIONS)
-	{
-		if (!Q_stricmp(animName, animTable[i].name))
-		{ //found it
-			modelPtr->g2anim = animTable[i].id;
-			return qtrue;
-		}
-		i++;
-	}
+	modelPtr->g2anim = animTable.right.at(animName);
 
-	Com_Printf("Could not find '%s' in the anim table\n", animName);
 	return qtrue;
 }
 

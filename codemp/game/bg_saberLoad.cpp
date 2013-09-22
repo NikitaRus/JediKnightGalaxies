@@ -6,8 +6,6 @@
 
 saberStanceExternal_t SaberStances[MAX_STANCES];
 
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
-
 //Could use strap stuff but I don't particularly care at the moment anyway.
 extern int	trap_FS_FOpenFile( const char *qpath, fileHandle_t *f, fsMode_t mode );
 extern void	trap_FS_Read( void *buffer, int len, fileHandle_t f );
@@ -1400,7 +1398,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->readyAnim = anim;
@@ -1414,7 +1412,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->drawAnim = anim;
@@ -1428,7 +1426,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->putawayAnim = anim;
@@ -1442,7 +1440,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->tauntAnim = anim;
@@ -1456,7 +1454,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->bowAnim = anim;
@@ -1470,7 +1468,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->meditateAnim = anim;
@@ -1484,7 +1482,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->flourishAnim = anim;
@@ -1498,7 +1496,7 @@ qboolean WP_SaberParseParms( const char *SaberName, saberInfo_t *saber )
 			{
 				continue;
 			}
-			anim = GetIDForString( animTable, value );
+			anim = animTable.right.at(value);
 			if ( anim >= 0 && anim < MAX_ANIMATIONS )
 			{
 				saber->gloatAnim = anim;
@@ -3507,7 +3505,7 @@ int JKG_AnimationForJSON( cJSON *node )
 			}
 			else
 			{
-				return GetIDForString (animTable, anim);
+				return animTable.right.at(anim);
 			}
 		}
 	}

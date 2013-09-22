@@ -455,7 +455,6 @@
     <ClInclude Include="ai.h" />
     <ClInclude Include="ai_main.h" />
     <ClInclude Include="anims.h" />
-    <ClInclude Include="..\cgame\animtable.h" />
     <ClInclude Include="aux_exports.h" />
     <ClInclude Include="b_local.h" />
     <ClInclude Include="b_public.h" />

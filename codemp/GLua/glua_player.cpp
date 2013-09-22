@@ -1199,15 +1199,13 @@ static int GLua_Player_GetClipAmmo(lua_State *L) {
 	return 1;
 }
 
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
-
 static int GLua_Player_SetAnimLower(lua_State *L) {
 	GLua_Data_Player_t *ply = GLua_CheckPlayer(L,1);
 	gentity_t *ent;
 	int anim;
 	if (!ply) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L,2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}
@@ -1225,7 +1223,7 @@ static int GLua_Player_SetAnimUpper(lua_State *L) {
 	int anim;
 	if (!ply) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L,2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}
@@ -1243,7 +1241,7 @@ static int GLua_Player_SetAnimBoth(lua_State *L) {
 	int anim;
 	if (!ply) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L,2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}

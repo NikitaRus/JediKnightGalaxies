@@ -351,7 +351,6 @@
     <ClInclude Include="..\libraries\Detour\Include\DetourNode.h" />
     <ClInclude Include="..\libraries\Detour\Include\DetourStatus.h" />
     <ClInclude Include="..\renderer\tr_types.h" />
-    <ClInclude Include="animtable.h" />
     <ClInclude Include="..\game\bg_ammo.h" />
     <ClInclude Include="..\game\bg_items.h" />
     <ClInclude Include="..\game\bg_local.h" />

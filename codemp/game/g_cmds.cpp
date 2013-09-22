@@ -4439,7 +4439,6 @@ void Cmd_EngageDuel_f(gentity_t *ent)
 }
 
 #ifndef FINAL_BUILD
-extern stringID_table_t animTable[MAX_ANIMATIONS+1];
 
 void Cmd_DebugSetSaberMove_f(gentity_t *self)
 {
@@ -4466,7 +4465,7 @@ void Cmd_DebugSetSaberMove_f(gentity_t *self)
 		self->client->ps.saberMove = LS_MOVE_MAX-1;
 	}
 
-	Com_Printf("Anim for move: %s\n", animTable[SaberStances[self->client->ps.fd.saberAnimLevel].moves[self->client->ps.saberMove].anim].name);
+	Com_Printf("Anim for move: %s\n", animTable.left.at(SaberStances[self->client->ps.fd.saberAnimLevel].moves[self->client->ps.saberMove].anim).c_str());
 }
 
 void Cmd_DebugSetBodyAnim_f(gentity_t *self, int flags)
@@ -4487,20 +4486,7 @@ void Cmd_DebugSetBodyAnim_f(gentity_t *self, int flags)
 		return;
 	}
 
-	while (i < MAX_ANIMATIONS)
-	{
-		if (!Q_stricmp(arg, animTable[i].name))
-		{
-			break;
-		}
-		i++;
-	}
-
-	if (i == MAX_ANIMATIONS)
-	{
-		Com_Printf("Animation '%s' does not exist\n", arg);
-		return;
-	}
+	i = animTable.right.at(arg);
 
 	G_SetAnim(self, NULL, SETANIM_BOTH, i, flags, 0);
 

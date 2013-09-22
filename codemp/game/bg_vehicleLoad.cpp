@@ -60,8 +60,6 @@ extern qhandle_t	trap_R_RegisterShaderNoMip( const char *name );			// returns al
 extern sfxHandle_t	trap_S_RegisterSound( const char *sample);		// returns buzz if not found
 #endif
 
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
-
 // These buffers are filled in with the same contents and then just read from in
 // a few places. We only need one copy on Xbox.
 #define MAX_VEH_WEAPON_DATA_SIZE 0x40000 //Raz: was 0x4000
@@ -219,7 +217,7 @@ static qboolean BG_ParseVehWeaponParm( vehWeaponInfo_t *vehWeapon, char *parmNam
 				break;
 			case VF_ANIM:
 				{
-					int anim = GetIDForString( animTable, value );
+					int anim = animTable.right.at(value);
 					*(int *)(b+vehWeaponFields[i].ofs) = anim;
 				}
 				break;
@@ -786,7 +784,7 @@ static qboolean BG_ParseVehicleParm( vehicleInfo_t *vehicle, char *parmName, cha
 				break;
 			case VF_ANIM:
 				{
-					int anim = GetIDForString( animTable, value );
+					int anim = animTable.right.at(value);
 					*(int *)(b+vehicleFields[i].ofs) = anim;
 				}
 				break;

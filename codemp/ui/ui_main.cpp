@@ -16,7 +16,6 @@ USER INTERFACE MAIN
 #include "qcommon/qfiles.h"
 #include "qcommon/game_version.h"
 #include "ui_force.h"
-#include "../cgame/animtable.h" //we want this to be compiled into the module because we access it in the shared module.
 #include "../game/bg_saga.h"
 #include "../game/jkg_gangwars.h"
 
@@ -478,7 +477,7 @@ int UI_ParseAnimationFile(const char *filename, animation_t *animset, qboolean i
 			break;
 		}
 
-		animNum = GetIDForString(animTable, token);
+		animNum = animTable.right.at(token);
 		if(animNum == -1)
 		{
 			continue;
@@ -7861,6 +7860,8 @@ UI_Init
 void _UI_Init( qboolean inGameLoad ) {
 	const char *menuSet;
 	int start;
+
+	BG_InitAnimTable();
 
 	// Some knucklehead decided to update client version once we got to the client aux lib,
 	// which is kinda stupid since we can't get there unless we actually connect to a server.

@@ -1,6 +1,10 @@
-#include "../cgame/animtable.h"
+#include "../game/anims.h"
+#include "../game/bg_public.h"
+#include "../qcommon/q_shared.h"
 
-stringID_table_t animTable [MAX_ANIMATIONS+1] =
+string_table_t animTable;
+
+stringID_table_t animTableOld [MAX_ANIMATIONS+1] =
 {
 	//=================================================
 	//HEAD ANIMS
@@ -1961,3 +1965,136 @@ stringID_table_t animTable [MAX_ANIMATIONS+1] =
 	//must be terminated
 	{ NULL,-1 }
 };
+
+extern int trap_Milliseconds(void);
+void BG_InitAnimTable()
+{
+	int startTime = trap_Milliseconds();
+	for( int i = 0; i < MAX_ANIMATIONS; i++ )
+	{
+		animTable.insert( string_table_t::value_type(animTableOld[i].id, animTableOld[i].name) );
+	}
+	int endTime = trap_Milliseconds();
+	int timeTaken = endTime - startTime;
+	Com_Printf("^9It took %i milliseconds to init the anim table.\n", timeTaken);
+}
+
+std::string BG_AnimTable_FindString(int animNum, bool error, const char *file, int line)
+{
+	try
+	{
+		return animTable.left.at(animNum);
+	}
+	catch( ... )
+	{
+		const char *text;
+		if( file == NULL )
+		{
+			text = va("Couldn't find anim with num \"%i\"", animNum);
+		}
+		else
+		{
+			text = va("%s:%i - Couldn't find anim with num \"%i\"", file, line, animNum);
+		}
+
+		if( error )
+		{
+			Com_Error(ERR_FATAL, "ERROR: %s", text);
+		}
+		else
+		{
+			Com_Printf( S_COLOR_YELLOW, "WARNING: %s\n", text );
+		}
+	}
+	return "";
+}
+
+std::string BG_AnimTable_FindString(int animNum, bool error, bool useFuncName, const char *funcName)
+{
+	try
+	{
+		return animTable.left.at(animNum);
+	}
+	catch( ... )
+	{
+		const char *text;
+		if( funcName == NULL )
+		{
+			text = va("Couldn't find anim with number \"%i\"", animNum);
+		}
+		else
+		{
+			text = va("%s: Couldn't find anim with number \"%i\"", funcName, animNum);
+		}
+
+		if( error )
+		{
+			Com_Error(ERR_FATAL, "ERROR: %s", text);
+		}
+		else
+		{
+			Com_Printf(S_COLOR_YELLOW "WARNING: %s\n", text);
+		}
+	}
+	return "";
+}
+
+int BG_AnimTable_FindInt(std::string animName, bool error, const char *file, int line)
+{
+	try
+	{
+		return animTable.right.at(animName);
+	}
+	catch( ... )
+	{
+		const char *text;
+		if( file == NULL )
+		{
+			text = va("Couldn't find anim with name \"%s\"", animName.c_str());
+		}
+		else
+		{
+			text = va("%s:%i - Couldn't find anim with name \"%s\"", file, line, animName.c_str());
+		}
+
+		if( error )
+		{
+			Com_Error(ERR_FATAL, "ERROR: %s", text);
+		}
+		else
+		{
+			Com_Printf( S_COLOR_YELLOW, "WARNING: %s\n", text );
+		}
+	}
+	return -1;
+}
+
+int BG_AnimTable_FindInt(std::string animName, bool error, bool useFuncName, const char *funcName)
+{
+	try
+	{
+		return animTable.right.at(animName);
+	}
+	catch( ... )
+	{
+		const char *text;
+		if( funcName == NULL )
+		{
+			text = va("Couldn't find anim with name \"%s\"", animName.c_str());
+		}
+		else
+		{
+			text = va("%s: Couldn't find anim with name \"%s\"", funcName, animName.c_str());
+		}
+
+		if( error )
+		{
+			Com_Error(ERR_FATAL, "ERROR: %s", text);
+		}
+		else
+		{
+			Com_Printf(S_COLOR_YELLOW "WARNING: %s\n", text);
+		}
+	}
+	return -1;
+}

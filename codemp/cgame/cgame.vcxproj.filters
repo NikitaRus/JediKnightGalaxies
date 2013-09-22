@@ -322,9 +322,6 @@
     <ClInclude Include="..\game\anims.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="animtable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\game\bg_local.h">
       <Filter>Header Files</Filter>
     </ClInclude>

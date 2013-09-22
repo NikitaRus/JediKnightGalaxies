@@ -3,7 +3,6 @@
 #include "bg_local.h"
 #include "bg_strap.h"
 #include <json/cJSON.h>
-#include "../cgame/animtable.h"
 
 static int fmLoadCounter;
 
@@ -525,7 +524,7 @@ static void BG_ParseAnimationObject ( cJSON *animationNode, int *torsoAnimation,
     cJSON *node = cJSON_GetObjectItem (animationNode, "torso");
     const char *anim = cJSON_ToStringOpt (node, "BOTH_STAND1");
     
-    *torsoAnimation = GetIDForString (animTable, anim);
+	*torsoAnimation = animTable.right.at(anim);
     
     node = cJSON_GetObjectItem (animationNode, "legs");
     if ( node == NULL )
@@ -535,7 +534,7 @@ static void BG_ParseAnimationObject ( cJSON *animationNode, int *torsoAnimation,
     }
     
     anim = cJSON_ToString (node);
-    *legsAnimation = GetIDForString (animTable, anim);
+	*legsAnimation = animTable.right.at(anim);
 }
 
 static void BG_ParseWeaponPlayerAnimations ( weaponData_t *weaponData, cJSON *playerAnimNode )

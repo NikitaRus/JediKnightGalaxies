@@ -2867,6 +2867,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum )
 
 	cgame_initializing = qtrue;
 
+	BG_InitAnimTable();
+
 	// Do the engine patches
 	ChatBox_InitSystem();
 	trap_Cvar_Set("connmsg", ""); // Clear connection message override

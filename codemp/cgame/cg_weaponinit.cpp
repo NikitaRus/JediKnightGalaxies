@@ -25,7 +25,7 @@ static qboolean CG_IsGhoul2Model ( const char *modelPath )
     
     return qfalse;
 }
-
+#if 0
 #define MAX_WEAPON_ANIMFILE_LENGTH (4096)
 
 const stringID_table_t weaponAnimTable[MAX_WEAPON_ANIMATIONS + 1] =
@@ -76,7 +76,7 @@ static qboolean CG_LoadViewWeaponAnimations ( weaponInfo_t *weapon, const char *
 
     return qtrue;
 }
-
+#endif
 //=========================================================
 // Description:
 // Loads a view weapon.
@@ -128,7 +128,9 @@ static void CG_LoadViewWeapon ( weaponInfo_t *weapon, const char *modelPath )
     slash = Q_strrchr (file, '/');
     
     Q_strncpyz (slash, "/animation.cfg", sizeof (file) - (slash - file));
+#if 0
     CG_LoadViewWeaponAnimations (weapon, file);
+#endif
 }
 
 static void CG_LoadG2ModelWithSkin ( const char *modelPath, void **g2ModelPtr )

@@ -114,7 +114,7 @@ void PM_SetForceJumpZStart(float value);
 
 void BG_CycleInven(playerState_t *ps, int direction);
 
-int BG_ParseGenericAnimationFile ( animation_t *animset, size_t maxAnimations, const stringID_table_t *animTable, const char *filename, const char *fileText );
+int BG_ParseGenericAnimationFile ( animation_t *animset, size_t maxAnimations, const string_table_t *animTable, const char *filename, const char *fileText );
 
 // Weapons
 void            BG_AddWeaponData ( weaponData_t *weaponData );

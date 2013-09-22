@@ -104,6 +104,12 @@ const char *GetStringForID( stringID_table_t *table, int id )
 	return NULL;
 }
 
+/*
+==============================================
+Clamping functions
+==============================================
+*/
+
 ID_INLINE int Com_Clampi( int min, int max, int value ) 
 {
 	if ( value < min ) 

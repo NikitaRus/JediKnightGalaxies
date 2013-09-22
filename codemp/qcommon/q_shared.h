@@ -105,6 +105,7 @@ BOOST
 
 #ifdef __cplusplus
 #include <boost/bimap.hpp>
+#include <boost/lexical_cast.hpp>
 #endif
 
 /*
@@ -3135,8 +3136,6 @@ typedef struct stringID_table_s
 
 int GetIDForString ( stringID_table_t *table, const char *string );
 const char *GetStringForID( stringID_table_t *table, int id );
-
-typedef boost::bimap<int, std::string> string_table_t;
 
 /*
 ========================================================================

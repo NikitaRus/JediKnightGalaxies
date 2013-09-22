@@ -1785,5 +1785,17 @@ typedef struct {
 	bool		torsoYawing;
 } lerpFrame_t;
 
+#ifdef __cplusplus
+#include <string>
+
+typedef boost::bimap<int, std::string> string_table_t;
+extern string_table_t animTable;
+void BG_InitAnimTable();
+
+std::string BG_AnimTable_FindString(int animNum, bool error = false, const char *file = NULL, int line = 0);
+std::string BG_AnimTable_FindString(int animNum, bool error = false, bool useFuncName = false, const char *funcName = NULL);
+int BG_AnimTable_FindInt(std::string animName, bool error = false, const char *file = NULL, int line = 0);
+int BG_AnimTable_FindInt(std::string animName, bool error = false, bool useFuncName = false, const char *funcName = NULL);
+#endif
 
 #endif //__BG_PUBLIC_H__

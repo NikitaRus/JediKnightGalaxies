@@ -26,8 +26,6 @@ extern void *CG_GetGhoul2WorldModel ( int weaponNum, int weaponVariation );
 #define TURN_ON				0x00000000
 #define TURN_OFF			0x00000100
 
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
-
 char	*cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*death1",
 	"*death2",
@@ -3002,11 +3000,11 @@ static void CG_SetLerpFrameAnimation( centity_t *cent, clientInfo_t *ci, lerpFra
 	if ( cg_debugAnim.integer && (cg_debugAnim.integer < 0 || cg_debugAnim.integer == cent->currentState.clientNum) ) {
 		if (lf == &cent->pe.legs)
 		{
-			CG_Printf( "%d: %d TORSO Anim: %i, '%s'\n", cg.time, cent->currentState.clientNum, newAnimation, GetStringForID(animTable, newAnimation));
+			CG_Printf( "%d: %d TORSO Anim: %i, '%s'\n", cg.time, cent->currentState.clientNum, newAnimation, animTable.left.at(newAnimation).c_str());
 		}
 		else
 		{
-			CG_Printf( "%d: %d LEGS Anim: %i, '%s'\n", cg.time, cent->currentState.clientNum, newAnimation, GetStringForID(animTable, newAnimation));
+			CG_Printf( "%d: %d LEGS Anim: %i, '%s'\n", cg.time, cent->currentState.clientNum, newAnimation, animTable.left.at(newAnimation).c_str());
 		}
 	}
 

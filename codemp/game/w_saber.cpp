@@ -1933,7 +1933,6 @@ static GAME_INLINE int G_GetParryForBlock(int block)
 int PM_SaberBounceForAttack( int stance, int move );
 int PM_SaberDeflectionForQuad( int quad );
 
-extern stringID_table_t animTable[MAX_ANIMATIONS+1];
 static GAME_INLINE qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gentity_t *defender, float saberHitFraction )
 {
 	qboolean animBasedDeflection = qtrue;
@@ -2020,9 +2019,9 @@ static GAME_INLINE qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gen
 			if (g_saberDebugPrint.integer)
 			{
 				Com_Printf( "attack %s vs. parry %s bounced to %s\n", 
-					animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim].name, 
-					animTable[SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim].name,
-					animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim].name );
+					animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim),
+					animTable.left.at(SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim),
+					animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim) );
 			}
 #endif
 			attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
@@ -2075,9 +2074,9 @@ static GAME_INLINE qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gen
 				if (g_saberDebugPrint.integer)
 				{
 					Com_Printf( "attack %s vs. parry %s bounced to %s\n", 
-						animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim].name, 
-						animTable[SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim].name,
-						animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim].name );
+						animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim),
+						animTable.left.at(SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim),
+						animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim) );
 				}
 #endif
 				attacker->client->ps.saberBlocked = BLOCKED_ATK_BOUNCE;
@@ -2094,9 +2093,9 @@ static GAME_INLINE qboolean WP_GetSaberDeflectionAngle( gentity_t *attacker, gen
 				if (g_saberDebugPrint.integer)
 				{
 					Com_Printf( "attack %s vs. parry %s deflected to %s\n", 
-						animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim].name, 
-						animTable[SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim].name,
-						animTable[SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim].name );
+						animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attMove].anim).c_str(),
+						animTable.left.at(SaberStances[defender->client->ps.fd.saberAnimLevel].moves[defender->client->ps.saberMove].anim).c_str(),
+						animTable.left.at(SaberStances[attacker->client->ps.fd.saberAnimLevel].moves[attacker->client->ps.saberMove].anim).c_str() );
 				}
 #endif
 				attacker->client->ps.saberBlocked = BLOCKED_BOUNCE_MOVE;
@@ -4575,12 +4574,7 @@ static GAME_INLINE qboolean CheckSaberDamage(gentity_t *self, int rSaberNum, int
 				}
 #endif
 			}
-			/*
-			if ( dmg )
-			{
-				Com_Printf("CL %i SABER DMG: %i, anim %s, torsoTimer %i\n", self->s.number, dmg, animTable[self->client->ps.torsoAnim].name, self->client->ps.torsoTimer );
-			}
-			*/
+
 			if ( self->client->ps.torsoAnim == BOTH_A1_SPECIAL
 				|| self->client->ps.torsoAnim == BOTH_A2_SPECIAL
 				|| self->client->ps.torsoAnim == BOTH_A3_SPECIAL )

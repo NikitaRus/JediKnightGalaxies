@@ -653,14 +653,14 @@
     <ClCompile Include="..\libraries\encoding\base128.cpp">
       <Filter>Libraries\Base128\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\qcommon\q_math.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\GLua\glua_json.cpp">
+      <Filter>Source Files\GLua</Filter>
     </ClCompile>
     <ClCompile Include="..\qcommon\q_shared.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GLua\glua_json.cpp">
-      <Filter>Source Files\GLua</Filter>
+    <ClCompile Include="..\qcommon\q_math.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -677,9 +677,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="anims.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\cgame\animtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="aux_exports.h">

@@ -5,7 +5,6 @@
 #include "bg_strap.h"
 #include "bg_local.h"
 #include "anims.h"
-#include "cgame/animtable.h"
 #ifdef QAGAME
 #include "g_local.h"
 #endif
@@ -1780,8 +1779,8 @@ void PM_DebugLegsAnim(int anim)
 	if (oldAnim < MAX_TOTALANIMATIONS && oldAnim >= BOTH_DEATH1 &&
 		newAnim < MAX_TOTALANIMATIONS && newAnim >= BOTH_DEATH1)
 	{
-		Com_Printf("OLD: %s\n", animTable[oldAnim]);
-		Com_Printf("NEW: %s\n", animTable[newAnim]);
+		Com_Printf("OLD: %s\n", Q_bimapright<int, std::string>(animTable, oldAnim, false).c_str());
+		Com_Printf("NEW: %s\n", Q_bimapright<int, std::string>(animTable, newAnim, false).c_str());
 	}
 }
 
@@ -2020,7 +2019,7 @@ void ParseAnimationEvtBlock(const char *aeb_filename, animevent_t *animEvents, a
 		//	just need offsets.
 		//This way when animation numbers change, this table won't have to be updated,
 		//	at least not much.
-		animNum = GetIDForString(animTable, token);
+		animNum = animTable.right.at(token);
 		if(animNum == -1)
 		{//Unrecognized ANIM ENUM name, or we're skipping this line, keep going till you get a good one
 			Com_Printf(S_COLOR_YELLOW"WARNING: Unknown token %s in animEvent file %s\n", token, aeb_filename );
@@ -2626,23 +2625,8 @@ int BG_ParseAnimationFile(const char *filename, animation_t *animset, qboolean i
 		return 0; //humanoid index
 	}
 
-    BG_ParseGenericAnimationFile (animset, MAX_ANIMATIONS, animTable, filename, BGPAFtext);
+    BG_ParseGenericAnimationFile (animset, MAX_ANIMATIONS, &animTable, filename, BGPAFtext);
     
-/*
-#ifdef _DEBUG
-	//Check the array, and print the ones that have nothing in them.
-	for(i = 0; i < MAX_ANIMATIONS; i++)
-	{	
-		if (animTable[i].name != NULL)		// This animation reference exists.
-		{
-			if (animset[i].firstFrame <= 0 && animset[i].numFrames <=0)
-			{	// This is an empty animation reference.
-				Com_Printf("***ANIMTABLE reference #%d (%s) is empty!\n", i, animTable[i].name);
-			}
-		}
-	}
-#endif // _DEBUG
-*/
 #ifdef CONVENIENT_ANIMATION_FILE_DEBUG_THING
 	SpewDebugStuffToFile();
 #endif
@@ -2674,17 +2658,6 @@ int BG_ParseAnimationFile(const char *filename, animation_t *animset, qboolean i
 			usedIndex = nextIndex;
 		}
 	}
-
-	/*
-	if (!wasLoaded && BGPAFtextLoaded)
-	{ //just loaded humanoid skel - we always want the rockettrooper to be after it, in slot 1
-#ifdef _DEBUG
-		assert(BG_ParseAnimationFile("models/players/rockettrooper/animation.cfg", NULL, qfalse) == 1);
-#else
-		BG_ParseAnimationFile("models/players/rockettrooper/animation.cfg", NULL, qfalse);
-#endif
-	}
-	*/
 
 	return usedIndex;
 }
@@ -2725,12 +2698,6 @@ static void BG_StartLegsAnim( playerState_t *ps, int anim )
 	}
 #endif
 	ps->legsAnim = anim;
-
-	/*
-	if ( pm->debugLevel ) {
-		Com_Printf("%d:  StartLegsAnim %d, on client#%d\n", pm->cmd.serverTime, anim, pm->ps->clientNum);
-	}
-	*/
 }
 
 void PM_ContinueLegsAnim( int anim ) {

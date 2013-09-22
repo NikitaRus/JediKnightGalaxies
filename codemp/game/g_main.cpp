@@ -572,6 +572,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	OpenSSL_add_all_algorithms();
 
+	BG_InitAnimTable();
 
 	// Initialize admin commands
 	JKG_Admin_Init();

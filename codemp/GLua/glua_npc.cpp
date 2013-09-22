@@ -1545,7 +1545,6 @@ static int GLua_NPC_Remove(lua_State *L) {
 	return 0;
 }
 
-extern stringID_table_t animTable [MAX_ANIMATIONS+1];
 void NPC_SetAnim(gentity_t *ent, int setAnimParts, int anim, int setAnimFlags);
 
 static int GLua_NPC_SetAnimLower(lua_State *L) {
@@ -1553,7 +1552,7 @@ static int GLua_NPC_SetAnimLower(lua_State *L) {
 	int anim;
 	if (!npc) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L,2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}
@@ -1570,7 +1569,7 @@ static int GLua_NPC_SetAnimUpper(lua_State *L) {
 	int anim;
 	if (!npc) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L, 2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}
@@ -1587,7 +1586,7 @@ static int GLua_NPC_SetAnimBoth(lua_State *L) {
 	int anim;
 	if (!npc) return 0;
 	if (lua_isstring(L,2)) {
-		anim = GetIDForString(animTable, lua_tostring(L,2));
+		anim = animTable.right.at(lua_tostring(L,2));
 	} else {
 		anim = lua_tointeger(L,2);
 	}
