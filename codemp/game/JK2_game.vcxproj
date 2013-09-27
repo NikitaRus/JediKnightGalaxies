@@ -290,6 +290,7 @@
     <ClCompile Include="g_client.cpp" />
     <ClCompile Include="g_cmds.cpp" />
     <ClCompile Include="g_combat.cpp" />
+    <ClCompile Include="g_cvar.cpp" />
     <ClCompile Include="g_exphysics.cpp" />
     <ClCompile Include="g_ICARUScb.cpp" />
     <ClCompile Include="g_items.cpp" />

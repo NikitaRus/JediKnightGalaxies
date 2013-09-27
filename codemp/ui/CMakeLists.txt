@@ -6,20 +6,23 @@ if(NOT InOpenJK)
 endif(NOT InOpenJK)
 
 set(MPUIIncludeDirectories "${MPDir}")
+set(MPUILibraries "libexpatMT"
 if(WIN32)
-	set(MPUILibraries "odbc32" "odbccp32") # what are these even?
+	set(MPUILibraries {MPUILibraries} "odbc32" "odbccp32" "winmm")
 endif(WIN32)
 set(MPUIDefines ${MPSharedDefines} "UI_EXPORTS" "MISSIONPACK" "_USRDLL")
 
 set(MPUIGameFiles
-	"${MPDir}/game/bg_misc.c"
-	"${MPDir}/game/bg_saga.c"
-	"${MPDir}/game/bg_vehicleLoad.c"
-	"${MPDir}/game/bg_weapons.c"
+	"${MPDir}/game/bg_ammo.cpp"
+	"${MPDir}/game/bg_constants.cpp"
+	"${MPDir}/game/bg_lib.cpp"
+	"${MPDir}/game/bg_misc.cpp"
+	"${MPDir}/game/bg_vehicleLoad.cpp"
+	"${MPDir}/game/bg_weapons.cpp"
+	"${MPDir}/game/bg_weapons_load.cpp"
 	"${MPDir}/game/anims.h"
 	"${MPDir}/game/bg_local.h"
 	"${MPDir}/game/bg_public.h"
-	"${MPDir}/game/bg_saga.h"
 	"${MPDir}/game/bg_strap.h"
 	"${MPDir}/game/bg_weapons.h"
 	"${MPDir}/game/surfaceflags.h"
@@ -40,13 +43,15 @@ source_group("common" FILES ${MPUICommonFiles})
 set(MPUIFiles ${MPUIFiles} ${MPUICommonFiles})
 
 set(MPUIUIFiles
-	"${MPDir}/ui/ui_atoms.c"
-	"${MPDir}/ui/ui_force.c"
-	"${MPDir}/ui/ui_gameinfo.c"
-	"${MPDir}/ui/ui_main.c"
-	"${MPDir}/ui/ui_saber.c"
-	"${MPDir}/ui/ui_shared.c"
-	"${MPDir}/ui/ui_syscalls.c"
+	"${MPDir}/ui/ui_atoms.cpp"
+	"${MPDir}/ui/ui_crossover.cpp"
+	"${MPDir}/ui/ui_force.cpp"
+	"${MPDir}/ui/ui_gameinfo.cpp"
+	"${MPDir}/ui/ui_jkgscript.cpp"
+	"${MPDir}/ui/ui_main.cpp"
+	"${MPDir}/ui/ui_saber.cpp"
+	"${MPDir}/ui/ui_shared.cpp"
+	"${MPDir}/ui/ui_syscalls.cpp"
 	"${MPDir}/ui/keycodes.h"
 	"${MPDir}/ui/menudef.h"
 	"${MPDir}/ui/ui_force.h"
