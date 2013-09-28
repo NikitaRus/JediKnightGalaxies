@@ -65,10 +65,10 @@ get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 message("Git revision is ${GIT_SHA1}")
 
 # Binary names
-set(MPEngine "openjk.${Architecture}")
+set(MPEngine "jkgalaxies.${Architecture}")
 set(MPVanillaRenderer "rd-vanilla_${Architecture}")
-set(MPDed "openjkded.${Architecture}")
-set(MPGame "jampgame${Architecture}")
+set(MPDed "jkgalaxiesded.${Architecture}")
+set(MPGame "game${Architecture}")
 set(MPCGame "cgame${Architecture}")
 set(MPUI "ui${Architecture}")
 # Library names
@@ -142,7 +142,7 @@ if(BuildPortableVersion)
 	set(SharedDefines ${SharedDefines} "_PORTABLE_VERSION")
 endif()
 
-set(OpenJKLibDir "${CMAKE_SOURCE_DIR}/lib")
+set(JKGLibrariesDir "${MPDir}/libraries")
 
 if(NOT MSVC)
 	# CMake already defines _DEBUG for MSVC.

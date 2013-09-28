@@ -152,10 +152,10 @@
     <ClCompile Include="..\libraries\encoding\base128.cpp">
       <Filter>Libraries\Base128\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\qcommon\q_math.c">
+    <ClCompile Include="..\qcommon\q_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\qcommon\q_shared.c">
+    <ClCompile Include="..\qcommon\q_shared.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

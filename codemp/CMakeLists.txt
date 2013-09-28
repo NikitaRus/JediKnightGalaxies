@@ -5,7 +5,7 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPSharedDefines ${SharedDefines} "_JK2")
+set(MPSharedDefines ${SharedDefines} "_JK2" "_PHASE1")
 
 #    Add Game Project
 if(BuildMPGame)
@@ -27,15 +27,17 @@ if(BuildMPEngine)
 	add_subdirectory("${MPDir}/rd-vanilla")
 endif(BuildMPEngine)
 
+#    Some common crap
+set(MPJSONFiles
+    "${MPDir}/libraries/json/cJSON.c"
+    "${MPDir}/libraries/json/cJSON.h"
+    )
+
 
 #    Common things between Engine and Dedicated Server
 if(BuildMPEngine OR BuildMPDed)
 
-	#    Botlib
-	# the files could arguably just be put into the engine and dedicated projects without having a library for it.
-	set(MPBotlibDefines ${SharedDefines} "BOTLIB")
-	set(MPBotlibIncludeDirectories ${MPDir})
-	set(MPBotlibHeaderFiles
+	set(MPBotlibFiles
 		"${MPDir}/botlib/aasfile.h"
 		"${MPDir}/botlib/be_aas.h"
 		"${MPDir}/botlib/be_aas_bsp.h"
@@ -78,10 +80,7 @@ if(BuildMPEngine OR BuildMPDed)
 		"${MPDir}/server/server.h"
 		"${MPDir}/game/surfaceflags.h"
 		"${MPDir}/qcommon/tags.h"
-		)
-	source_group("Header Files" FILES ${MPBotlibHeaderFiles})
-	set(MPBotlibSourceFiles
-		"${MPDir}/botlib/be_aas_bspq3.cpp"
+        "${MPDir}/botlib/be_aas_bspq3.cpp"
 		"${MPDir}/botlib/be_aas_cluster.cpp"
 		"${MPDir}/botlib/be_aas_debug.cpp"
 		"${MPDir}/botlib/be_aas_entity.cpp"
@@ -110,31 +109,23 @@ if(BuildMPEngine OR BuildMPDed)
 		"${MPDir}/botlib/l_script.cpp"
 		"${MPDir}/botlib/l_struct.cpp"
 		)
-	source_group("Source Files" FILES ${MPBotlibSourceFiles})
+	source_group("botlib" FILES ${MPBotlibFiles})
+    set(MPEngineAndDedFiles ${MPEngineAndDedFiles} ${MPBotlibFiles})
 	
-	add_library(${MPBotLib} STATIC ${MPBotlibHeaderFiles} ${MPBotlibSourceFiles})
-	set_target_properties(${MPBotLib} PROPERTIES COMPILE_DEFINITIONS "${MPBotlibDefines}")
-	set_target_properties(${MPBotLib} PROPERTIES INCLUDE_DIRECTORIES "${MPBotlibIncludeDirectories}")
-	set_target_properties(${MPBotLib} PROPERTIES PROJECT_LABEL "Bot Library")
-	
-	#    Common files/libraries/defines of both Engine and Dedicated Server
-	
-	# libraries: Botlib
-	set(MPEngineAndDedLibraries ${MPBotLib})
 	# Platform-specific libraries
 	if(WIN32)
 		set(MPEngineAndDedLibraries ${MPEngineAndDedLibraries} "winmm" "wsock32")
 	endif(WIN32)
 	# Include directories
-	set(MPEngineAndDedIncludeDirectories ${MPDir} ${OpenJKLibDir}) # codemp folder, since includes are not always relative in the files
+	set(MPEngineAndDedIncludeDirectories ${MPDir} ${JKGLibrariesDir}) # codemp folder, since includes are not always relative in the files
 	
 	if(UseInternalZlib)
 		# OpenAL32.lib is included for windows
-		find_library(ZlibLibrary NAMES zlib PATHS ${OpenJKLibDir})
+		find_library(ZlibLibrary NAMES zlib PATHS ${JKGLibrariesDir})
 		if(NOT ZlibLibrary)
 			message(FATAL_ERROR "UseInternalZlib enabled, but lib/zlib.lib not found!")
 		endif(NOT ZlibLibrary)
-		set(MPEngineAndDedIncludeDirectories ${MPEngineAndDedIncludeDirectories} "${OpenJKLibDir}/zlib")
+		set(MPEngineAndDedIncludeDirectories ${MPEngineAndDedIncludeDirectories} "${MPDir}/zlib")
 		set(MPEngineAndDedLibraries ${MPEngineAndDedLibraries} ${ZlibLibrary})
 	else(UseInternalZlib)
 		find_package(ZLIB REQUIRED)
@@ -142,7 +133,7 @@ if(BuildMPEngine OR BuildMPDed)
 		set(MPEngineAndDedLibraries ${MPEngineAndDedLibraries} ${ZLIB_LIBRARY})
 	endif(UseInternalZlib)
 
-	file(GLOB_RECURSE J_SRC "${OpenJKLibDir}/jpeg-8c/*.c" "${OpenJKLibDir}/jpeg-8c/*.h")
+	file(GLOB_RECURSE J_SRC "${OpenJKLibDir}/jpeg-8c/*.c" "${JKGLibrariesDir}/jpeg-8c/*.h")
 	source_group("jpeg-8c" FILES ${J_SRC})
 	
 	set(MPEngineAndDedCgameFiles
@@ -328,8 +319,8 @@ if(BuildMPEngine OR BuildMPDed)
 	set(MPEngineAndDedMinizipFiles
 		"${MPDir}/qcommon/unzip.cpp"
 		"${MPDir}/qcommon/unzip.h"
-		"${OpenJKLibDir}/zlib/ioapi.c"
-		"${OpenJKLibDir}/zlib/ioapi.h"
+		"${JKGLibrariesDir}/zlib/ioapi.c"
+		"${JKGLibrariesDir}/zlib/ioapi.h"
 		)
 	source_group("minizip" FILES ${MPEngineAndDedMinizipFiles})
 	set(MPEngineAndDedFiles ${MPEngineAndDedFiles} ${MPEngineAndDedMinizipFiles})
@@ -359,7 +350,7 @@ if(BuildMPEngine)
 	set(MPEngineLibraries ${MPEngineAndDedLibraries})
 	set(MPEngineIncludeDirectories ${MPEngineAndDedIncludeDirectories})
 	set(MPEngineFiles ${MPEngineAndDedFiles})
-	set(MPEngineDefines ${MPSharedDefines} "_JK2MP")
+	set(MPEngineDefines ${MPSharedDefines} "_JK2MP" "ENGINE")
 	
 	#    Dependencies
 	
@@ -374,7 +365,8 @@ if(BuildMPEngine)
 		set(MPEngineIncludeDirectories ${MPEngineIncludeDirectories} "${MPDir}/client/OpenAL")
 		# There's a libs/OpenAL32.lib
 		# (mrw) TODO Is this actually required on windows? It is loaded at runtime, should not be linked?
-		find_library(OpenALLibrary NAMES OpenAL32 PATHS ${OpenJKDir})
+        set(MPOpenALLibPath "${MPDir}/libraries/openal")
+		find_library(OpenALLibrary NAMES OpenAL32 PATHS ${MPOpenALLibPath})
 		if(NOT OpenALLibrary)
 			message(FATAL_ERROR "UseInternalOpenAL enabled, but lib/OpenAL32.lib not found!")
 		endif(NOT OpenALLibrary)
@@ -404,7 +396,7 @@ if(BuildMPEngine)
 	#    Source Files
 	
 	# TODO: Allow for use of external library
-	file(GLOB_RECURSE MPEngineJpegFiles "${OpenJKLibDir}/jpeg-8c/*.c" "${OpenJKLibDir}/jpeg-8c/*.h")
+	file(GLOB_RECURSE MPEngineJpegFiles "${JKGLibrariesDir}/jpeg-8c/*.c" "${JKGLibrariesDir}/jpeg-8c/*.h")
 	source_group("jpeg-8c" FILES ${MPEngineJpegFiles})
 	set(MPEngineFiles ${MPEngineFiles} ${MPEngineJpegFiles})
 	
@@ -473,36 +465,36 @@ if(BuildMPEngine)
 	set(MPEngineFiles ${MPEngineFiles} ${MPEngineRavlFiles})
 	
 	set(MPEngineMp3Files
-		"${MPDir}/mp3code/cdct.c"
-		"${MPDir}/mp3code/config.h"
-		"${MPDir}/mp3code/csbt.c"
-		"${MPDir}/mp3code/csbtb.c"
-		"${MPDir}/mp3code/csbtl3.c"
-		"${MPDir}/mp3code/cup.c"
-		"${MPDir}/mp3code/cupini.c"
-		"${MPDir}/mp3code/cupl1.c"
-		"${MPDir}/mp3code/cupl3.c"
-		"${MPDir}/mp3code/cwin.c"
-		"${MPDir}/mp3code/cwinb.c"
-		"${MPDir}/mp3code/cwinm.c"
-		"${MPDir}/mp3code/htable.h"
-		"${MPDir}/mp3code/hwin.c"
-		"${MPDir}/mp3code/jdw.h"
-		"${MPDir}/mp3code/l3.h"
-		"${MPDir}/mp3code/l3dq.c"
-		"${MPDir}/mp3code/l3init.c"
-		"${MPDir}/mp3code/mdct.c"
-		"${MPDir}/mp3code/mhead.c"
-		"${MPDir}/mp3code/mhead.h"
-		"${MPDir}/mp3code/mp3struct.h"
-		"${MPDir}/mp3code/msis.c"
-		"${MPDir}/mp3code/port.h"
-		"${MPDir}/mp3code/small_header.h"
-		"${MPDir}/mp3code/tableawd.h"
-		"${MPDir}/mp3code/towave.c"
-		"${MPDir}/mp3code/uph.c"
-		"${MPDir}/mp3code/upsf.c"
-		"${MPDir}/mp3code/wavep.c"
+		"${JKGLibrariesDir}/mp3code/cdct.c"
+		"${JKGLibrariesDir}/mp3code/config.h"
+		"${JKGLibrariesDir}/mp3code/csbt.c"
+		"${JKGLibrariesDir}/mp3code/csbtb.c"
+		"${JKGLibrariesDir}/mp3code/csbtl3.c"
+		"${JKGLibrariesDir}/mp3code/cup.c"
+		"${JKGLibrariesDir}/mp3code/cupini.c"
+		"${JKGLibrariesDir}/mp3code/cupl1.c"
+		"${JKGLibrariesDir}/mp3code/cupl3.c"
+		"${JKGLibrariesDir}/mp3code/cwin.c"
+		"${JKGLibrariesDir}/mp3code/cwinb.c"
+		"${JKGLibrariesDir}/mp3code/cwinm.c"
+		"${JKGLibrariesDir}/mp3code/htable.h"
+		"${JKGLibrariesDir}/mp3code/hwin.c"
+		"${JKGLibrariesDir}/mp3code/jdw.h"
+		"${JKGLibrariesDir}/mp3code/l3.h"
+		"${JKGLibrariesDir}/mp3code/l3dq.c"
+		"${JKGLibrariesDir}/mp3code/l3init.c"
+		"${JKGLibrariesDir}/mp3code/mdct.c"
+		"${JKGLibrariesDir}/mp3code/mhead.c"
+		"${JKGLibrariesDir}/mp3code/mhead.h"
+		"${JKGLibrariesDir}/mp3code/mp3struct.h"
+		"${JKGLibrariesDir}/mp3code/msis.c"
+		"${JKGLibrariesDir}/mp3code/port.h"
+		"${JKGLibrariesDir}/mp3code/small_header.h"
+		"${JKGLibrariesDir}/mp3code/tableawd.h"
+		"${JKGLibrariesDir}/mp3code/towave.c"
+		"${JKGLibrariesDir}/mp3code/uph.c"
+		"${JKGLibrariesDir}/mp3code/upsf.c"
+		"${JKGLibrariesDir}/mp3code/wavep.c"
 		)
 	source_group("mp3code" FILES ${MPEngineMp3Files})
 	set(MPEngineFiles ${MPEngineFiles} ${MPEngineMp3Files})
@@ -604,23 +596,23 @@ if(BuildMPDed)
 
 	if(UseInternalPNG)
 		set(MPDedLibPngFiles
-			"${OpenJKLibDir}/libpng/png.c"
-			"${OpenJKLibDir}/libpng/pngerror.c"
-			"${OpenJKLibDir}/libpng/pngget.c"
-			"${OpenJKLibDir}/libpng/pngmem.c"
-			"${OpenJKLibDir}/libpng/pngpread.c"
-			"${OpenJKLibDir}/libpng/pngread.c"
-			"${OpenJKLibDir}/libpng/pngrio.c"
-			"${OpenJKLibDir}/libpng/pngrtran.c"
-			"${OpenJKLibDir}/libpng/pngrutil.c"
-			"${OpenJKLibDir}/libpng/pngset.c"
-			"${OpenJKLibDir}/libpng/pngtrans.c"
-			"${OpenJKLibDir}/libpng/pngwio.c"
-			"${OpenJKLibDir}/libpng/pngwrite.c"
-			"${OpenJKLibDir}/libpng/pngwtran.c"
-			"${OpenJKLibDir}/libpng/pngwutil.c")
+			"${JKGLibrariesDir}/libpng/png.c"
+			"${JKGLibrariesDir}/libpng/pngerror.c"
+			"${JKGLibrariesDir}/libpng/pngget.c"
+			"${JKGLibrariesDir}/libpng/pngmem.c"
+			"${JKGLibrariesDir}/libpng/pngpread.c"
+			"${JKGLibrariesDir}/libpng/pngread.c"
+			"${JKGLibrariesDir}/libpng/pngrio.c"
+			"${JKGLibrariesDir}/libpng/pngrtran.c"
+			"${JKGLibrariesDir}/libpng/pngrutil.c"
+			"${JKGLibrariesDir}/libpng/pngset.c"
+			"${JKGLibrariesDir}/libpng/pngtrans.c"
+			"${JKGLibrariesDir}/libpng/pngwio.c"
+			"${JKGLibrariesDir}/libpng/pngwrite.c"
+			"${JKGLibrariesDir}/libpng/pngwtran.c"
+			"${JKGLibrariesDir}/libpng/pngwutil.c")
 		source_group("libpng" FILES ${MPDedLibPngFiles})
-		set(MPDedIncludeDirectories ${MPDedIncludeDirectories} "${OpenJKLibDir}/libpng")
+		set(MPDedIncludeDirectories ${MPDedIncludeDirectories} "${JKGLibrariesDir}/libpng")
 		set(MPDedFiles ${MPDedFiles} ${MPDedLibPngFiles})
 	else(UseInternalPNG)
 		find_package(PNG REQUIRED)

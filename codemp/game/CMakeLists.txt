@@ -6,7 +6,7 @@ if(NOT InOpenJK)
 endif(NOT InOpenJK)
 
 set(MPGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/libraries/libcurl/include" "${MPDir}/libraries/Detour/include" "${MPDir}/libraries/Recast/include")
-set(MPGameLibraries "libeay32"
+set(MPGameLibraries "libeay32")
 if(WIN32)
 	set(MPGameLibraries ${MPGameLibraries} "winmm" "ws2_32" "dbghelp" "psapi")
 endif(WIN32)
@@ -38,7 +38,6 @@ set(MPGameGameFiles
 	"${MPDir}/game/g_client.cpp"
 	"${MPDir}/game/g_cmds.cpp"
 	"${MPDir}/game/g_combat.cpp"
-	"${MPDir}/game/g_cvar.cpp"
 	"${MPDir}/game/g_exphysics.cpp"
 	"${MPDir}/game/g_ICARUScb.cpp"
 	"${MPDir}/game/g_items.cpp"
@@ -196,8 +195,8 @@ source_group("glua" FILES ${MPGameGluaFiles})
 set(MPGameFiles ${MPGameFiles} ${MPGameGluaFiles})
 
 set(MPGameCommonFiles
-	"${MPDir}/qcommon/q_math.c"
-	"${MPDir}/qcommon/q_shared.c"
+	"${MPDir}/qcommon/q_math.cpp"
+	"${MPDir}/qcommon/q_shared.cpp"
 	"${MPDir}/qcommon/disablewarnings.h"
 	"${MPDir}/qcommon/q_shared.h"
 	"${MPDir}/qcommon/tags.h"

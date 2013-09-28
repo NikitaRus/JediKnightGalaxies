@@ -268,8 +268,8 @@
     <ClCompile Include="..\libraries\Detour\Source\DetourNavMeshQuery.cpp" />
     <ClCompile Include="..\libraries\Detour\Source\DetourNode.cpp" />
     <ClCompile Include="..\libraries\encoding\base128.cpp" />
-    <ClCompile Include="..\qcommon\q_math.c" />
-    <ClCompile Include="..\qcommon\q_shared.c" />
+    <ClCompile Include="..\qcommon\q_math.cpp" />
+    <ClCompile Include="..\qcommon\q_shared.cpp" />
     <ClCompile Include="cg_cinematics.cpp" />
     <ClCompile Include="cg_consolecmds.cpp" />
     <ClCompile Include="cg_crossover.cpp" />

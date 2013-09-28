@@ -261,8 +261,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\GLua\glua_json.cpp" />
-    <ClCompile Include="..\qcommon\q_math.c" />
-    <ClCompile Include="..\qcommon\q_shared.c" />
+    <ClCompile Include="..\qcommon\q_math.cpp" />
+    <ClCompile Include="..\qcommon\q_shared.cpp" />
     <ClCompile Include="ai_dominance.cpp" />
     <ClCompile Include="ai_dominance_astar.cpp" />
     <ClCompile Include="ai_dominance_bot.cpp" />
@@ -290,7 +290,6 @@
     <ClCompile Include="g_client.cpp" />
     <ClCompile Include="g_cmds.cpp" />
     <ClCompile Include="g_combat.cpp" />
-    <ClCompile Include="g_cvar.cpp" />
     <ClCompile Include="g_exphysics.cpp" />
     <ClCompile Include="g_ICARUScb.cpp" />
     <ClCompile Include="g_items.cpp" />

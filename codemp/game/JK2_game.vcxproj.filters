@@ -653,16 +653,13 @@
     <ClCompile Include="..\libraries\encoding\base128.cpp">
       <Filter>Libraries\Base128\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\qcommon\q_math.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\qcommon\q_shared.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\GLua\glua_json.cpp">
       <Filter>Source Files\GLua</Filter>
     </ClCompile>
-    <ClCompile Include="g_cvar.cpp">
+    <ClCompile Include="..\qcommon\q_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\qcommon\q_shared.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

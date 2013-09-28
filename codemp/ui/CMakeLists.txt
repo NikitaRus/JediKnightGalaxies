@@ -5,14 +5,20 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPUIIncludeDirectories "${MPDir}")
-set(MPUILibraries "libexpatMT"
+set(MPUIIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game" "${MPDir}/libraries/libexpat/include")
 if(WIN32)
-	set(MPUILibraries {MPUILibraries} "odbc32" "odbccp32" "winmm")
+    set(MPUILibraries "${MPDir}/libraries/libexpat/lib/libexpatMT.lib")
+else(WIN32)
+    set(MPUILibraries "${MPDir}/libraries/libexpat/lib/libexpatMT")
 endif(WIN32)
-set(MPUIDefines ${MPSharedDefines} "UI_EXPORTS" "MISSIONPACK" "_USRDLL")
+
+if(WIN32)
+	set(MPUILibraries "${MPUILibraries}" "odbc32" "odbccp32" "winmm")
+endif(WIN32)
+set(MPUIDefines ${MPSharedDefines} "UI_EXPORTS" "MISSIONPACK" "_USRDLL" "UI")
 
 set(MPUIGameFiles
+    "${MPDir}/game/animtable.cpp"
 	"${MPDir}/game/bg_ammo.cpp"
 	"${MPDir}/game/bg_constants.cpp"
 	"${MPDir}/game/bg_lib.cpp"
@@ -30,9 +36,13 @@ set(MPUIGameFiles
 source_group("game" FILES ${MPUIGameFiles})
 set(MPUIFiles ${MPUIFiles} ${MPUIGameFiles})
 
+set(MPJSONFiles "${MPDir}/libraries/json/cJSON.c" "${MPDir}/libraries/json/cJSON.h")
+source_group("json" FILES ${MPJSONFiles})
+set(MPUIFiles ${MPUIFiles} ${MPJSONFiles})
+
 set(MPUICommonFiles
-	"${MPDir}/qcommon/q_math.c"
-	"${MPDir}/qcommon/q_shared.c"
+	"${MPDir}/qcommon/q_math.cpp"
+	"${MPDir}/qcommon/q_shared.cpp"
 	"${MPDir}/qcommon/disablewarnings.h"
 	"${MPDir}/qcommon/game_version.h"
 	"${MPDir}/qcommon/q_shared.h"
@@ -51,6 +61,7 @@ set(MPUIUIFiles
 	"${MPDir}/ui/ui_main.cpp"
 	"${MPDir}/ui/ui_saber.cpp"
 	"${MPDir}/ui/ui_shared.cpp"
+    "${MPDir}/ui/ui_strap.cpp"
 	"${MPDir}/ui/ui_syscalls.cpp"
 	"${MPDir}/ui/keycodes.h"
 	"${MPDir}/ui/menudef.h"
@@ -61,6 +72,19 @@ set(MPUIUIFiles
 	)
 source_group("ui" FILES ${MPUIUIFiles})
 set(MPUIFiles ${MPUIFiles} ${MPUIUIFiles})
+
+set(MPUIUIModuleFiles
+    "${MPDir}/ui/jkg_conversations.cpp"
+    "${MPDir}/ui/jkg_gangwars_ui.cpp"
+    "${MPDir}/ui/jkg_inventory.cpp"
+    "${MPDir}/ui/jkg_loot.cpp"
+    "${MPDir}/ui/jkg_partymanager.cpp"
+    "${MPDir}/ui/jkg_pazaak.cpp"
+    "${MPDir}/ui/jkg_shop.cpp"
+    "${MPDir}/ui/jkg_slice.cpp"
+    )
+source_group("modules" FILES ${MPUIUIModuleFiles})
+set(MPUIFiles ${MPUIFiles} ${MPUIUIModuleFiles})
 
 set(MPUIRendererFiles
 	"${MPDir}/rd-common/tr_types.h"
@@ -76,9 +100,9 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 if(WIN32)
-	install(TARGETS ${MPUI} RUNTIME DESTINATION "OpenJK")
+	install(TARGETS ${MPUI} RUNTIME DESTINATION "JKGalaxies")
 else(WIN32)
-	install(TARGETS ${MPUI} LIBRARY DESTINATION "OpenJK")
+	install(TARGETS ${MPUI} LIBRARY DESTINATION "JKGalaxies")
 endif(WIN32)
 set_target_properties(${MPUI} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "${MPUIDefines};${ReleaseDefines}")
 set_target_properties(${MPUI} PROPERTIES COMPILE_DEFINITIONS_MINSIZEREL "${MPUIDefines};${ReleaseDefines}")

@@ -5,7 +5,7 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPCGameIncludeDirectories "${MPDir}")
+set(MPCGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game")
 if(WIN32)
 	set(MPCGameLibraries "odbc32" "odbccp32") # what are these even?
 endif(WIN32)
@@ -102,8 +102,8 @@ source_group("cgame" FILES ${MPCGameCgameFiles})
 set(MPCGameFiles ${MPCGameFiles} ${MPCGameCgameFiles})
 
 set(MPCGameCommonFiles
-	"${MPDir}/qcommon/q_math.c"
-	"${MPDir}/qcommon/q_shared.c"
+	"${MPDir}/qcommon/q_math.cpp"
+	"${MPDir}/qcommon/q_shared.cpp"
 	"${MPDir}/qcommon/disablewarnings.h"
 	"${MPDir}/qcommon/q_shared.h"
 	"${MPDir}/qcommon/qfiles.h"
@@ -141,9 +141,9 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 if(WIN32)
-	install(TARGETS ${MPCGame} RUNTIME DESTINATION "OpenJK")
+	install(TARGETS ${MPCGame} RUNTIME DESTINATION "JKGalaxies")
 else(WIN32)
-	install(TARGETS ${MPCGame} LIBRARY DESTINATION "OpenJK")
+	install(TARGETS ${MPCGame} LIBRARY DESTINATION "JKGalaxies")
 endif(WIN32)
 set_target_properties(${MPCGame} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "${MPCGameDefines};${ReleaseDefines}")
 set_target_properties(${MPCGame} PROPERTIES COMPILE_DEFINITIONS_MINSIZEREL "${MPCGameDefines};${ReleaseDefines}")
