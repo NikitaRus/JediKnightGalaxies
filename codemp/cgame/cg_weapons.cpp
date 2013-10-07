@@ -1603,14 +1603,12 @@ void CG_NextWeapon_f( void )
 	}
 
 	// sprint check --eez
+	int current = trap_GetCurrentCmdNumber();
+	usercmd_t ucmd;
+	trap_GetUserCmd(current, &ucmd);
+	if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, false))
 	{
-		int current = trap_GetCurrentCmdNumber();
-		usercmd_t ucmd;
-		trap_GetUserCmd(current, &ucmd);
-		if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, false))
-		{
-			return;
-		}
+		return;
 	}
 
 	while(numIterations < MAX_ACI_SLOTS)
@@ -1692,14 +1690,12 @@ void CG_PrevWeapon_f( void )
 	}
 
 	// sprint check --eez
+	int current = trap_GetCurrentCmdNumber();
+	usercmd_t ucmd;
+	trap_GetUserCmd(current, &ucmd);
+	if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
 	{
-		int current = trap_GetCurrentCmdNumber();
-		usercmd_t ucmd;
-		trap_GetUserCmd(current, &ucmd);
-		if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
-		{
-			return;
-		}
+		return;
 	}
 
 	while(numIterations < MAX_ACI_SLOTS)
@@ -1797,14 +1793,12 @@ void CG_Weapon_f( void ) {
 	}
 
 	// sprint check --eez
+	int current = trap_GetCurrentCmdNumber();
+	usercmd_t ucmd;
+	trap_GetUserCmd(current, &ucmd);
+	if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
 	{
-		int current = trap_GetCurrentCmdNumber();
-		usercmd_t ucmd;
-		trap_GetUserCmd(current, &ucmd);
-		if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
-		{
-			return;
-		}
+		return;
 	}
 
 	num = atoi( CG_Argv( 1 ) );
@@ -1891,14 +1885,12 @@ void CG_WeaponClean_f( void ) {
 	}
 
 	// sprint check --eez
+	int current = trap_GetCurrentCmdNumber();
+	usercmd_t ucmd;
+	trap_GetUserCmd(current, &ucmd);
+	if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
 	{
-		int current = trap_GetCurrentCmdNumber();
-		usercmd_t ucmd;
-		trap_GetUserCmd(current, &ucmd);
-		if (BG_IsSprinting(&cg.predictedPlayerState, &ucmd, qfalse))
-		{
-			return;
-		}
+		return;
 	}
 
 	num = atoi( CG_Argv( 1 ) );
@@ -2804,8 +2796,8 @@ void CG_CheckPlayerG2Weapons(playerState_t *ps, centity_t *cent)
 				trap_S_StartSound(cent->lerpOrigin, cent->currentState.number, CHAN_AUTO, cgs.clientinfo[ps->clientNum].saber[1].soundOn);
 			}
 
-			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->clientNum].saber[0], 0, -1);
-			BG_SI_SetDesiredLength(&cgs.clientinfo[ps->clientNum].saber[1], 0, -1);
+			cgs.clientinfo[ps->clientNum].saber[0].SetDesiredLength(0, -1);
+			cgs.clientinfo[ps->clientNum].saber[0].SetDesiredLength(0, -1);
 		}
 		cent->weapon = ps->weapon;
 	}
