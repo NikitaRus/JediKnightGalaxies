@@ -124,6 +124,7 @@ set(MPGameGameFiles
 	"${MPDir}/game/jkg_utilityfunc.cpp"
 	"${MPDir}/game/tri_coll_test.cpp"
 	"${MPDir}/game/w_force.cpp"
+	"${MPDir}/game/w_melee.cpp"
 	"${MPDir}/game/w_saber.cpp"
 	"${MPDir}/game/ai.h"
 	"${MPDir}/game/ai_main.h"
