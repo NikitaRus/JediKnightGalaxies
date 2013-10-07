@@ -145,6 +145,10 @@ if(WIN32)
 else(WIN32)
 	install(TARGETS ${MPCGame} LIBRARY DESTINATION "JKGalaxies")
 endif(WIN32)
+
+# JKG libraries
+set(MPCGameIncludeDirectories ${MPCGameIncludeDirectories} ${JKGLibrariesDir})
+
 set_target_properties(${MPCGame} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "${MPCGameDefines};${ReleaseDefines}")
 set_target_properties(${MPCGame} PROPERTIES COMPILE_DEFINITIONS_MINSIZEREL "${MPCGameDefines};${ReleaseDefines}")
 set_target_properties(${MPCGame} PROPERTIES COMPILE_DEFINITIONS_RELEASE "${MPCGameDefines};${ReleaseDefines}")

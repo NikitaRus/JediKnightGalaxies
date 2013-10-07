@@ -150,6 +150,10 @@ else(WIN32)
 	set(MPVanillaRendererFiles ${MPVanillaRendererFiles} ${MPVanillaRendererSysFiles})
 endif(WIN32)
 
+# JKG library dir
+set(MPVanillaRendererIncludeDirectories ${MPVanillaRendererIncludeDirectories} ${JKGLibrariesDir})
+
+
 set(MPVanillaRendererIncludeDirectories ${MPVanillaRendererIncludeDirectories} ${OpenJKLibDir})
 add_library(${MPVanillaRenderer} SHARED ${MPVanillaRendererFiles})
 
@@ -167,10 +171,10 @@ else(WIN32)
 		install(TARGETS ${MPVanillaRenderer} LIBRARY DESTINATION ".")
 	endif(MakeApplicationBundles AND BuildMPEngine)
 endif(WIN32)
-set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "${SharedDefines};${ReleaseDefines}")
-set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_MINSIZEREL "${SharedDefines};${ReleaseDefines}")
-set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_RELEASE "${SharedDefines};${ReleaseDefines}")
-set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_DEBUG "${SharedDefines};${DebugDefines}")
+set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "ENGINE;${SharedDefines};${ReleaseDefines}")
+set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_MINSIZEREL "ENGINE;${SharedDefines};${ReleaseDefines}")
+set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_RELEASE "ENGINE;${SharedDefines};${ReleaseDefines}")
+set_target_properties(${MPVanillaRenderer} PROPERTIES COMPILE_DEFINITIONS_DEBUG "ENGINE;${SharedDefines};${DebugDefines}")
 set_target_properties(${MPVanillaRenderer} PROPERTIES INCLUDE_DIRECTORIES "${MPVanillaRendererIncludeDirectories}")
 set_target_properties(${MPVanillaRenderer} PROPERTIES PROJECT_LABEL "MP Vanilla Renderer")
 target_link_libraries(${MPVanillaRenderer} ${MPVanillaRendererLibraries})
