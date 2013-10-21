@@ -6,6 +6,7 @@ if(NOT InOpenJK)
 endif(NOT InOpenJK)
 
 set(MPSharedDefines ${SharedDefines} "_JK2" "_PHASE1")
+set(BoostDirectory "${MPDir}/libraries/boost")
 
 #    Add Game Project
 if(BuildMPGame)

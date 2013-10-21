@@ -5,7 +5,7 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPCGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game")
+set(MPCGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game" ${BoostDirectory})
 if(WIN32)
 	set(MPCGameLibraries "odbc32" "odbccp32") # what are these even?
 endif(WIN32)
@@ -120,6 +120,60 @@ set(MPCGameUiFiles
 	)
 source_group("ui" FILES ${MPCGameUiFiles})
 set(MPCGameFiles ${MPCGameFiles} ${MPCGameUiFiles})
+
+# JKG LIBRARIES BEGIN
+
+set(JKGRecastLibrary
+	"${JKGLibrariesDir}/Recast/Source/Recast.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastAlloc.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastArea.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastContour.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastFilter.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastLayers.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastMesh.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastMeshDetail.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastRasterization.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastRegion.cpp"
+	)
+source_group("libraries\\recast" FILES ${JKGRecastLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGRecastLibrary})
+
+set(JKGDetourLibrary
+	"${JKGLibrariesDir}/Detour/Source/DetourAlloc.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourCommon.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMesh.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMeshBuilder.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMeshQuery.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNode.cpp"
+	)
+source_group("libraries\\Detour" FILES ${JKGDetourLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGDetourLibrary})
+
+set(JKGBase128Library
+	"${JKGLibrariesDir}/encoding/base128.cpp"
+	)
+source_group("libraries\\base128" FILES ${JKGBase128Library})
+set(MPGameFiles ${MPGameFiles} ${JKGBase128Library})
+
+set(JKGBase64Library
+	"${JKGLibrariesDir}/encoding/base64.c"
+	)
+source_group("libraries\\base64" FILES ${JKGBase64Library})
+set(MPGameFiles ${MPGameFiles} ${JKGBase64Library})
+
+set(JKGBitstreamLibrary
+	"${JKGLibrariesDir}/encoding/bitstream.c"
+	)
+source_group("libraries\\bitstream" FILES ${JKGBitstreamLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGBitstreamLibrary})
+
+set(JKGJSONLibrary
+	"${JKGLibrariesDir}/json/cJSON.c"
+	)
+source_group("libraries\\json" FILES ${JKGJSONLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGJSONLibrary})
+
+# END JKG LIBRARIES
 
 set(MPCGameRendererFiles
 	"${MPDir}/rd-common/tr_types.h"

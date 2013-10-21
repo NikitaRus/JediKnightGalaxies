@@ -48,16 +48,83 @@ extern "C"
 {
 #endif
 
+#define __cJSON_INTERNAL
+
 #ifndef __cJSON_INTERNAL
 typedef void cJSON;
 typedef void cJSONStream;
 #endif
+
+typedef struct sb_s {	// StringBuilder structure for the serializer
+	char	*buffer;
+	size_t	bufferlen;
+	size_t	blocksize;
+	size_t	stringlen;
+	char	finalized;
+	char	staticData;		// non-zero if the buffer is static (and thus cannot be enlarged)
+} cJSON_StringBuilder;
+
+typedef struct cJSONWriterStack_s
+{
+	int type;		// 1 = Object, 2 = Array, anything else is invalid
+	char empty;		// 1 if the array/object does not have any items (yet)
+	char objectarray;	// 1 if the array contains nested arrays/objects (this causes items to be written on seperate lines if formatting is enabled)
+	int depth;		// Depth of the structure (only used if formatting is enabled)
+	struct cJSONWriterStack_s *next;	// Internal linkage
+} cJSON_StreamStack;
+
+// The cJSON stream writer structure:
+typedef struct cJSONStream_s {
+	cJSON_StreamStack *slots;		// Array of slots
+	cJSON_StreamStack *free;		// Stack of free slots
+	cJSON_StreamStack *stack;		// Stack of used slots
+	cJSON_StringBuilder sb;			// String builder
+	int	fmt;						// Formatted?
+} cJSONStream;
 
 typedef struct cJSON_Hooks {
       void *(*malloc_fn)(size_t sz);
 	  void *(*realloc_fn)(void *ptr, size_t sz);
       void (*free_fn)(void *ptr);
 } cJSON_Hooks;
+
+// cJSON memory pool (only used by the pooled parser)
+typedef struct cJSONMemPool_s {
+	char *stringbuf;		// String read buffer (length is made to fit the longest string in the json structure (+ NULL terminator)
+	unsigned int strbuflen;	// Length of the string buffer
+	char *pool;				// Memory pool
+	unsigned int poolsize;	// Size of the pool (in bytes)
+	unsigned int used;		// Usage of the pool (in bytes)
+} cJSONMemPool_t;
+
+// The cJSON structure:
+typedef struct cJSON_s {
+	/* Item walking */
+	struct cJSON_s *next,*prev;	// next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem
+	struct cJSON_s *child;		// An array or object item will have a child pointer pointing to a chain of the items in the array/object.
+
+	/* Array/Object lookup */
+	struct cJSON_s **table;		// Dynamic array or hashtable for quick item lookups
+	size_t tablesize;			// Size of the dynamic array or hashtable, depending on type
+	size_t arraysize;			// Size of an array/object, if applicable
+
+	/* Item type */
+	int type;					// The type of the item, as above.
+
+	/* Memory Pool */
+	cJSONMemPool_t *pool;		// Non-NULL if a memory pool is associated with this node (blocks edit operations)
+
+	/* Item data */
+	char *valuestring;			// The item's string, if type == cJSON_String
+	int valueint;				// The item's number, if type == cJSON_Number
+	double valuedouble;			// The item's number, if type == cJSON_Number
+
+	/* Subitem data */
+	char *string;				// The item's name string, if this item is the child of, or is in the list of subitems of an object.
+	int linked;					// 1 if this node is linked somewhere. If set, attempts to add it to another object or array will fail.
+	struct cJSON_s *hashnext;	// Next entry in the hashtable (if applicable)
+	struct cJSON_s *lastentry;		// Latest entry in the object, so we know which item to link to
+} cJSON;
 
 // Supply malloc, realloc and free functions to cJSON
 extern void cJSON_InitHooks(cJSON_Hooks* hooks);

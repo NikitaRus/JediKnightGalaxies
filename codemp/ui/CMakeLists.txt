@@ -5,7 +5,7 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPUIIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game" "${MPDir}/libraries/libexpat/include")
+set(MPUIIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/game" "${MPDir}/libraries/libexpat/include" ${BoostDirectory})
 if(WIN32)
     set(MPUILibraries "${MPDir}/libraries/libexpat/lib/libexpatMT.lib")
 else(WIN32)

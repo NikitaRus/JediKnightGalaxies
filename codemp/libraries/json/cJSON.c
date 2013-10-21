@@ -58,8 +58,6 @@
 #include <stdarg.h>
 #include <assert.h>
 
-#define __cJSON_INTERNAL
-
 // cJSON Types:
 #define cJSON_False 0
 #define cJSON_True 1
@@ -72,72 +70,7 @@
 #define cJSON_HashTableSize 32		// An object's hashtable has cJSON_HashTableSize slots
 #define cJSON_ArrayBlockSize 16		// Arrays are alloced with cJSON_ArrayBlockSize slots at a time
 
-// cJSON memory pool (only used by the pooled parser)
-typedef struct cJSONMemPool_s {
-	char *stringbuf;		// String read buffer (length is made to fit the longest string in the json structure (+ NULL terminator)
-	unsigned int strbuflen;	// Length of the string buffer
-	char *pool;				// Memory pool
-	unsigned int poolsize;	// Size of the pool (in bytes)
-	unsigned int used;		// Usage of the pool (in bytes)
-} cJSONMemPool_t;
-
-// The cJSON structure:
-typedef struct cJSON_s {
-	/* Item walking */
-	struct cJSON_s *next,*prev;	// next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem
-	struct cJSON_s *child;		// An array or object item will have a child pointer pointing to a chain of the items in the array/object.
-
-	/* Array/Object lookup */
-	struct cJSON_s **table;		// Dynamic array or hashtable for quick item lookups
-	size_t tablesize;			// Size of the dynamic array or hashtable, depending on type
-	size_t arraysize;			// Size of an array/object, if applicable
-
-	/* Item type */
-	int type;					// The type of the item, as above.
-
-	/* Memory Pool */
-	cJSONMemPool_t *pool;		// Non-NULL if a memory pool is associated with this node (blocks edit operations)
-
-	/* Item data */
-	char *valuestring;			// The item's string, if type == cJSON_String
-	int valueint;				// The item's number, if type == cJSON_Number
-	double valuedouble;			// The item's number, if type == cJSON_Number
-
-	/* Subitem data */
-	char *string;				// The item's name string, if this item is the child of, or is in the list of subitems of an object.
-	int linked;					// 1 if this node is linked somewhere. If set, attempts to add it to another object or array will fail.
-	struct cJSON_s *hashnext;	// Next entry in the hashtable (if applicable)
-	struct cJSON_s *lastentry;		// Latest entry in the object, so we know which item to link to
-} cJSON;
-
 #define SBBLOCKSIZE 512	// Alloc SBBLOCKSIZE bytes at a time for the stringbuilder (by default)
-
-typedef struct sb_s {	// StringBuilder structure for the serializer
-	char	*buffer;
-	size_t	bufferlen;
-	size_t	blocksize;
-	size_t	stringlen;
-	char	finalized;
-	char	staticData;		// non-zero if the buffer is static (and thus cannot be enlarged)
-} cJSON_StringBuilder;
-
-typedef struct cJSONWriterStack_s
-{
-	int type;		// 1 = Object, 2 = Array, anything else is invalid
-	char empty;		// 1 if the array/object does not have any items (yet)
-	char objectarray;	// 1 if the array contains nested arrays/objects (this causes items to be written on seperate lines if formatting is enabled)
-	int depth;		// Depth of the structure (only used if formatting is enabled)
-	struct cJSONWriterStack_s *next;	// Internal linkage
-} cJSON_StreamStack;
-
-// The cJSON stream writer structure:
-typedef struct cJSONStream_s {
-	cJSON_StreamStack *slots;		// Array of slots
-	cJSON_StreamStack *free;		// Stack of free slots
-	cJSON_StreamStack *stack;		// Stack of used slots
-	cJSON_StringBuilder sb;			// String builder
-	int	fmt;						// Formatted?
-} cJSONStream;
 
 #include "cJSON.h"
 
@@ -1544,7 +1477,7 @@ static int cJSON_Parse_Array(cJSON *item, cJSON_StringStream *ss)
 	}
 	item->type = cJSON_Array;
 
-	item->table = (cJSON_s **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
+	item->table = (cJSON **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
 	item->tablesize = cJSON_ArrayBlockSize;
 
 	cJSON_SS_SkipChar(ss);
@@ -1647,7 +1580,7 @@ static int cJSON_Parse_Object(cJSON *item, cJSON_StringStream *ss)
 	// Create object
 	item->type = cJSON_Object;
 
-	item->table = (cJSON_s **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
+	item->table = (cJSON **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
 	memset(item->table, 0, cJSON_HashTableSize * sizeof(cJSON *));
 	item->tablesize = cJSON_HashTableSize;
 
@@ -2146,7 +2079,7 @@ static int cJSON_ParsePooled_Array(cJSON *item, cJSON_StringStream *ss)
 	}
 	
 	// Construct the dynamic array
-	item->table = (cJSON_s **)cJSON_PooledMalloc(item->pool, sizeof(cJSON *) * item->arraysize);
+	item->table = (cJSON **)cJSON_PooledMalloc(item->pool, sizeof(cJSON *) * item->arraysize);
 	if (!item->table) {
 		cJSON_SS_ParseError(ss, "Insufficient memory");
 		return 0;
@@ -2181,7 +2114,7 @@ static int cJSON_ParsePooled_Object(cJSON *item, cJSON_StringStream *ss)
 	// Create object
 	item->type = cJSON_Object;
 
-	item->table = (cJSON_s **)cJSON_PooledMalloc(item->pool, cJSON_HashTableSize * sizeof(cJSON *));
+	item->table = (cJSON **)cJSON_PooledMalloc(item->pool, cJSON_HashTableSize * sizeof(cJSON *));
 	memset(item->table, 0, cJSON_HashTableSize * sizeof(cJSON *));
 	item->tablesize = cJSON_HashTableSize;
 
@@ -2573,7 +2506,7 @@ void cJSON_AddItemToArray(cJSON *arry, cJSON *item)
 		void *tmp;
 		tmp = cJSON_realloc(arry->table, (arry->tablesize + cJSON_ArrayBlockSize) * sizeof(cJSON *));
 		if (tmp) {
-			arry->table = (cJSON_s **)tmp;
+			arry->table = (cJSON **)tmp;
 			arry->tablesize += cJSON_ArrayBlockSize;
 		} else {
 			return;		// Allocation failed
@@ -2618,7 +2551,7 @@ void cJSON_InsertItemInArray(cJSON *arry, cJSON *item, int before)
 		void *tmp;
 		tmp = cJSON_realloc(arry->table, (arry->tablesize + cJSON_ArrayBlockSize) * sizeof(cJSON *));
 		if (tmp) {
-			arry->table = (cJSON_s **)tmp;
+			arry->table = (cJSON **)tmp;
 			arry->tablesize += cJSON_ArrayBlockSize;
 		} else {
 			return;		// Allocation failed
@@ -2720,7 +2653,7 @@ cJSON *cJSON_DetachItemFromArray(cJSON *arry, int which)
 		void *tmp;
 		tmp = realloc(arry->table, (arry->tablesize - cJSON_ArrayBlockSize) * sizeof(cJSON *));
 		if (tmp) {
-			arry->table = (cJSON_s **)tmp;
+			arry->table = (cJSON **)tmp;
 			arry->tablesize = arry->tablesize - cJSON_ArrayBlockSize;
 		}
 	}
@@ -2812,7 +2745,7 @@ void cJSON_ClearItemsFromArray(cJSON *arry)
 	}
 	tmp = realloc(arry->table, cJSON_ArrayBlockSize * sizeof(cJSON *));
 	if (tmp) {
-		arry->table = (cJSON_s **)tmp;
+		arry->table = (cJSON **)tmp;
 		arry->tablesize = cJSON_ArrayBlockSize;
 	}
 	arry->arraysize = 0;
@@ -2922,10 +2855,10 @@ cJSON *cJSON_DuplicateItem(cJSON *item)
 	newitem->valuestring = cJSON_strdup(item->valuestring);
 
 	if (newitem->type == cJSON_Array) {
-		newitem->table = (cJSON_s **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
+		newitem->table = (cJSON **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
 		newitem->tablesize = cJSON_ArrayBlockSize;
 	} else if (item->type == cJSON_Object) {
-		newitem->table = (cJSON_s **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
+		newitem->table = (cJSON **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
 		memset(newitem->table, 0, cJSON_HashTableSize * sizeof(cJSON *));
 		newitem->tablesize = cJSON_HashTableSize;
 	} else {
@@ -3006,7 +2939,7 @@ cJSON *cJSON_CreateArray()
 	cJSON *item = cJSON_New_Item();
 	item->type = cJSON_Array;
 	
-	item->table = (cJSON_s **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
+	item->table = (cJSON **)cJSON_malloc(cJSON_ArrayBlockSize * sizeof(cJSON *));
 	item->tablesize = cJSON_ArrayBlockSize;
 	return item;
 }
@@ -3016,7 +2949,7 @@ cJSON *cJSON_CreateObject()
 	cJSON *item = cJSON_New_Item();
 	item->type = cJSON_Object;
 
-	item->table = (cJSON_s **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
+	item->table = (cJSON **)cJSON_malloc(cJSON_HashTableSize * sizeof(cJSON *));
 	memset(item->table, 0, cJSON_HashTableSize * sizeof(cJSON *));
 	item->tablesize = cJSON_HashTableSize;
 	return item;

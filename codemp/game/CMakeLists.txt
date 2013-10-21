@@ -5,10 +5,13 @@ if(NOT InOpenJK)
 	message(FATAL_ERROR "Use the top-level cmake script!")
 endif(NOT InOpenJK)
 
-set(MPGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/libraries/libcurl/include" "${MPDir}/libraries/Detour/include" "${MPDir}/libraries/Recast/include")
-set(MPGameLibraries "libeay32")
+set(JKGSSLPath "${MPDir}/libraries/openssl")
+
+set(MPGameIncludeDirectories "${MPDir}" "${MPDir}/libraries" "${MPDir}/libraries/libcurl/include" "${MPDir}/libraries/Detour/include" "${MPDir}/libraries/Recast/include" ${BoostDirectory})
+set(MPGameLibraries "")
+
 if(WIN32)
-	set(MPGameLibraries ${MPGameLibraries} "winmm" "ws2_32" "dbghelp" "psapi")
+	set(MPGameLibraries ${MPGameLibraries} "winmm" "ws2_32" "dbghelp" "psapi" "${JKGSSLPath}/libeay32.lib")
 endif(WIN32)
 set(MPGameDefines ${MPSharedDefines} "QAGAME" "MISSIONPACK" "_PHASE1" "CURL_STATICLIB" )
 set(MPGameGameFiles
@@ -194,6 +197,94 @@ set(MPGameGluaFiles
 	)
 source_group("glua" FILES ${MPGameGluaFiles})
 set(MPGameFiles ${MPGameFiles} ${MPGameGluaFiles})
+
+# JKG Libraries
+set(JKGLuaLibrary
+	"${JKGLibrariesDir}/Lua/lapi.c"
+	"${JKGLibrariesDir}/Lua/lauxlib.c"
+	"${JKGLibrariesDir}/Lua/lbaselib.c"
+	"${JKGLibrariesDir}/Lua/lcode.c"
+	"${JKGLibrariesDir}/Lua/ldblib.c"
+	"${JKGLibrariesDir}/Lua/ldebug.c"
+	"${JKGLibrariesDir}/Lua/ldo.c"
+	"${JKGLibrariesDir}/Lua/ldump.c"
+	"${JKGLibrariesDir}/Lua/lfunc.c"
+	"${JKGLibrariesDir}/Lua/lgc.c"
+	"${JKGLibrariesDir}/Lua/linit.c"
+	"${JKGLibrariesDir}/Lua/liolib.c"
+	"${JKGLibrariesDir}/Lua/llex.c"
+	"${JKGLibrariesDir}/Lua/lmathlib.c"
+	"${JKGLibrariesDir}/Lua/lmem.c"
+	"${JKGLibrariesDir}/Lua/loadlib.c"
+	"${JKGLibrariesDir}/Lua/lobject.c"
+	"${JKGLibrariesDir}/Lua/lopcodes.c"
+	"${JKGLibrariesDir}/Lua/loslib.c"
+	"${JKGLibrariesDir}/Lua/lparser.c"
+	"${JKGLibrariesDir}/Lua/lstate.c"
+	"${JKGLibrariesDir}/Lua/lstring.c"
+	"${JKGLibrariesDir}/Lua/lstrlib.c"
+	"${JKGLibrariesDir}/Lua/ltable.c"
+	"${JKGLibrariesDir}/Lua/ltablib.c"
+	"${JKGLibrariesDir}/Lua/ltm.c"
+	"${JKGLibrariesDir}/Lua/lundump.c"
+	"${JKGLibrariesDir}/Lua/lvm.c"
+	"${JKGLibrariesDir}/Lua/lzio.c"
+	"${JKGLibrariesDir}/Lua/print.c"
+	)
+source_group("libraries\\lua" FILES ${JKGLuaLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGLuaLibrary})
+
+set(JKGRecastLibrary
+	"${JKGLibrariesDir}/Recast/Source/Recast.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastAlloc.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastArea.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastContour.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastFilter.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastLayers.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastMesh.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastMeshDetail.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastRasterization.cpp"
+	"${JKGLibrariesDir}/Recast/Source/RecastRegion.cpp"
+	)
+source_group("libraries\\recast" FILES ${JKGRecastLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGRecastLibrary})
+
+set(JKGDetourLibrary
+	"${JKGLibrariesDir}/Detour/Source/DetourAlloc.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourCommon.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMesh.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMeshBuilder.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNavMeshQuery.cpp"
+	"${JKGLibrariesDir}/Detour/Source/DetourNode.cpp"
+	)
+source_group("libraries\\Detour" FILES ${JKGDetourLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGDetourLibrary})
+
+set(JKGBase128Library
+	"${JKGLibrariesDir}/encoding/base128.cpp"
+	)
+source_group("libraries\\base128" FILES ${JKGBase128Library})
+set(MPGameFiles ${MPGameFiles} ${JKGBase128Library})
+
+set(JKGBase64Library
+	"${JKGLibrariesDir}/encoding/base64.c"
+	)
+source_group("libraries\\base64" FILES ${JKGBase64Library})
+set(MPGameFiles ${MPGameFiles} ${JKGBase64Library})
+
+set(JKGBitstreamLibrary
+	"${JKGLibrariesDir}/encoding/bitstream.c"
+	)
+source_group("libraries\\bitstream" FILES ${JKGBitstreamLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGBitstreamLibrary})
+
+set(JKGJSONLibrary
+	"${JKGLibrariesDir}/json/cJSON.c"
+	)
+source_group("libraries\\json" FILES ${JKGJSONLibrary})
+set(MPGameFiles ${MPGameFiles} ${JKGJSONLibrary})
+
+# END JKG LIBRARIES
 
 set(MPGameCommonFiles
 	"${MPDir}/qcommon/q_math.cpp"
